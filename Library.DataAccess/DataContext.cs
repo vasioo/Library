@@ -1,11 +1,8 @@
 ﻿using Library.DataAccess.MainModels;
+using Library.Models.BaseModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.DataAccess
 {
@@ -16,6 +13,22 @@ namespace Library.DataAccess
             : base(options)
         {
             this.seedDb = seedDb;
+        }
+
+        public DbSet<Book> Books{ get; set; }
+        public DbSet<FavouriteBooks> FavouriteBooks { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            if (this.seedDb)
+            {
+                modelBuilder.Entity<IdentityRole>().HasData(
+                     new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
+                     new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" },
+                     new IdentityRole { Id = "3", Name = "Worker", NormalizedName = "WORKER" }
+                 );
+            }
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

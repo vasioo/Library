@@ -1,0 +1,61 @@
+﻿@using Library.DataAccess.MainModels;
+@model ApplicationUser
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 50px;
+    }
+
+    .img-container {
+        text-align: center;
+    }
+
+    .img-thumbnail {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+</style>
+<div class="container">
+    <h2 class="mb-4">User Information</h2>
+
+    <div class="row">
+        <div class="col-md-4 img-container">
+            <img src="path/to/your/image.jpg" alt="User Image" class="img-thumbnail" />
+        </div>
+        <div class="col-md-8">
+            <form method="post" asp-page-handler="EditInfo">
+                <div class="form-group">
+                    <label for="FirstName">First Name: @Model.FirstName</label>
+                </div>
+                <div class="form-group">
+                    <label for="LastName">Last Name: @Model.LastName</label>
+                </div>
+                <div class="form-group">
+                    <label for="Position">Position:</label>
+                    <input type="text" class="form-control" id="Position" name="Position" value="@Model.Position" />
+                </div>
+                <div class="form-group">
+                    <label for="Salary">Salary:</label>
+                    <input type="number" class="form-control" id="Salary" name="Salary" value="@Model.Salary" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
