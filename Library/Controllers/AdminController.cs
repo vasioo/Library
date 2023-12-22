@@ -1,8 +1,7 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.ViewModels;
-using Library.Services.Interfaces;
+using Library.Web.Controllers.AdminControllerHelper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Web.Controllers
@@ -10,42 +9,30 @@ namespace Library.Web.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        #region Constructor
+        private readonly Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
+        private readonly IAdminControllerHelper _helper;
 
-        public AdminController(UserManager<ApplicationUser> userManager)
+        public AdminController(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IAdminControllerHelper helper)
         {
             _userManager = userManager;
+            _helper = helper;
         }
+        #endregion
 
         #region StaffManagement
         [Authorize(Roles = "Admin")]
-        public IActionResult StaffManagement(string searchString)
-        {
-            ViewData["CurrentFilter"] = searchString;
-            var users = _userManager.Users;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                users = users.Where(usr => usr.LastName.Contains(searchString) || usr.FirstName.Contains(searchString));
-            }
-            return View("~/Views/Admin/StaffManagement.cshtml",users);
-        }
-        [Authorize(Roles = "Admin")]
-        public IActionResult AddAStaffMember()
-        {
-            return View("~/Views/Admin/AddAStaffMember.cshtml");
-        }
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditStaffInformation(string userId)
         {
-            var user =await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
 
-            return View("~/Views/Admin/EditStaffPersonInformation.cshtml",user);
+            return View("~/Views/Admin/EditStaffPersonInformation.cshtml", user);
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditInfo(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);
-            return View(StaffManagement(""));
+            return View(ClientManagement("", false));
         }
         #endregion
 
@@ -54,15 +41,27 @@ namespace Library.Web.Controllers
         public IActionResult Statistics()
         {
             var viewModel = new StatisticsViewModel();
-            return View("~/Views/Admin/StaffManagement.cshtml",viewModel);
+            return View("~/Views/Admin/StaffManagement.cshtml", viewModel);
         }
         #endregion
 
         #region ClientManagement
         [Authorize(Roles = "Admin")]
-        public IActionResult ClientManagement()
+        public IActionResult ClientManagement(string searchString, bool workersOnly)
         {
-            return View("~/Views/Admin/StaffManagement.cshtml");
+            ViewData["CurrentFilter"] = searchString;
+            var users = _userManager.Users;
+            if (workersOnly)
+            {
+                var workerRoles = new[] { "Admin", "Worker" };
+                users = users.Where(u => workerRoles.Any(role => _userManager.IsInRoleAsync(u, role).Result));
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(usr => usr.LastName.Contains(searchString) || usr.FirstName.Contains(searchString));
+            }
+            return View("~/Views/Admin/ClientManagement.cshtml", users);
         }
         #endregion
     }

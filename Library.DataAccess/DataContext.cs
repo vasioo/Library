@@ -17,6 +17,7 @@ namespace Library.DataAccess
 
         public DbSet<Book> Books{ get; set; }
         public DbSet<FavouriteBooks> FavouriteBooks { get; set; }
+        public DbSet<UserLeasedBookMappingTable> UserLeasedBooks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

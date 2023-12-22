@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Library.Models.ViewModels
 {
-    public class StaffManagmentViewModel
+    public class ClientManagementViewModel
     {
         public IQueryable<ApplicationUser> Users{ get; set; }
     }
