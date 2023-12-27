@@ -1,5 +1,5 @@
-﻿@using Library.Models.ViewModels;
-@model ClientManagementViewModel
+﻿@using Library.DataAccess.MainModels;
+@model IQueryable<ApplicationUser>
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -27,7 +27,7 @@
                     <div class="col">Salary</div>
                     <div class="col"></div>
                 </div>
-                @foreach (var worker in Model.Users)
+                @foreach (var worker in Model)
                 {
                     <div class="table-row row">
                         <div class="col">@worker.FirstName</div>

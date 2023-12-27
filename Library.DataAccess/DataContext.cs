@@ -29,6 +29,17 @@ namespace Library.DataAccess
                      new IdentityRole { Id = "3", Name = "Worker", NormalizedName = "WORKER" }
                  );
             }
+            modelBuilder.Entity<FavouriteBooks>()
+       .HasKey(fb => new { fb.UserId, fb.BookId });
+            modelBuilder.Entity<FavouriteBooks>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(fb => fb.UserId);
+
+            modelBuilder.Entity<FavouriteBooks>()
+                .HasOne<Book>()
+                .WithMany()
+                .HasForeignKey(fb => fb.BookId);
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Library.Models.UserModels.Interfaces;
+﻿using Library.Models.BaseModels;
+using Library.Models.UserModels.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace Library.DataAccess.MainModels
@@ -19,5 +20,6 @@ namespace Library.DataAccess.MainModels
         public decimal Salary { get; set; }
         public DateTime StartOfMembership { get; set; } = DateTime.Now;
         public string Membership { get; set; } = "";
+        public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
     }
 }

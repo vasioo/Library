@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         #region Constructor
@@ -21,14 +21,14 @@ namespace Library.Web.Controllers
         #endregion
 
         #region StaffManagement
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditStaffInformation(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             return View("~/Views/Admin/EditStaffPersonInformation.cshtml", user);
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditInfo(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);
@@ -37,16 +37,16 @@ namespace Library.Web.Controllers
         #endregion
 
         #region Statistics
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Statistics()
         {
             var viewModel = new StatisticsViewModel();
-            return View("~/Views/Admin/StaffManagement.cshtml", viewModel);
+            return View("~/Views/Admin/Statistics.cshtml", viewModel);
         }
         #endregion
 
         #region ClientManagement
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult ClientManagement(string searchString, bool workersOnly)
         {
             ViewData["CurrentFilter"] = searchString;

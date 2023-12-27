@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Reflection;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,6 +8,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Library.styles.css" asp-append-version="true" />
+    <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+    @RenderSection("Styles", false)
 </head>
 <body>
     <header>
@@ -20,13 +23,31 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MainPage">Main Page</a>
                         </li>
+                           <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Borrowed">Borrowed Books</a>
+                        </li>
+
+                        @*  @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") ||User.IsInRole("Worker")|| User.IsInRole("SuperAdmin")))
+                        { *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="StaffManagement">Staff</a>
+                            <a class="nav-link nav-item fontawesome-icons" asp-area="" asp-controller="Admin" asp-action="Statistics">
+                                <i class="fa-solid fa-lock fa-2xl"></i>
+                            </a>
                         </li>
+                        @* } *@
+
+                       @*  @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
+                        { *@
+                            <li class="nav-item">
+                                <a class="nav-link nav-item fontawesome-icons" asp-area="" asp-controller="Admin" asp-action="Statistics">
+                                    <i class="fa-solid fa-lock fa-2xl"></i>
+                                </a>
+                            </li>
+                        @* } *@
                     </ul>
-                    <partial name="_LoginPartial" />
+                  
                 </div>
             </div>
         </nav>

@@ -2,11 +2,10 @@
 using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Services.Interfaces;
-using System.Data.Entity;
 
 namespace Library.Services.Services
 {
-    internal class UserLeasedBookService:BaseService<UserLeasedBookMappingTable>,IUserLeasedBookService
+    public class UserLeasedBookService : BaseService<UserLeasedBookMappingTable>, IUserLeasedBookService
     {
         private DataContext _dataContext;
 
@@ -16,11 +15,21 @@ namespace Library.Services.Services
         }
         public Task<List<string>> MostReadGenres()
         {
+            var totalEntityCount = _dataContext.UserLeasedBooks.Count();
+
             var mostReadGenres = _dataContext.UserLeasedBooks
                 .GroupBy(bl => bl.Book.Genre)
                 .OrderByDescending(group => group.Count())
                 .Take(5)
-                .Select(group => group.Key);
+                .AsEnumerable()
+                .Select(group =>
+                {
+                    var genre = group.Key;
+                    var count = group.Count();
+                    var percentile = (double)count / totalEntityCount * 100.0;
+                    return $"{genre}-{percentile:F2}";
+                })
+                .ToList();
 
             return Task.FromResult(mostReadGenres.ToList());
         }
@@ -33,7 +42,7 @@ namespace Library.Services.Services
                 .OrderByDescending(group => group.Count())
                 .FirstOrDefault();
 
-            var mostLeasedBook = _dataContext.Books.Where(book => book.Id == mostLeasedBookEntity!.Key).FirstOrDefault() ;
+            var mostLeasedBook = _dataContext.Books.Where(book => book.Id == mostLeasedBookEntity!.Key).FirstOrDefault();
 
             return Task.FromResult(mostLeasedBook!);
         }

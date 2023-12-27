@@ -1,4 +1,7 @@
-﻿using Library.Models;
+﻿using Library.DataAccess.MainModels;
+using Library.Models;
+using Library.Web.Controllers.HomeControllerHelper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,27 +9,55 @@ namespace Library.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IHomeControllerHelper _helper;
+        UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IHomeControllerHelper helper, UserManager<ApplicationUser> userManager)
         {
-            _logger = logger;
+            _userManager = userManager;
+            _helper = helper;
         }
 
-        public IActionResult Index()
+        #region MainPage
+
+        public IActionResult MainPage()
         {
-            return View();
+            //main page of the application
+            return View("~/Views/Home/MainPage.cshtml");
         }
 
-        public IActionResult Privacy()
+        #endregion
+
+        #region BookCollectionShower
+        public IActionResult BookCollectionShower()
         {
-            return View();
+            //main page of the application
+            return View("~/Views/Home/BookCollectionShower.cshtml");
         }
+        #endregion
+
+        #region BookPage
+        public IActionResult BookPage()
+        {
+            //a single book and its specifications as well as the ability to borrow it
+            return View("~/Views/Home/BookPage.cshtml");
+        }
+        #endregion
+
+        #region MainPage
+        public IActionResult Borrowed()
+        {
+            //which books have been borrowed by the user 
+            return View("~/Views/Home/Borrowed.cshtml");
+        }
+        #endregion
+        #region Helpers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        #endregion
     }
 }

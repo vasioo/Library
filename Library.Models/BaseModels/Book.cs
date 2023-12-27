@@ -19,5 +19,8 @@ namespace Library.Models.BaseModels
         public int AvailableItems { get; set; }
 
         public string NeededMembership { get; set; } = "";
+
+        public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
+
     }
 }

@@ -43,8 +43,8 @@ namespace Modum.Web
                    .AddDefaultTokenProviders()
                    .AddDefaultUI()
                    .AddSignInManager<SignInManager<ApplicationUser>>()
-                    .AddUserManager<UserManager<ApplicationUser>>()
-                    .AddRoleManager<RoleManager<IdentityRole>>()
+                   .AddUserManager<UserManager<ApplicationUser>>()
+                   .AddRoleManager<RoleManager<IdentityRole>>()
                    .AddEntityFrameworkStores<DataContext>();
 
             var facebookAppId = builder.Configuration.GetSection("Facebook:AppId").Get<string>() ?? "";
@@ -65,6 +65,12 @@ namespace Modum.Web
                             options.ClientSecret = googleClientSecret;
                         });
 
+            builder.Services.AddDistributedMemoryCache(); // Use a distributed cache for session data in a production environment
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set a suitable timeout
+            });
 
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
@@ -127,15 +133,17 @@ namespace Modum.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
+
 
 
             app.MapControllerRoute(
                 name: "admin",
-                pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+                pattern: "{area:exists}/{controller=Admin}/{action=Statistics}/{id?}");
 
             app.MapControllerRoute(
                     name: "index",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=MainPage}/{id?}");
 
             app.MapRazorPages();
 
