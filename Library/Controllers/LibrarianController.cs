@@ -22,12 +22,17 @@ namespace Library.Web.Controllers
         public async Task<IActionResult> AllBooksInformation()
         {
             //implement
-            return View("~/Views/Admin/AllBooksInformation.cshtml");
+            return View("~/Views/Librarian/AllBooksInformation.cshtml");
         }
         public async Task<IActionResult> AddABook(ApplicationUser user)
         {
             //implement
             await _userManager.UpdateAsync(user);
+            return View(AllBooksInformation());
+        }
+        public async Task<IActionResult> EditBookInformation(Book book)
+        {
+            //implement
             return View(AllBooksInformation());
         }
         public async Task<IActionResult> RemoveABook(Book book)
@@ -37,5 +42,17 @@ namespace Library.Web.Controllers
         }
         #endregion
 
+        #region Reports
+        public async Task<IActionResult> Report()
+        {
+            //implement(could be to user or to admin)
+            return View("~/Views/Librarian/Report.cshtml");
+        }
+        public async Task<IActionResult> AddAReport(LibrarianReport report)
+        {
+            //implement
+            return View(Report());
+        }
+        #endregion
     }
 }

@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Library.styles.css" asp-append-version="true" />
-    <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
     @RenderSection("Styles", false)
 </head>
 <body>
@@ -23,31 +22,12 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MainPage">Main Page</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Librarian" asp-action="AllBooksInformation">Books</a>
                         </li>
-                           <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Borrowed">Borrowed Books</a>
-                        </li>
-
-                        @*  @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") ||User.IsInRole("Worker")|| User.IsInRole("SuperAdmin")))
-                        { *@
                         <li class="nav-item">
-                            <a class="nav-link nav-item fontawesome-icons" asp-area="" asp-controller="Librarian" asp-action="AllBooksInformation">
-                                <i class="fa-solid fa-book"></i>
-                            </a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Librarian" asp-action="Report">Report</a>
                         </li>
-                        @* } *@
-
-                       @*  @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
-                        { *@
-                            <li class="nav-item">
-                                <a class="nav-link nav-item fontawesome-icons" asp-area="" asp-controller="Admin" asp-action="Statistics">
-                                    <i class="fa-solid fa-lock"></i>
-                                </a>
-                            </li>
-                        @* } *@
                     </ul>
-                  
                 </div>
             </div>
         </nav>
@@ -63,9 +43,17 @@
             &copy; 2023 - Library - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script type="text/javascript">
+        $(function () {
+            clientManagement.init($('.client-management'));
+            editStaffInformation.init($('.edit-staff-information'));
+        });
+    </script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.0.8/dist/umd/popper.min.js" integrity="sha384-pzjw8SSg1sEzZBQVESE3uUzQK1K1r+eLr9IF/Ai85Xf5Pc/LCQZaXbVRtBwF5Czy" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

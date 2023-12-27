@@ -64,5 +64,13 @@ namespace Library.Web.Controllers
             return View("~/Views/Admin/ClientManagement.cshtml", users);
         }
         #endregion
+
+        #region BookCategories
+        public IActionResult ManageCategories()
+        {
+            return View("~/Views/Admin/ManageCategories.cshtml");
+        }
+
+        #endregion
     }
 }

@@ -59,5 +59,13 @@ namespace Library.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         #endregion
+
+        #region Notifications
+        public IActionResult Notifications()
+        {
+          
+            return View("~/Views/Home/Notifications.cshtml");
+        }
+        #endregion
     }
 }

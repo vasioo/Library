@@ -12,7 +12,7 @@ namespace Library.Models.BaseModels
 
         public string Author { get; set; } = "";
 
-        public string Genre { get; set; } = "";
+        public BookCategory Genre { get; set; } = new BookCategory();
 
         public string Description { get; set; } = "";
 

@@ -18,6 +18,8 @@ namespace Library.DataAccess
         public DbSet<Book> Books{ get; set; }
         public DbSet<FavouriteBooks> FavouriteBooks { get; set; }
         public DbSet<UserLeasedBookMappingTable> UserLeasedBooks { get; set; }
+        public DbSet<BookCategory> Categories { get; set; }
+        public DbSet<LibrarianReport> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
