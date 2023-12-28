@@ -1,5 +1,6 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models;
+using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,8 @@ namespace Library.Controllers
 
         public IActionResult MainPage()
         {
+            var viewModel = new MainPageViewModel();
+
             //main page of the application
             return View("~/Views/Home/MainPage.cshtml");
         }
@@ -44,7 +47,7 @@ namespace Library.Controllers
         }
         #endregion
 
-        #region MainPage
+        #region Borrowed
         public IActionResult Borrowed()
         {
             //which books have been borrowed by the user 

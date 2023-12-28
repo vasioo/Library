@@ -5,6 +5,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
 {
     public interface IHomeControllerHelper
     {
-        IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver)
+        IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver);
     }
 }
