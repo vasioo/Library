@@ -51,6 +51,7 @@ namespace Library.Controllers
             return View("~/Views/Home/Borrowed.cshtml");
         }
         #endregion
+
         #region Helpers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -61,10 +62,14 @@ namespace Library.Controllers
         #endregion
 
         #region Notifications
-        public IActionResult Notifications()
+        public async Task<IActionResult> Notifications()
         {
-          
-            return View("~/Views/Home/Notifications.cshtml");
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
+
+            var notificationSpecificForUser = _helper.GetNotificationsOfTheCurrentUser(user!);
+
+            return View("~/Views/Home/Notifications.cshtml", notificationSpecificForUser);
         }
         #endregion
     }
