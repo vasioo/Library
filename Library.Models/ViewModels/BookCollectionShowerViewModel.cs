@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Library.Models.BaseModels;
 
 namespace Library.Models.ViewModels
 {
     public class BookCollectionShowerViewModel
     {
+        public IQueryable<Book> RecommendedBooks { get; set; }
+        public IQueryable<Book> BestSellers { get; set; }
+        public IQueryable<BookCategory> BookCategories { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models;
-using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +25,7 @@ namespace Library.Controllers
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
 
-            var viewModel = await _helper.GetMainPageAttributes(user!);
+            var viewModel = _helper.GetMainPageAttributes(user!);
 
             return View("~/Views/Home/MainPage.cshtml",viewModel);
         }
@@ -34,12 +33,28 @@ namespace Library.Controllers
         #endregion
 
         #region BookCollectionShower
-        public IActionResult BookCollectionShower()
+        public async Task<IActionResult> BookCollectionShower()
         {
-            //main page of the application
-            return View("~/Views/Home/BookCollectionShower.cshtml");
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
+
+            var viewModel = _helper.GetBookCollectionAttributes(user!);
+
+            return View("~/Views/Home/BookCollectionShower.cshtml",viewModel);
         }
         #endregion
+
+        #region BookShower
+
+        public async Task<IActionResult> BookShower()
+        {
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
+
+            var viewModel = _helper.GetBooksAttributes(user!);
+
+            return View("~/Views/Home/BookShower.cshtml", viewModel);
+        }
 
         #region BookPage
         public IActionResult BookPage()

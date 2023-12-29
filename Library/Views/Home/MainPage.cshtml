@@ -56,11 +56,11 @@
             </div>
         </div>
     </div>
-    @if (Model.BestSellers != null)
+    @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
     {
-        <div id="container-3" class="container">
+        <div id="container-3" class="container pt-5">
             <div class="row">
-                <div class="row scroller-title">Recommended Books</div>
+                <div class="row scroller-title h3 justify-content-center">Recommended Books</div>
                 <hr />
                 @foreach (var book in Model.RecommendedBooks)
                 {
@@ -71,11 +71,11 @@
             </div>
         </div>
     }
-    @if (Model.BestSellers != null)
+    @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
     {
-        <div id="container-4" class="container">
+        <div id="container-4" class="container pt-5">
             <div class="row">
-                <div class="row scroller-title">Best Sellers</div>
+                <div class="row scroller-title h3 justify-content-center">Best Sellers</div>
                 <hr />
                 @foreach (var book in Model.BestSellers)
                 {

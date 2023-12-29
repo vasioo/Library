@@ -17,9 +17,35 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
         }
 
-        public Task<MainPageViewModel> GetMainPageAttributes(ApplicationUser user)
+        public BookCollectionShowerViewModel GetBookCollectionAttributes(ApplicationUser user)
         {
-            throw new NotImplementedException();
+            var viewModel = new BookCollectionShowerViewModel();
+
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
+            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
+
+            return viewModel;
+        }
+
+        public BookShowerViewModel GetBooksAttributes(ApplicationUser user)
+        {
+            var viewModel = new BookShowerViewModel();
+
+            viewModel.Books = _bookService.IQueryableGetAllAsync();
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
+            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
+
+            return viewModel;
+        }
+
+        public MainPageViewModel GetMainPageAttributes(ApplicationUser user)
+        {
+            var viewModel = new MainPageViewModel();
+
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user,"");
+            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
+
+            return viewModel;
         }
 
         public IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver)

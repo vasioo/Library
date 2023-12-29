@@ -7,6 +7,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
     public interface IHomeControllerHelper
     {
         IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver);
-        Task<MainPageViewModel> GetMainPageAttributes(ApplicationUser user);
+        MainPageViewModel GetMainPageAttributes(ApplicationUser user);
+        BookCollectionShowerViewModel GetBookCollectionAttributes(ApplicationUser user);
+        BookShowerViewModel GetBooksAttributes(ApplicationUser user);
     }
 }

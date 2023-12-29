@@ -1,2 +1,70 @@
 ﻿@using Library.Models.ViewModels;
 @model BookCollectionShowerViewModel
+
+<style>
+    .category-names {
+        padding-left: 15px;
+        color: rgba(0,0,0,.7);
+        font-size: 1.4rem;
+        text-decoration: none;
+    }
+
+        .category-names:hover {
+            color: black;
+            text-decoration: none;
+        }
+
+</style>
+
+<div class="book-collection-shower">
+    <div class="container">
+        <div class="row">
+            <div class="row h2">Explore our genres</div>
+            <div class="row h4">Everything for everyone</div>
+        </div>
+        <hr />
+    </div>
+    <div class="container pt-3">
+        <div class="row h3 justify-content-center">Categories</div>
+        <hr />
+        <div class="row">
+            @foreach (var category in Model.BookCategories.OrderBy(x => x.CategoryName))
+            {
+                <div class="col-4">
+                    <a class="category-names" asp-action="BookShower" asp-controller="Home">@category.CategoryName</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+    {
+        <div class="container pt-5">
+            <div class="row">
+                <div class="row scroller-title h3 justify-content-center">Recommended Books</div>
+                <hr />
+                @foreach (var book in Model.RecommendedBooks)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        @await Html.PartialAsync("~/Views/Home/_BookShowerPartial.cshtml", book)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+    {
+        <div class="container pt-5">
+            <div class="row">
+                <div class="row scroller-title h3 justify-content-center">Best Sellers</div>
+                <hr />
+                @foreach (var book in Model.BestSellers)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        @await Html.PartialAsync("~/Views/Home/_BookShowerPartial.cshtml", book)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
