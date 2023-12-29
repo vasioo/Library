@@ -21,12 +21,14 @@ namespace Library.Controllers
 
         #region MainPage
 
-        public IActionResult MainPage()
+        public async Task<IActionResult> MainPage()
         {
-            var viewModel = new MainPageViewModel();
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
 
-            //main page of the application
-            return View("~/Views/Home/MainPage.cshtml");
+            var viewModel = await _helper.GetMainPageAttributes(user!);
+
+            return View("~/Views/Home/MainPage.cshtml",viewModel);
         }
 
         #endregion

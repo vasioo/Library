@@ -25,6 +25,9 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<Notification>, BaseService<Notification>>();
             service.AddScoped<INotificationService, NotificationService>();
 
+            service.AddScoped<IBaseService<Book>, BaseService<Book>>();
+            service.AddScoped<IBookService, BookService>();
+
             service.AddScoped<UserManager<ApplicationUser>>();
 
         }

@@ -3,20 +3,24 @@
 <style>
     #container-2 {
         background: rgb(255,255,255);
-        background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(121,200,62,0.9472163865546218) 21%);
+        background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(7,175,211,1) 21%);
     }
 
     #brw-coll {
-        background: #ed7117;
+        background: #fc8600;
+    }
+
+    .scroller-title {
+        color: rgba(7,175,211,1);
     }
 </style>
 <div class="main-page">
-    <div class="container">
+    <div id="container-1" class="container">
         <div class="row d-flex align-items-center">
             <div class="col">
                 <div class="row">
-                    <div class="row h2">Audiobooks, Ebooks & other items from your library</div>
-                    <div class="row h5">
+                    <div class="h2">Audiobooks, Ebooks & other items from your library</div>
+                    <div class="h5">
                         All you need is some attention and time. It is free - no fee or subscription required.
                     </div>
                 </div>
@@ -30,23 +34,56 @@
         <div class="container">
             <div class="row d-flex align-items-center mt-5">
                 <div class="col">
-                    <div class="row h3 mb-4">
-                        Explore our books for free.
-                    </div>
                     <div class="row">
-                        <div class="col">
-                            <a class="btn" asp-controller="Home" asp-action="BookCollectionShower" id="brw-coll">
-                                <div class="h3">
-                                    Browse our collection
-                                </div>
-                            </a>
+                        <div class="h2 m-0">
+                            Explore our books for free.
+                        </div>
+                        <div class="pt-4">
+                            <div class="col-12">
+                                <a class="btn" asp-controller="Home" asp-action="BookCollectionShower" id="brw-coll">
+                                    <div class="h3">
+                                        Browse our collection
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col">
                     <img src="~/images/main-page-secondary-photo.png" class="" style="width:300px;" />
                 </div>
             </div>
         </div>
     </div>
+    @if (Model.BestSellers != null)
+    {
+        <div id="container-3" class="container">
+            <div class="row">
+                <div class="row scroller-title">Recommended Books</div>
+                <hr />
+                @foreach (var book in Model.RecommendedBooks)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        @await Html.PartialAsync("~/Views/Home/_BookShowerPartial.cshtml", book)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.BestSellers != null)
+    {
+        <div id="container-4" class="container">
+            <div class="row">
+                <div class="row scroller-title">Best Sellers</div>
+                <hr />
+                @foreach (var book in Model.BestSellers)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        @await Html.PartialAsync("~/Views/Home/_BookShowerPartial.cshtml", book)
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </div>

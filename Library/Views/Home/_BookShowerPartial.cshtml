@@ -1,0 +1,14 @@
+﻿@using Library.Models.BaseModels;
+@model Book
+
+@{
+    var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/book-image-for-{Model.Id}.png";
+}
+
+<div class="card mb-4">
+    <img src="@imageUrl" class="card-img-top">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">@Model.Author (@Model.DateOfBookCreation)</p>
+    </div>
+</div>
