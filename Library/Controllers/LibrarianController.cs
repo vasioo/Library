@@ -24,11 +24,24 @@ namespace Library.Web.Controllers
             //implement
             return View("~/Views/Librarian/AllBooksInformation.cshtml");
         }
-        public async Task<IActionResult> AddABook(ApplicationUser user)
+        public async Task<IActionResult> AddABook()
         {
             //implement
-            await _userManager.UpdateAsync(user);
-            return View(AllBooksInformation());
+            return View("~/Views/Librarian/AddABook.cshtml");
+        }
+
+        public async Task<JsonResult> AddABookPost(Book book)
+        {
+            //implement
+            try
+            {
+                await _helper.AddABookToDatabase(book);
+            }
+            catch (Exception)
+            {
+                return Json(new { status = true, Message = "Error Conflicted" });
+            }
+            return Json(new { status = true, Message = "The item was added successfully" });
         }
         public async Task<IActionResult> EditBookInformation(Book book)
         {
