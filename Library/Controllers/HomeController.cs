@@ -9,6 +9,7 @@ namespace Library.Controllers
 {
     public class HomeController : Controller
     {
+        #region Fields&Constructor
         private readonly IHomeControllerHelper _helper;
         UserManager<ApplicationUser> _userManager;
 
@@ -17,6 +18,7 @@ namespace Library.Controllers
             _userManager = userManager;
             _helper = helper;
         }
+        #endregion
 
         #region MainPage
 
@@ -27,7 +29,7 @@ namespace Library.Controllers
 
             var viewModel = _helper.GetMainPageAttributes(user!);
 
-            return View("~/Views/Home/MainPage.cshtml",viewModel);
+            return View("~/Views/Home/MainPage.cshtml", viewModel);
         }
 
         #endregion
@@ -40,34 +42,43 @@ namespace Library.Controllers
 
             var viewModel = _helper.GetBookCollectionAttributes(user!);
 
-            return View("~/Views/Home/BookCollectionShower.cshtml",viewModel);
+            return View("~/Views/Home/BookCollectionShower.cshtml", viewModel);
         }
         #endregion
 
         #region BookShower
 
-        public async Task<IActionResult> BookShower()
+        public async Task<IActionResult> BookShower(string category)
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
 
-            var viewModel = _helper.GetBooksAttributes(user!);
+            var viewModel = _helper.GetBooksAttributes(user!, category);
 
             return View("~/Views/Home/BookShower.cshtml", viewModel);
         }
+        #endregion
 
         #region BookPage
-        public IActionResult BookPage()
+        public async Task<IActionResult> BookPage(int bookId)
         {
-            //a single book and its specifications as well as the ability to borrow it
-            return View("~/Views/Home/BookPage.cshtml");
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
+
+            var bookPageViewModel = _helper.GetBookPageAttributes(user, bookId);
+
+            return View("~/Views/Home/BookPage.cshtml", bookPageViewModel);
         }
         #endregion
 
         #region Borrowed
-        public IActionResult Borrowed()
+        public async Task<IActionResult> Borrowed()
         {
-            //which books have been borrowed by the user 
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
+
+            var viewModel = _helper.GetBorrowedPageAttributes(user!);
+
             return View("~/Views/Home/Borrowed.cshtml");
         }
         #endregion

@@ -14,6 +14,10 @@
             text-decoration: none;
         }
 
+    .scroller-title{
+        color: rgba(7,175,211,1);
+    }
+
 </style>
 
 <div class="book-collection-shower">
@@ -31,7 +35,7 @@
             @foreach (var category in Model.BookCategories.OrderBy(x => x.CategoryName))
             {
                 <div class="col-4">
-                    <a class="category-names" asp-action="BookShower" asp-controller="Home">@category.CategoryName</a>
+                    <a class="category-names" asp-action="BookShower" asp-controller="Home" data-category="@category">@category.CategoryName</a>
                 </div>
             }
         </div>

@@ -14,6 +14,5 @@ namespace Library.Models.ViewModels
         public IQueryable<Book> BestSellers { get; set; }
 
         public BookCategory CategorySortBy { get; set; } = new BookCategory();
-        public string SortBy { get; set; } = "";
     }
 }

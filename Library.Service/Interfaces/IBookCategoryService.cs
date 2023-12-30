@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library.Models.ViewModels
+namespace Library.Services.Interfaces
 {
-    public class BorrowedViewModel
+    public interface IBookCategoryService:IBaseService<BookCategory>
     {
-        public IQueryable<Book> BorrowedBooks{ get; set; }
     }
 }

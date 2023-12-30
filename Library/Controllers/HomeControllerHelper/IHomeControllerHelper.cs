@@ -9,6 +9,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
         IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver);
         MainPageViewModel GetMainPageAttributes(ApplicationUser user);
         BookCollectionShowerViewModel GetBookCollectionAttributes(ApplicationUser user);
-        BookShowerViewModel GetBooksAttributes(ApplicationUser user);
+        BookShowerViewModel GetBooksAttributes(ApplicationUser user, string category);
+        Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, int bookId);
+        BorrowedViewModel GetBorrowedPageAttributes(ApplicationUser user)
     }
 }

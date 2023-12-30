@@ -7,16 +7,22 @@ namespace Library.Web.Controllers.HomeControllerHelper
 {
     public class HomeControllerHelper : IHomeControllerHelper
     {
+        #region Fields&Constructor
         private readonly INotificationService _notificationService;
         private readonly IBookService _bookService;
+        private readonly IBookCategoryService _bookCategoryService;
+        private readonly IUserLeasedBookService _userLeasedBookService;
 
-        public HomeControllerHelper(INotificationService notificationService, IBookService bookService)
+        public HomeControllerHelper(INotificationService notificationService, IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService)
         {
             _notificationService = notificationService;
             _bookService = bookService;
-
+            _bookCategoryService = bookCategoryService;
+            _userLeasedBookService = userLeasedBookService;
         }
+        #endregion
 
+        #region BookCollectionShowerHelper
         public BookCollectionShowerViewModel GetBookCollectionAttributes(ApplicationUser user)
         {
             var viewModel = new BookCollectionShowerViewModel();
@@ -26,28 +32,39 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             return viewModel;
         }
+        #endregion
 
-        public BookShowerViewModel GetBooksAttributes(ApplicationUser user)
+        #region BookShowerHelper
+        public BookShowerViewModel GetBooksAttributes(ApplicationUser user, string category)
         {
             var viewModel = new BookShowerViewModel();
 
-            viewModel.Books = _bookService.IQueryableGetAllAsync();
+            var cat = _bookCategoryService.IQueryableGetAllAsync().Where(x => x.CategoryName == category).FirstOrDefault();
+
+            viewModel.CategorySortBy = cat == null ? new BookCategory() : cat;
+            viewModel.Books = _bookService.IQueryableGetAllAsync().Where(x => x.Genre == viewModel.CategorySortBy);
+
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
+            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
+
+
+            return viewModel;
+        }
+        #endregion
+
+        #region MainPageHelper
+        public MainPageViewModel GetMainPageAttributes(ApplicationUser user)
+        {
+            var viewModel = new MainPageViewModel();
+
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
             return viewModel;
         }
+        #endregion
 
-        public MainPageViewModel GetMainPageAttributes(ApplicationUser user)
-        {
-            var viewModel = new MainPageViewModel();
-
-            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user,"");
-            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
-
-            return viewModel;
-        }
-
+        #region NotificationsHelper
         public IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver)
         {
             var notifications = _notificationService.IQueryableGetAllAsync();
@@ -56,5 +73,34 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             return notifications;
         }
+        #endregion
+
+        #region BookPageHelper
+        public async Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, int bookId)
+        {
+            var viewModel = new BookPageViewModel();
+
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
+            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
+
+            viewModel.User = user;
+            viewModel.Book = await _bookService.GetByIdAsync(bookId);
+
+            return viewModel;
+        }
+        #endregion
+
+        #region BorrowedHelper
+        public BorrowedViewModel GetBorrowedPageAttributes(ApplicationUser user)
+        {
+            var viewModel = new BorrowedViewModel();
+
+            var allLeasedBooks = _userLeasedBookService.IQueryableGetAllAsync();
+
+            viewModel.BorrowedBooks = allLeasedBooks.Where(us => us.UserId == user.Id).Select(x => x.Book);
+
+            return viewModel;
+        }
+        #endregion
     }
 }
