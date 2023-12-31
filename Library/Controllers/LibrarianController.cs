@@ -1,5 +1,6 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,10 @@ namespace Library.Web.Controllers
             //implement
             return View("~/Views/Librarian/AllBooksInformation.cshtml");
         }
-        public async Task<IActionResult> AddABook()
+        public IActionResult AddABook()
         {
-            //implement
+            ViewBag.BookCategories = _helper.GetAllBookCategories();
+
             return View("~/Views/Librarian/AddABook.cshtml");
         }
 

@@ -5,9 +5,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Library</title>
+    <!-- FONTS -->
+    <link rel="stylesheet" href="~/library/fonts/flaticon/flaticon.css">
+    <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
+    <!-- VENDOR -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Library.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <!--ALERTS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     @RenderSection("Styles", false)
 </head>
 <body>
@@ -43,17 +50,39 @@
             &copy; 2023 - Library - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!--=====================================
+                   JS LINK PART START
+       =======================================-->
+    <!-- VENDOR -->
+    <script src="~/library/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="~/library/js/vendor/popper.min.js"></script>
+    <script src="~/library/js/vendor/bootstrap.min.js"></script>
+    <script src="~/library/js/vendor/slick.min.js"></script>
+    <!-- CUSTOM -->
+    <!-- PAGES -->
+    <script src="~/library/js/pages.js"></script>
+
+    <!-- COMMON -->
+    <script src="~/library/js/common.js"></script>
+
+    <!-- CUSTOM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+
+
     <script type="text/javascript">
         $(function () {
             clientManagement.init($('.client-management'));
             editStaffInformation.init($('.edit-staff-information'));
+            addABook.init($('add-a-book'));
         });
     </script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.0.8/dist/umd/popper.min.js" integrity="sha384-pzjw8SSg1sEzZBQVESE3uUzQK1K1r+eLr9IF/Ai85Xf5Pc/LCQZaXbVRtBwF5Czy" crossorigin="anonymous"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

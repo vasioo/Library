@@ -7,32 +7,36 @@
 <div class="all-books">
     <div class="container">
         <a asp-controller="Librarian" asp-action="AddABook">Add A Book</a>
-        <table class="table pt-3">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Author</th>
-                    <th>Date of Creation</th>
-                    <th>Available Items</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var book in Model)
-                {
+        @if (Model!=null)
+        {
+            <table class="table pt-3">
+                <thead>
                     <tr>
-                        <td>@book.Name</td>
-                        <td>@book.Author</td>
-                        <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
-                        <td>@book.AvailableItems</td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@book.Id">Details</a> |
-                            <a asp-action="Edit" asp-route-id="@book.Id">Edit</a> |
-                            <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
-                        </td>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Date of Creation</th>
+                        <th>Available Items</th>
+                        <th>Action</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var book in Model)
+                    {
+                        <tr>
+                            <td>@book.Name</td>
+                            <td>@book.Author</td>
+                            <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
+                            <td>@book.AvailableItems</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@book.Id">Details</a> |
+                                <a asp-action="Edit" asp-route-id="@book.Id">Edit</a> |
+                                <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
     </div>
 </div>
