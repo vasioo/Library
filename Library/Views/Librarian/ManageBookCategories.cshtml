@@ -3,6 +3,8 @@
 
 @{
     Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
+
+    List<string> bookCategories = ViewBag.BookCategories as List<string>;
 }
 
 <div class="manage-book-categories">
@@ -11,7 +13,17 @@
             <label asp-for="CategoryName"></label>
             <input asp-for="CategoryName" class="form-control" />
         </div>
-        <button id="addCategoryButton" class="btn btn-primary ">Add Book</button>
+
+        <button id="addCategoryButton" class="btn btn-primary ">Add Category</button>
         <a asp-action="Index" class="btn btn-secondary ">Cancel</a>
+
+        <div class="row">
+            <ul>
+                @foreach (var category in bookCategories)
+                {
+                    <li>@category</li>
+                }
+            </ul>
+        </div>
     </div>
 </div>

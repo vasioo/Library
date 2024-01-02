@@ -43,6 +43,13 @@ namespace Library.DataAccess
                 .HasOne<Book>()
                 .WithMany()
                 .HasForeignKey(fb => fb.BookId);
+
+            modelBuilder.Entity<Book>().Navigation(e => e.Genre).AutoInclude();
+
+            modelBuilder.Entity<BookCategory>()
+            .HasIndex(ci => new { ci.CategoryName })
+            .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
     }

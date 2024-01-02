@@ -1,7 +1,8 @@
-﻿var addABook = (function () {
+﻿var editABook = (function () {
     function init($container) {
-        $('#addBookButton').click(function () {
+        $('#editBookButton').click(function () {
             var bookData = {
+                Id: $('#editBookForm').attr('class'),
                 Name: $('#Name').val(),
                 Author: $('#Author').val(),
                 DateOfBookCreation: $('#DateOfBookCreation').val(),
@@ -14,7 +15,7 @@
 
             const image = $('.uploaded-image').attr('src');
 
-            $.post('/Librarian/AddABookPost', {
+            $.post('/Librarian/EditABookPost', {
                 imageObj: image,
                 book: bookData
             },
@@ -36,6 +37,7 @@
                     console.log('AJAX request failed:', error);
                 });
         });
+
         $('.image-upload').change(function (event) {
             const $input = $(this),
                 $uploadedImage = $input.parent().find('.uploaded-image'),
@@ -51,6 +53,28 @@
                     });
                 }
             });
+        });
+
+        $('.remove-book').click(function () {
+
+            var book = $(this).attr('id');
+
+            Swal.fire({
+                title: 'WARNING?',
+                text: "Are you sure you want to remove the book ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Remove!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('/Librarian/RemoveABook', { bookId:book }, function (response) {
+                        location.reload();
+                    });
+                    location.reload();
+                }
+            })
         });
     }
     return {

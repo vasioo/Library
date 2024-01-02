@@ -16,5 +16,10 @@ namespace Library.Services.Services
         {
             _context = context;
         }
+
+        public BookCategory GetBookCategoryByBookCategoryName(string bookCategoryName)
+        {
+            return _context.Categories.Where(x => x.CategoryName! == bookCategoryName!).FirstOrDefault();
+        }
     }
 }

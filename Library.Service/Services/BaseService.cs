@@ -93,7 +93,7 @@ namespace Library.Services.Services
         {
             if (!_context.Set<T>().Local.Any(e => e.Id == entity.Id))
             {
-                _context.Set<T>().Attach(entity);
+                _context.Set<T>().Attach(entity); 
             }
             _context.Entry(entity).State = EntityState.Modified;
 

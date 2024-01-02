@@ -27,10 +27,9 @@
                             <td>@book.Author</td>
                             <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
                             <td>@book.AvailableItems</td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@book.Id">Details</a> |
-                                <a asp-action="Edit" asp-route-id="@book.Id">Edit</a> |
-                                <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+                            <td class="row justify-content-between">
+                                <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning col-5" onclick="editBook(@book.Id)">Edit</a>
+                                <a class="remove-book btn btn-danger col-5" id="@book.Id">Delete</a>
                             </td>
                         </tr>
                     }

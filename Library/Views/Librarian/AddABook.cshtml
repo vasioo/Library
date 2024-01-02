@@ -3,61 +3,9 @@
 
 @{
     Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
-}
-
-@{
     List<string> bookCategories = ViewBag.BookCategories as List<string>;
 }
-<style>
-    .upload-input {
-        position: relative;
-        height: 150px;
-    }
 
-        .upload-input input {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px dashed rgba(124,134,154,.25);
-            text-indent: -9999px;
-        }
-
-        .upload-input .content {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 30px;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .upload-input .plus-icon {
-            height: 50px;
-            width: 50px;
-            color: #fff;
-            background: #88888859;
-            display: inline-block;
-            line-height: 50px;
-            font-size: 18px;
-            border-radius: 5px;
-            -webkit-transition: all 0.4s ease;
-            transition: all 0.4s ease;
-        }
-
-        .upload-input:hover .plus-icon {
-            background-color: rgb(0,209,209);
-        }
-
-
-    .uploaded-image {
-        height: 150px;
-        width: 100%;
-    }
-
-</style>
 
 <div class="add-a-book">
     <div class="container">
@@ -74,13 +22,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBookCreation"></label>
-                <input asp-for="DateOfBookCreation" class="form-control" />
+                <input asp-for="DateOfBookCreation" class="form-control" type="date" />
             </div>
             @if (bookCategories != null)
             {
                 <div class="form-group">
-                    <label asp-for="Genre.CategoryName"></label>
-                    <select asp-for="Genre.CategoryName" class="form-control">
+                    <label for="Genre_CategoryName">Category Name:</label>
+                    <select id="Genre_CategoryName" name="Genre_CategoryName" class="form-control">
                         <option value="">Select Genre</option>
                         @foreach (var category in bookCategories)
                         {
@@ -102,9 +50,9 @@
                 <label asp-for="NeededMembership"></label>
                 <input asp-for="NeededMembership" class="form-control" />
             </div>
-            <div class="form-group">
-                <div class="col">
-                    <label class="form-label" for="book-image-1">Image 1</label>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label class="form-label" for="book-image-1">Book Cover</label>
                     <div class="upload-input">
                         <input type="file" id="book-image-1" name="book-image-1" class="image-upload" accept=".png, .jpg, .jpeg" multiple="multiple" max="1">
                         <img class="uploaded-image" />
@@ -117,7 +65,7 @@
                 </div>
             </div>
             <button id="addBookButton" class="btn btn-primary ">Add Book</button>
-            <a asp-action="Index" class="btn btn-secondary ">Cancel</a>
+            <a asp-controller="Librarian" asp-action="AllBooksInformation" class="btn btn-danger ">Cancel</a>
         </div>
     </div>
 </div>

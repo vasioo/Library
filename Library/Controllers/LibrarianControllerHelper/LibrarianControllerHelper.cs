@@ -1,4 +1,5 @@
 ﻿using Library.Models.BaseModels;
+using Library.Models.DTO;
 using Library.Services.Interfaces;
 
 namespace Library.Web.Controllers.HomeControllerHelper
@@ -14,12 +15,26 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _bookCategoryService = bookCategoryService;
         }
 
-        public async Task<bool> AddABookToDatabase(Book book, string image)
+        public async Task<bool> AddABookToDatabase(BookDTO book, string image)
         {
             try
             {
-                await _bookService.AddAsync(book);
-                 
+                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!.CategoryName);
+
+                var bookNew = new Book();
+
+                bookNew.Id = book.Id;
+                bookNew.Name = book.Name;
+                bookNew.Author = book.Author;
+                bookNew.DateOfBookCreation = book.DateOfBookCreation;
+                bookNew.Genre = bookCat;
+                bookNew.Description = book.Description;
+                bookNew.AvailableItems = book.AvailableItems;
+                bookNew.NeededMembership = book.NeededMembership;
+                bookNew.FavouriteBooks = book.FavouriteBooks;
+
+                await _bookService.AddAsync(bookNew);
+
                 await _bookService.SaveImage(book.Id, image);
                 return true;
             }
@@ -29,6 +44,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 throw;
             }
         }
+
         public async Task<bool> AddABookCategoryToDatabase(string categoryName)
         {
             try
@@ -47,18 +63,33 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 throw;
             }
         }
-        public async Task<bool> EditABook(Book book)
+
+        public async Task<bool> EditABook(BookDTO book, string imageObj)
         {
             try
             {
-                if (_bookService.GetByIdAsync(book.Id) != null)
-                {
-                    await _bookService.UpdateAsync(book);
-                    return true;
-                }
-                return false;
+                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!.CategoryName);
+
+                var bookNew = new Book();
+
+                bookNew.Id = book.Id;
+                bookNew.Name = book.Name;
+                bookNew.Author = book.Author;
+                bookNew.DateOfBookCreation = book.DateOfBookCreation;
+                bookNew.Genre = bookCat;
+                bookNew.Description = book.Description;
+                bookNew.AvailableItems = book.AvailableItems;
+                bookNew.NeededMembership = book.NeededMembership;
+                bookNew.FavouriteBooks = book.FavouriteBooks;
+
+
+                await _bookService.UpdateAsync(bookNew);
+
+                await _bookService.UpdateImageData(book.Id, imageObj);
+
+                return true;
             }
-            catch (Exception)
+                catch (Exception)
             {
                 return false;
                 throw;
@@ -67,12 +98,22 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
         public IQueryable<string> GetAllBookCategories()
         {
-            return _bookCategoryService.IQueryableGetAllAsync().Select(x=>x.CategoryName);
+            return _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
         }
 
         public async Task<Book> GetBook(int bookId)
         {
             return await _bookService.GetByIdAsync(bookId);
+        }
+
+        public IQueryable<Book> GetAllBooks()
+        {
+            return _bookService.IQueryableGetAllAsync();
+        }
+
+        public async Task<int> RemoveABook(int bookId)
+        {
+            return await _bookService.RemoveAsync(bookId);
         }
     }
 }

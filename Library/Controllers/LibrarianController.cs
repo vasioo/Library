@@ -1,5 +1,6 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
@@ -23,23 +24,23 @@ namespace Library.Web.Controllers
         //[Authorize(Roles = "Worker,Admin,SuperAdmin")]
         public async Task<IActionResult> AllBooksInformation()
         {
-            //implement
-            return View("~/Views/Librarian/AllBooksInformation.cshtml");
+            var books = _helper.GetAllBooks();
+
+            return View("~/Views/Librarian/AllBooksInformation.cshtml",books);
         }
+
         public IActionResult AddABook()
         {
             ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
 
             return View("~/Views/Librarian/AddABook.cshtml");
         }
-
         [HttpPost]
-        public async Task<JsonResult> AddABookPost(Book book, string image)
+        public async Task<JsonResult> AddABookPost(BookDTO book, string imageObj)
         {
-            //implement
             try
             {
-                await _helper.AddABookToDatabase(book, image);
+                await _helper.AddABookToDatabase(book, imageObj);
             }
             catch (Exception)
             {
@@ -71,19 +72,12 @@ namespace Library.Web.Controllers
             return View("~/Views/Librarian/EditBookInformation.cshtml", book);
         }
 
-        public async Task<IActionResult> ManageBookCategories()
-        {
-            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
-
-            return View("~/Views/Librarian/ManageBookCategories.cshtml");
-        }
-
-        public async Task<JsonResult> EditABookPost(Book book)
+        public async Task<JsonResult> EditABookPost(BookDTO book, string imageObj) 
         {
             //implement
             try
             {
-                await _helper.EditABook(book);
+                await _helper.EditABook(book,imageObj);
             }
             catch (Exception)
             {
@@ -92,10 +86,24 @@ namespace Library.Web.Controllers
             return Json(new { status = true, Message = "The item was added successfully" });
         }
 
-        public async Task<IActionResult> RemoveABook(Book book)
+        public async Task<IActionResult> ManageBookCategories()
         {
-            //implement
-            return View(AllBooksInformation());
+            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
+
+            return View("~/Views/Librarian/ManageBookCategories.cshtml");
+        }
+
+        public async Task<JsonResult> RemoveABook(int bookId)
+        {
+            try
+            {
+                await _helper.RemoveABook(bookId);
+            }
+            catch (Exception)
+            {
+                return Json(new { status = true, Message = "Error Conflicted" });
+            }
+            return Json(new { status = true, Message = "The item was removed successfully" });
         }
         #endregion
 
@@ -105,6 +113,7 @@ namespace Library.Web.Controllers
             //implement(could be to user or to admin)
             return View("~/Views/Librarian/Report.cshtml");
         }
+
         public async Task<IActionResult> AddAReport(LibrarianReport report)
         {
             //implement

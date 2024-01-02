@@ -3,7 +3,7 @@
         $('#addCategoryButton').click(function () {
             var neededName = $('#CategoryName').val();
 
-            $.post('/Librarian/AddABookPost', {
+            $.post('/Librarian/AddABookCategory', {
                 categoryName:neededName
             },
                 function (response) {

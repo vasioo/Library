@@ -9,5 +9,6 @@ namespace Library.Services.Interfaces
 {
     public interface IBookCategoryService:IBaseService<BookCategory>
     {
+        public BookCategory GetBookCategoryByBookCategoryName(string bookCategoryName);
     }
 }

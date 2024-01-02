@@ -66,5 +66,32 @@ namespace Library.Services.Services
                 return false;
             }
         }
+
+        public async Task<bool> UpdateImageData(int bookId, string imageUrl)
+        {
+            try
+            {
+                _cloudinary.DeleteResources($"image-for-book-{bookId}");
+
+                await _cloudinary.UploadAsync(new ImageUploadParams()
+                {
+                    File = new FileDescription(imageUrl),
+                    DisplayName = $"image-for-book-{bookId}",
+                    PublicId = $"image-for-book-{bookId}",
+                    Overwrite = false,
+                });
+                return true;
+            }
+            catch (Exception)
+            {
+                // log error
+                return false;
+            }
+        }
+
+        public async Task<Book> GetBookByBookName(string name)
+        {
+            return _dataContext.Books.Where(x => x.Name == name).FirstOrDefault();
+        }
     }
 }

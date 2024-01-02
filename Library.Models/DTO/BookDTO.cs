@@ -1,9 +1,14 @@
-﻿using Library.Models.UserModels.Interfaces;
+﻿using Library.Models.BaseModels;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Library.Models.BaseModels
+namespace Library.Models.DTO
 {
-    public class Book : IEntity
+    public class BookDTO
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
