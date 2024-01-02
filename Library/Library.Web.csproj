@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scripts\Pages\addCategory.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scripts\Pages\addCategory.js" />
     <Content Include="Scripts\Pages\addABook.js" />
     <Content Include="Scripts\Pages\clientManagement.js" />
     <Content Include="Scripts\Pages\editStaffInformation.js" />

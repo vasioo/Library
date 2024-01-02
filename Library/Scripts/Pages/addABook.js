@@ -11,8 +11,11 @@
                 NeededMembership: $('#NeededMembership').val()
             };
 
+            var imageData = $('.uploaded-image').attr('src');
+
             $.post('/Librarian/AddABookPost', {
-                book:bookData
+                book: bookData,
+                image: imageData
             },
                 function (response) {
                     Swal.fire({
@@ -32,7 +35,22 @@
                     console.log('AJAX request failed:', error);
                 });
         });
-
+        $('.image-upload').change(function (event) {
+            const $input = $(this),
+                $uploadedImage = $input.parent().find('.uploaded-image'),
+                file = event.target.files[0];
+            commonFuncs.validateAndResizeImage(file, function (isValid, imageData) {
+                if (isValid) {
+                    $uploadedImage.attr('src', imageData);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Image Validation Failed',
+                        text: 'Error details: ' + imageData
+                    });
+                }
+            });
+        });
     }
     return {
         init

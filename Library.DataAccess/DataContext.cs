@@ -33,7 +33,7 @@ namespace Library.DataAccess
                  );
             }
             modelBuilder.Entity<FavouriteBooks>()
-       .HasKey(fb => new { fb.UserId, fb.BookId });
+                .HasKey(fb => new { fb.UserId, fb.BookId });
             modelBuilder.Entity<FavouriteBooks>()
                 .HasOne<ApplicationUser>()
                 .WithMany()

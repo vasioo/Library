@@ -8,7 +8,7 @@ namespace Library.Models.BaseModels
         public string Name { get; set; } = "";
         public DateTime DateOfBookCreation { get; set; }
         public string Author { get; set; } = "";
-        public BookCategory Genre { get; set; } = new BookCategory();
+        public BookCategory Genre { get; set; }
         public string Description { get; set; } = "";
         public int AvailableItems { get; set; }
         public string NeededMembership { get; set; } = "";

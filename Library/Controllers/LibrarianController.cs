@@ -4,10 +4,11 @@ using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Library.Web.Controllers
 {
-    public class LibrarianController:Controller
+    public class LibrarianController : Controller
     {
         private readonly ILibrarianControllerHelper _helper;
         UserManager<ApplicationUser> _userManager;
@@ -27,17 +28,18 @@ namespace Library.Web.Controllers
         }
         public IActionResult AddABook()
         {
-            ViewBag.BookCategories = _helper.GetAllBookCategories();
+            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
 
             return View("~/Views/Librarian/AddABook.cshtml");
         }
 
-        public async Task<JsonResult> AddABookPost(Book book)
+        [HttpPost]
+        public async Task<JsonResult> AddABookPost(Book book, string image)
         {
             //implement
             try
             {
-                await _helper.AddABookToDatabase(book);
+                await _helper.AddABookToDatabase(book, image);
             }
             catch (Exception)
             {
@@ -45,11 +47,51 @@ namespace Library.Web.Controllers
             }
             return Json(new { status = true, Message = "The item was added successfully" });
         }
-        public async Task<IActionResult> EditBookInformation(Book book)
+
+        [HttpPost]
+        public async Task<JsonResult> AddABookCategory(string categoryName)
+        {
+            try
+            {
+                await _helper.AddABookCategoryToDatabase(categoryName);
+            }
+            catch (Exception)
+            {
+                return Json(new { status = true, Message = "Error Conflicted" });
+            }
+            return Json(new { status = true, Message = "The item was added successfully" });
+        }
+
+        public async Task<IActionResult> EditBookInformation(int bookId)
+        {
+            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
+
+            var book = await _helper.GetBook(bookId);
+
+            return View("~/Views/Librarian/EditBookInformation.cshtml", book);
+        }
+
+        public async Task<IActionResult> ManageBookCategories()
+        {
+            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
+
+            return View("~/Views/Librarian/ManageBookCategories.cshtml");
+        }
+
+        public async Task<JsonResult> EditABookPost(Book book)
         {
             //implement
-            return View(AllBooksInformation());
+            try
+            {
+                await _helper.EditABook(book);
+            }
+            catch (Exception)
+            {
+                return Json(new { status = true, Message = "Error Conflicted" });
+            }
+            return Json(new { status = true, Message = "The item was added successfully" });
         }
+
         public async Task<IActionResult> RemoveABook(Book book)
         {
             //implement

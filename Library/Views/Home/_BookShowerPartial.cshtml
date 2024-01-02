@@ -5,10 +5,17 @@
     var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/book-image-for-{Model.Id}.png";
 }
 
-<div class="card mb-4">
-    <img src="@imageUrl" class="card-img-top">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Name</h5>
-        <p class="card-text">@Model.Author (@Model.DateOfBookCreation)</p>
-    </div>
+<div class="card mb-4 position-relative">
+    <a href="@Url.Action("BookPage", "Home", new { bookId = Model.Id })">
+        <img src="@imageUrl" class="card-img-top">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Name</h5>
+            <p class="card-text">@Model.Author (@Model.DateOfBookCreation)</p>
+        </div>
+    </a>
+  @*   @if (User.IsInRole())
+    {
+    *@
+    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=Model.Id })" class="btn btn-outline-warning position-absolute top-0 end-0 m-2" onclick="editBook(@Model.Id)">Edit</a>
+    @*} *@
 </div>

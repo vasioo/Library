@@ -14,12 +14,49 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _bookCategoryService = bookCategoryService;
         }
 
-        public async Task<bool> AddABookToDatabase(Book book)
+        public async Task<bool> AddABookToDatabase(Book book, string image)
         {
             try
             {
                 await _bookService.AddAsync(book);
+                 
+                await _bookService.SaveImage(book.Id, image);
                 return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+        }
+        public async Task<bool> AddABookCategoryToDatabase(string categoryName)
+        {
+            try
+            {
+                var bookCategory = new BookCategory();
+
+                bookCategory.CategoryName = categoryName;
+
+                await _bookCategoryService.AddAsync(bookCategory);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+        }
+        public async Task<bool> EditABook(Book book)
+        {
+            try
+            {
+                if (_bookService.GetByIdAsync(book.Id) != null)
+                {
+                    await _bookService.UpdateAsync(book);
+                    return true;
+                }
+                return false;
             }
             catch (Exception)
             {
@@ -31,6 +68,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
         public IQueryable<string> GetAllBookCategories()
         {
             return _bookCategoryService.IQueryableGetAllAsync().Select(x=>x.CategoryName);
+        }
+
+        public async Task<Book> GetBook(int bookId)
+        {
+            return await _bookService.GetByIdAsync(bookId);
         }
     }
 }

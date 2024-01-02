@@ -1,0 +1,55 @@
+﻿@using Library.Models.BaseModels;
+@model Book
+
+@{
+    Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
+}
+
+@{
+    List<string> bookCategories = ViewBag.BookCategories as List<string>;
+}
+
+
+<div class="edit-a-book">
+    <div class="container">
+        <h2>Edit Book @Model.Id</h2>
+
+        <div id="addBookForm">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" value="@Model.Name" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Author"></label>
+                <input asp-for="Author" class="form-control" value="@Model.Author" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBookCreation"></label>
+                <input asp-for="DateOfBookCreation" class="form-control" value="@Model.DateOfBookCreation" />
+            </div>
+            @if (bookCategories != null && bookCategories.Any())
+            {
+                <div class="form-group">
+                    <label asp-for="Genre.CategoryName"></label>
+                    <select asp-for="Genre.CategoryName" asp-items="@(new SelectList(ViewBag.BookCategories, "Value", "Text"))" class="form-control">
+                        <option value="">Select Genre</option>
+                    </select>
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" value="@Model.Description"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvailableItems"></label>
+                <input asp-for="AvailableItems" class="form-control" value="@Model.AvailableItems" />
+            </div>
+            <div class="form-group">
+                <label asp-for="NeededMembership"></label>
+                <input asp-for="NeededMembership" class="form-control" value="@Model.NeededMembership" />
+            </div>
+            <button id="addBookButton" class="btn btn-success ">Submit Changes</button>
+            <a asp-action="Index" class="btn btn-secondary ">Cancel</a>
+        </div>
+    </div>
+</div>

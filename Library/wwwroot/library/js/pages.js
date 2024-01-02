@@ -11,21 +11,11 @@ var addABook = (function () {
                 NeededMembership: $('#NeededMembership').val()
             };
 
-            //$.post({
-            //    type: 'POST',
-            //    url: '/Librarian/AddABookPost ',
-            //    contentType: 'application/json; charset=utf-8',
-            //    data: JSON.stringify(bookData),
-            //    success: function (data) {
-            //        window.location.href = '/Librarian/AddABook';
-            //    },
-            //    error: function (error) {
-            //        console.error('Error adding book:', error);
-            //    }
-            //});
+            var imageData = $('.uploaded-image').attr('src');
 
             $.post('/Librarian/AddABookPost', {
-                book:bookData
+                book: bookData,
+                image: imageData
             },
                 function (response) {
                     Swal.fire({
@@ -40,13 +30,58 @@ var addABook = (function () {
                         }
                     });
 
-                    window.location.href = '/Librarian/AddABook';
-
+                    location.reload();
                 }).fail(function (error) {
                     console.log('AJAX request failed:', error);
                 });
         });
+        $('.image-upload').change(function (event) {
+            const $input = $(this),
+                $uploadedImage = $input.parent().find('.uploaded-image'),
+                file = event.target.files[0];
+            commonFuncs.validateAndResizeImage(file, function (isValid, imageData) {
+                if (isValid) {
+                    $uploadedImage.attr('src', imageData);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Image Validation Failed',
+                        text: 'Error details: ' + imageData
+                    });
+                }
+            });
+        });
+    }
+    return {
+        init
+    };
+})();
+var addACategory = (function () {
+    function init($container) {
+        $('#addCategoryButton').click(function () {
+            var neededName = $('#CategoryName').val();
 
+            $.post('/Librarian/AddABookPost', {
+                categoryName:neededName
+            },
+                function (response) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Server response',
+                        html: `${response.message}`,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    });
+
+                    location.reload();
+                }).fail(function (error) {
+                    console.log('AJAX request failed:', error);
+                });
+        });
     }
     return {
         init

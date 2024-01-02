@@ -1,0 +1,17 @@
+﻿@using Library.Models.BaseModels;
+@model BookCategory
+
+@{
+    Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
+}
+
+<div class="manage-book-categories">
+    <div class="container">
+        <div class="form-group">
+            <label asp-for="CategoryName"></label>
+            <input asp-for="CategoryName" class="form-control" />
+        </div>
+        <button id="addCategoryButton" class="btn btn-primary ">Add Book</button>
+        <a asp-action="Index" class="btn btn-secondary ">Cancel</a>
+    </div>
+</div>
