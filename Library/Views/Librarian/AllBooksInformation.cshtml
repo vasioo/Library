@@ -6,8 +6,10 @@
 
 <div class="all-books">
     <div class="container">
-        <a asp-controller="Librarian" asp-action="AddABook">Add A Book</a>
-        @if (Model!=null)
+        <div class="row pb-4">
+            <a asp-controller="Librarian" asp-action="AddABook" class="btn btn-success">Add A Book</a>
+        </div>
+        @if (Model != null)
         {
             <table class="table pt-3">
                 <thead>

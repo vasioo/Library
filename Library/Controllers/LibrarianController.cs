@@ -22,6 +22,7 @@ namespace Library.Web.Controllers
 
         #region Books
         //[Authorize(Roles = "Worker,Admin,SuperAdmin")]
+
         public async Task<IActionResult> AllBooksInformation()
         {
             var books = _helper.GetAllBooks();
@@ -35,6 +36,7 @@ namespace Library.Web.Controllers
 
             return View("~/Views/Librarian/AddABook.cshtml");
         }
+        
         [HttpPost]
         public async Task<JsonResult> AddABookPost(BookDTO book, string imageObj)
         {
