@@ -3,9 +3,12 @@
 
 <div class="borrowed-page">
     <div class="container">
-        @foreach (var book in Model.BorrowedBooks)
+        @if (Model != null)
         {
-            
+            @foreach (var book in Model.BorrowedBooks)
+            {
+
+            }
         }
     </div>
 </div>

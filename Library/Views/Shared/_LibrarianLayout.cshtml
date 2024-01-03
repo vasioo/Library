@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Library</title>
+    <title>Litify</title>
     <!-- FONTS -->
     <link rel="stylesheet" href="~/library/fonts/flaticon/flaticon.css">
     <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
@@ -22,20 +22,22 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow m-0 p-0 pt-2 pl-2 mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="MainPage">Library</a>
+                <a class="navbar-brand p-0 m-0 pb-1" asp-area="" asp-controller="Home" asp-action="MainPage">
+                    <img src="~/images/litify-logo.png" style="width:65px" />
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav justify-content-center align-items-center flex-grow-1">
+                <div class="p-3 navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav align-items-center flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Librarian" asp-action="AllBooksInformation">Books</a>
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Librarian" asp-action="AllBooksInformation">Books</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Librarian" asp-action="Report">Report</a>
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Librarian" asp-action="Report">Report</a>
                         </li>
                     </ul>
                 </div>

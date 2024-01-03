@@ -38,11 +38,11 @@
 
   <ItemGroup>
     <Folder Include="Scripts\Common\" />
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\library\js\common.js" />
+    <None Include="wwwroot\library\js\customJS\mainLayout.js" />
   </ItemGroup>
 
 </Project>
