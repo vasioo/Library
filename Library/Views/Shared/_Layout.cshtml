@@ -1,4 +1,10 @@
 ﻿@using System.Reflection;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using Microsoft.Extensions.Logging;
+@using Library.DataAccess.MainModels;
+@using Library.Web.Areas.Identity.Pages.Account;
+@using Microsoft.AspNetCore.Identity;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,50 +51,107 @@
                                 <i class="fa-regular fa-bell fa-2xl"></i>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link nav-item fontawesome-icons" id="signIn">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <a class="nav-link nav-item fontawesome-icons" asp-area="Identity" asp-page="/Account/Manage/Index">
                                 <i class="fa-solid fa-user-lock fa-2xl"></i>
                             </a>
-                            <div class="sign-in-container">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="row">
-                                            <label for="email">Email:</label>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link nav-item fontawesome-icons" id="signIn" style="cursor:pointer" asp-area="Identity" asp-page="/Account/Login">
+                                    <i class="fa-solid fa-user-lock fa-2xl"></i>
+                                </a>
+                                <div class="sign-in-container">
+                                    <div class="container">
+                                        <div class="row justify-content-center h3 pt-2">
+                                            Sign in
                                         </div>
-                                        <div class="col">
-                                            <input type="email" id="email" placeholder="Enter your email" />
+
+                                        <form method="post" asp-action="SignIn" asp-controller="Account" id="signInForm">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                                            <div class="row pt-2">
+                                                <div class="col">
+                                                    <input type="email" id="email" name="email" placeholder="Email" class="form-control" style="width: 100%;" />
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col position-relative">
+                                                    <input type="password" id="password" name="password" placeholder="Password" class="form-control pr-5" style="width: 100%;" />
+                                                    <i id="togglePassword" class="far fa-eye position-absolute end-0 top-50 translate-middle-y p-4 user-select-none" style="cursor:pointer"></i>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center pt-3">
+                                                <div class="col-9">
+                                                    <div class="row">
+                                                        <button type="submit" class="btn btn-dark btn-block">Sign In</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="row pt-4">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-danger form-control">Log in with Google</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="row">
-                                            <label for="password">Password:</label>
+                                        <div class="row pt-2">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-primary form-control">Log in with Facebook</button>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <input type="password" id="password" placeholder="Enter your password" />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <button type="button" class="btn btn-primary">Sign In</button>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <p>Don't have an account? <a href="/register">Register here</a></p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-7">
-                                            <button type="button" class="btn btn-danger">Log in with Google</button>
-                                        </div>
-                                        <div class="col-md-7">
-                                            <button type="button" class="btn btn-primary">Log in with Facebook</button>
+                                        <div class="row pt-2">
+                                            <div class="col">
+                                                <button type="button" class="btn form-control" id="open-sign-up-container">Dont have an account?</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-
+                                <div class="sign-up-container">
+                                    <div class="container">
+                                        <div class="row justify-content-center h3 pt-2" id="signUpForm">
+                                            Sign up
+                                        </div>
+                                        <form method="post" asp-action="SignUp" asp-controller="Account">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                                            <div class="row pt-2">
+                                                <div class="col">
+                                                    <input type="email" id="email" name="email" placeholder="Email" class="form-control" style="width: 100%;" />
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col position-relative">
+                                                    <input type="password" id="SignUpPassword" name="password" placeholder="Password" class="form-control pr-5" style="width: 100%;" />
+                                                    <i id="toggleSignUpPassword" class="far fa-eye position-absolute end-0 top-50 translate-middle-y p-4 user-select-none" style="cursor:pointer"></i>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center pt-3">
+                                                <div class="col-9">
+                                                    <div class="row">
+                                                        <button type="submit" class="btn btn-dark btn-block">Sign up</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="row pt-4">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-danger form-control">Sign up with Google</button>
+                                            </div>
+                                        </div>
+                                        <div class="row pt-2">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-primary form-control">Sign up with Facebook</button>
+                                            </div>
+                                        </div>
+                                        <div class="row pt-2">
+                                            <div class="col">
+                                                <button type="button" class="btn form-control" id="open-sign-in-container">Already a user?</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
                         @*  @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") ||User.IsInRole("Worker")|| User.IsInRole("SuperAdmin")))
                         { *@
                         <li class="nav-item">
@@ -128,6 +191,34 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <script src="~/library/js/customJS/mainLayout.js"></script>
+    <!--ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    @{
+        var loginErrorMessage = TempData["LoginErrorMessage"] as string;
+    }
+
+    @section Scripts {
+        @if (!string.IsNullOrEmpty(loginErrorMessage))
+        {
+            <script>
+                $(document).ready(function () {
+                    showErrorMessage('@loginErrorMessage');
+
+                    function showErrorMessage(message) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: message,
+                            icon: 'error',
+                            position: 'center',
+                            showConfirmButton: false,
+                            timer: 5000
+                        });
+                    }
+                });
+            </script>
+        }
+    }
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

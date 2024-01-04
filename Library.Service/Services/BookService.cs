@@ -33,15 +33,19 @@ namespace Library.Services.Services
             {
                 if (user != null)
                 {
-                    var userReadBookIds = user.FavouriteBooks.Select(x => x.BookId);
+                    if (user.FavouriteBooks != null)
+                    {
+                        var userReadBookIds = user.FavouriteBooks.Select(x => x.BookId);
 
-                    var recommendedBooks = _dataContext.Books
-                        .Where(b => !userReadBookIds.Contains(b.Id))
-                        .OrderByDescending(b => b.FavouriteBooks.Count)
-                        .Take(6);
+                        return _dataContext.Books
+                            .Where(b => !userReadBookIds.Contains(b.Id))
+                            .OrderByDescending(b => b.FavouriteBooks.Count)
+                            .Take(6);
+                    }
 
-
-                    return recommendedBooks;
+                    return _dataContext.Books
+                           .OrderByDescending(b => b.FavouriteBooks.Count)
+                           .Take(6);
                 }
             }
             return _dataContext.Books.OrderBy(b => b.FavouriteBooks.Count()).Take(6);
