@@ -6,6 +6,6 @@ namespace Library.Models.ViewModels
     {
         public IQueryable<Book> RecommendedBooks { get; set; }
         public IQueryable<Book> BestSellers { get; set; }
-        public IQueryable<BookCategory> BookCategories { get; set; }
+        public IQueryable<BookSubject> BookSubjects { get; set; }
     }
 }

@@ -4,7 +4,7 @@ var navbar = document.getElementById("navbar");
 window.onscroll = function () {
     var currentScrollPos = window.pageYOffset;
 
-    if (prevScrollpos > currentScrollPos && currentScrollPos > distanceToHide) {
+    if (prevScrollpos > currentScrollPos) {
         navbar.classList.add("sticky");
         navbar.classList.remove("navbar-hidden");
     } else {
@@ -84,7 +84,6 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    // Function to show SweetAlert messages
     function showSwalMessage(title, text, icon, timer) {
         Swal.fire({
             title: title,
@@ -93,16 +92,14 @@ $(document).ready(function () {
             timer: timer,
             showConfirmButton: false
         }).then(function () {
-            location.reload(); // Refresh the page after the timer
+            location.reload(); 
         });
     }
 
-    // Function to show success message after login
     function showSuccessLoginMessage() {
         showSwalMessage('Success', 'You have been successfully logged in.', 'success', 3000);
     }
 
-    // Sign In Form Submission
     $('#signInForm').submit(function (e) {
         e.preventDefault();
 
@@ -123,7 +120,6 @@ $(document).ready(function () {
         });
     });
 
-    // Sign Up Form Submission
     $('#signUpForm').submit(function (e) {
         e.preventDefault();
 

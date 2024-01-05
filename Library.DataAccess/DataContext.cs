@@ -21,6 +21,7 @@ namespace Library.DataAccess
         public DbSet<BookCategory> Categories { get; set; }
         public DbSet<LibrarianReport> Reports { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<BookSubject> BookSubjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -31,6 +31,9 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<BookCategory>, BaseService<BookCategory>>();
             service.AddScoped<IBookCategoryService, BookCategoryService>();
 
+            service.AddScoped<IBaseService<BookSubject>, BaseService<BookSubject>>();
+            service.AddScoped<IBookSubjectService, BookSubjectService>();
+
             service.AddScoped<UserManager<ApplicationUser>>();
 
         }

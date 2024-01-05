@@ -12,13 +12,16 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IBookService _bookService;
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IUserLeasedBookService _userLeasedBookService;
+        private readonly IBookSubjectService _bookSubjectService;
 
-        public HomeControllerHelper(INotificationService notificationService, IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService)
+        public HomeControllerHelper(INotificationService notificationService, IBookSubjectService  bookSubjectService,
+            IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService)
         {
             _notificationService = notificationService;
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
             _userLeasedBookService = userLeasedBookService;
+            _bookSubjectService = bookSubjectService;
         }
         #endregion
 
@@ -27,6 +30,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             var viewModel = new BookCollectionShowerViewModel();
 
+            viewModel.BookSubjects = _bookSubjectService.IQueryableGetAllAsync().OrderBy(x=>x.SubjectName);
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
@@ -67,9 +71,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #region NotificationsHelper
         public IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver)
         {
-            var notifications = _notificationService.IQueryableGetAllAsync();
-
-            notifications = notifications.Where(nt => nt.Receiver == receiver).OrderByDescending(nt => nt.DateOfSending);
+            var notifications = _notificationService.IQueryableGetAllAsync().Where(nt => nt.Receiver == receiver).OrderByDescending(nt => nt.DateOfSending);
 
             return notifications;
         }
