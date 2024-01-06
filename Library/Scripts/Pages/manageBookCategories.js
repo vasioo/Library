@@ -1,17 +1,17 @@
 ﻿var manageBookCategories = (function () {
     function init($container) {
         let $submitBtn = $container.find('#save-btn'),
-            $btnAddCategoryRow = $container.find('#add-category-row-btn'),
+            $btnAddSubjectRow = $container.find('#add-subject-row-btn'),
             $bookSubjectTableDiv = $container.find('#bookSubject'),
             counter = 0,
-            newTemplateCategoryRow =
-                '<tr class="cat-row">' +
+            newTemplateSubjectRow =
+                '<tr class="sub-row">' +
                 '   <td><input type="text" class="form-control subject-name" required></td>' +
                 '   <td id="for-book-categories">' +
                 '       <a class="btn btn-primary" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
                 '        Categories' +
                 '       </a > ' +
-                '       <div class="card bookCategoriesTable" id="">' +
+                '       <div class="card book-categories-table" id="">' +
                 '               <div class="card-header"></div>' +
                 '               <div class="card-body">' +
                 '                 <table>' +
@@ -33,6 +33,214 @@
                 '       <button type="button" class="btn btn-danger delete-row m-1"><i class="fa fa-trash"></i></button>' +
                 '   </td>' +
                 '</tr>';
+
+
+        $submitBtn.click(function () {
+            let selectedBookSubjectsDTO = [],
+                selectedBookCategoriesDTO = [];
+
+            let $subjectTable = $container.find('.subject-table');
+
+            $subjectTable.find('tbody .sub-row').each(function () {
+                const $row = $(this),
+                    subjectName = $row.find('.subject-name').val().trim();
+                const subject = {
+                    SubjectName: subjectName,
+                };
+
+                $row.find('tbody .cat-row').each(function () {
+                    const $catRow = $(this),
+                        categoryName = $catRow.find('.category-name').val().trim();
+                    const category = {
+                        CategoryName: categoryName,
+                        SubjectName: subject.SubjectName
+                    };
+
+                    selectedBookCategoriesDTO.push(category);
+                });
+
+                selectedBookSubjectsDTO.push(subject);
+            });
+
+            const validator = new FormValidator(),
+                isValid = validator.validateBookSubjectsAndCategories(selectedBookSubjectsDTO, selectedBookCategoriesDTO);
+            if (isValid) {
+
+                $.post('/Librarian/ManageBookCategories', {
+                    bookSubjectsDTO: selectedBookSubjectsDTO,
+                    bookCategoriesDTO: selectedBookCategoriesDTO
+                }, function (response) {
+
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Server response',
+                        html: `${response.message}`,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    });
+
+                    location.reload();
+
+                }).fail(function (error) {
+                    // Handle the AJAX request failure
+                    // This function will be executed if the AJAX request encounters an error
+                    console.log('AJAX request failed:', error);
+                });
+
+            }
+            else {
+                let errors = validator.getErrors(),
+                    errorList = document.createElement("ul");
+
+                errors.forEach((error) => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = error;
+                    listItem.style.color = "red";
+                    listItem.style.textAlign = "left";
+                    errorList.appendChild(listItem);
+                });
+
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    html: `${errorList.innerHTML}`,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+            }
+        });
+
+        class FormValidator {
+            constructor() {
+                this.errors = [];
+            }
+
+            validateBookSubjectsAndCategories(subjects, categories) {
+                this.errors = [];
+
+                this.validateBookSubjects(subjects);
+                this.validateBookCategories(categories);
+
+                // Check for duplicates
+                this.checkForDuplicates(subjects, categories);
+
+                return this.errors.length === 0;
+            }
+
+            validateBookCategories(categories) {
+                if (!categories || categories.length === 0) {
+                    this.errors.push('At least one category is required.');
+                } else {
+                    categories.forEach((category) => {
+                        if (!category.CategoryName || category.CategoryName.trim() === '') {
+                            this.errors.push('Category name is required.');
+                        }
+                    });
+                }
+            }
+
+            validateBookSubjects(subjects) {
+                if (!subjects || subjects.length === 0) {
+                    this.errors.push('At least one subcategory is required.');
+                } else {
+                    subjects.forEach((subject) => {
+                        if (!subject.SubjectName || subject.SubjectName.trim() === '') {
+                            this.errors.push('Subcategory name is required.');
+                        }
+                    });
+                }
+            }
+
+            checkForDuplicates(subjects, categories) {
+                const allNames = subjects.map(subject => subject.SubjectName.toLowerCase())
+                    .concat(categories.map(category => category.CategoryName.toLowerCase()));
+
+                const duplicates = allNames.filter((name, index, array) => array.indexOf(name) !== index);
+
+                if (duplicates.length > 0) {
+                    this.errors.push('Duplicate names found: ' + duplicates.join(', '));
+                }
+            }
+
+            getErrors() {
+                return this.errors;
+            }
+        }
+
+
+        $container.on('click', '.add-book-category-row-btn', function () {
+
+            var $button = $(this);
+            var $tempTableDiv = $button.closest('.book-categories-table');
+            var $nearestTbody = $tempTableDiv.find('tbody');
+
+            let categoryRow = '<tr class="cat-row">' +
+                '   <td><input type="text" class="form-control category-name" required></td>' +
+                '   <td>' +
+                '       <button type="button" class="btn btn-danger delete-row m-1"><i class="fa fa-trash"></i></button>' +
+                '   </td>' +
+                '</tr>';
+
+            let $newRow = $(categoryRow);
+
+            $nearestTbody.append($newRow);
+
+            bindRowEvents($newRow);
+        });
+
+        $btnAddSubjectRow.click(function () {
+
+            counter++;
+
+            let $newRow = $(newTemplateSubjectRow);
+
+            let $aTag = $newRow.find('a');
+            let $subcategoryDiv = $newRow.find('.book-categories-table');
+
+            $subcategoryDiv.attr('id', 'book-categories-table-' + counter + '');
+
+            $aTag.attr('aria-controls', 'book-categories-table-' + counter + '');
+            $aTag.attr('href', '#book-categories-table-' + counter + '');
+
+
+            $bookSubjectTableDiv.find('#subjects-tbody').append($newRow);
+
+            bindRowEvents($newRow);
+        });
+
+        function bindRowEvents($newRow) {
+            $newRow.find('.delete-row').click(function () {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this row!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Delete!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(this).closest('tr').remove();
+                    }
+                })
+            });
+        }
+
+
+        $container.on('change', '.subject-name', function () {
+            let $categoryTable = $bookSubjectTableDiv.closest('#book-categories-table')
+            $categoryTable.attr('id', 'for-categories-' + $(this).val() + '');
+            $categoryTable.attr('href', '#for-categories-' + $(this).val() + '');
+        });
     }
     return {
         init
