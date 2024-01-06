@@ -176,7 +176,6 @@
             }
         }
 
-
         $container.on('click', '.add-book-category-row-btn', function () {
 
             var $button = $(this);
@@ -194,7 +193,6 @@
 
             $nearestTbody.append($newRow);
 
-            bindRowEvents($newRow);
         });
 
         $btnAddSubjectRow.click(function () {
@@ -204,9 +202,9 @@
             let $newRow = $(newTemplateSubjectRow);
 
             let $aTag = $newRow.find('a');
-            let $subcategoryDiv = $newRow.find('.book-categories-table');
+            let $categoryDiv = $newRow.find('.book-categories-table');
 
-            $subcategoryDiv.attr('id', 'book-categories-table-' + counter + '');
+            $categoryDiv.attr('id', 'book-categories-table-' + counter + '');
 
             $aTag.attr('aria-controls', 'book-categories-table-' + counter + '');
             $aTag.attr('href', '#book-categories-table-' + counter + '');
@@ -214,26 +212,23 @@
 
             $bookSubjectTableDiv.find('#subjects-tbody').append($newRow);
 
-            bindRowEvents($newRow);
         });
 
-        function bindRowEvents($newRow) {
-            $newRow.find('.delete-row').click(function () {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this row!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, Delete!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $(this).closest('tr').remove();
-                    }
-                })
-            });
-        }
+        $('.delete-row').click(function () {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this row!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Delete!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(this).closest('tr').remove();
+                }
+            })
+        });
 
 
         $container.on('change', '.subject-name', function () {

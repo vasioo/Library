@@ -59,9 +59,14 @@ namespace Library.Web.Controllers
             try
             {
                 string resultMessage = CheckAndPrintDuplicates(bookSubjectsDTO, bookCategoriesDTO);
-                if (resultMessage.Trim() == null||resultMessage.Trim()=="")
+                if (resultMessage.Trim() == null || resultMessage.Trim() == "")
                 {
-                    await _helper.AddBookSubjectAndCategoriesToDb(bookSubjectsDTO, bookCategoriesDTO);
+                    string str = await _helper.AddBookSubjectAndCategoriesToDb(bookSubjectsDTO, bookCategoriesDTO);
+
+                    if (str!=""&&str!=null)
+                    {
+                        return Json(new { status = false, Message = str });
+                    }
                 }
                 else
                 {
@@ -104,7 +109,7 @@ namespace Library.Web.Controllers
 
 
                     var duplicateEntities = allEntities
-                                           .Where(dto => dto.SubjectName.ToLowerInvariant() == duplicate 
+                                           .Where(dto => dto.SubjectName.ToLowerInvariant() == duplicate
                                            || (dto is BookCategoryDTO categoryDTO && categoryDTO.CategoryName.ToLowerInvariant() == duplicate))
                                            .ToList();
 
@@ -131,8 +136,6 @@ namespace Library.Web.Controllers
                 return "";
             }
         }
-
-
 
         public async Task<IActionResult> EditBookInformation(int bookId)
         {
@@ -161,7 +164,9 @@ namespace Library.Web.Controllers
         {
             ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
 
-            return View("~/Views/Librarian/ManageBookCategories.cshtml");
+            var data = _helper.GetAllBookSubjects();
+
+            return View("~/Views/Librarian/ManageBookCategories.cshtml",data);
         }
 
         public async Task<JsonResult> RemoveABook(int bookId)

@@ -49,19 +49,23 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
         }
 
-        public async Task<bool> AddBookSubjectAndCategoriesToDb(List<BookSubjectDTO> bookSubjectsDTO, List<BookCategoryDTO> bookCategoriesDTO)
+        public async Task<string> AddBookSubjectAndCategoriesToDb(List<BookSubjectDTO> bookSubjectsDTO, List<BookCategoryDTO> bookCategoriesDTO)
         {
             try
             {
-                await RemoveAllSubjectsThatAreNotInTheDTO(bookSubjectsDTO);
+                string out2 = await RemoveAllCategoriesThatAreNotInTheDTO(bookCategoriesDTO);
+                string out1 = await RemoveAllSubjectsThatAreNotInTheDTO(bookSubjectsDTO);
 
-                await RemoveAllCategoriesThatAreNotInTheDTO(bookCategoriesDTO);
+                if (!String.IsNullOrEmpty(out1)||!String.IsNullOrEmpty(out2))
+                {
+                    return out1 + out2;
+                }
 
                 foreach (var subject in bookSubjectsDTO)
                 {
                     var subjectObj = await _bookSubjectService
                         .IQueryableGetAllAsync()
-                        .Where(x => x.SubjectName == subject.SubjectName)
+                        .Where(x => x.SubjectName == subject.SubjectName).Include(x=>x.BookCategories)
                         .FirstOrDefaultAsync();
 
                     if (subjectObj != null)
@@ -69,9 +73,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
                         var nonExistentBookCategories = new List<BookCategory>();
                         foreach (var category in bookCategoriesDTO.Where(x => x.SubjectName == subjectObj.SubjectName))
                         {
-                            var categoryObj = await _bookCategoryService.IQueryableGetAllAsync().Where(x => x.CategoryName == category.SubjectName).FirstOrDefaultAsync();
+                            var categoryObj = await _bookCategoryService.IQueryableGetAllAsync().Where(x => x.CategoryName == category.CategoryName).FirstOrDefaultAsync();
 
-                            if (category==null)
+                            if (categoryObj == null)
                             {
                                 var catObj = new BookCategory();
                                 catObj.CategoryName = category!.CategoryName;
@@ -109,20 +113,21 @@ namespace Library.Web.Controllers.HomeControllerHelper
                         await _bookSubjectService.AddAsync(bSubj);
                     }
                 }
-                return true;
+                return "";
 
             }
             catch (Exception)
             {
-                return false;
+                return "An error occured!";
                 throw;
             }
         }
 
-        private async Task RemoveAllSubjectsThatAreNotInTheDTO(List<BookSubjectDTO> bookSubjectDTOs)
-        {
-            var dbSubjects = await _bookSubjectService.GetAllAsync();
 
+        private async Task<string> RemoveAllSubjectsThatAreNotInTheDTO(List<BookSubjectDTO> bookSubjectDTOs)
+        {
+                var dbSubjects = await _bookSubjectService.GetAllAsync();
+            var output = "";
             var subjectsToRemove = dbSubjects
                 .Where(dbSubject => !bookSubjectDTOs
                     .Any(dto => string.Equals(dto.SubjectName, dbSubject.SubjectName, StringComparison.OrdinalIgnoreCase)))
@@ -130,15 +135,35 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             foreach (var subjectToRemove in subjectsToRemove)
             {
-                await _bookSubjectService.RemoveAsync(subjectToRemove.Id);
+
+                foreach (var categ in subjectToRemove.BookCategories)
+                {
+                    if (!_bookService.IQueryableGetAllAsync().Where(x => x.Genre == categ).Any())
+                    {
+                        await _bookCategoryService.RemoveAsync(categ.Id);
+                    }
+                    else
+                    {
+                        output += $"The category: {categ.CategoryName} has books connected to it and cannot be deleted!-";
+                    }
+                }
+                if (subjectToRemove.BookCategories.Count() == 0)
+                {
+                    await _bookSubjectService.RemoveAsync(subjectToRemove.Id);
+                }
+                else
+                {
+                    output += $"The subject: {subjectToRemove.SubjectName} has books connected to it and cannot be deleted!-";
+                }
+
             }
+            return output;
         }
 
-
-        private async Task RemoveAllCategoriesThatAreNotInTheDTO(List<BookCategoryDTO> bookCategoryDTOs)
+        private async Task<string> RemoveAllCategoriesThatAreNotInTheDTO(List<BookCategoryDTO> bookCategoryDTOs)
         {
             var dbCategories = await _bookCategoryService.GetAllAsync();
-
+            var output = "";
             var categoriesToRemove = dbCategories
                 .Where(dbCategory =>
                     !bookCategoryDTOs.Any(dto =>
@@ -148,10 +173,17 @@ namespace Library.Web.Controllers.HomeControllerHelper
             // Remove identified categories
             foreach (var categoryToRemove in categoriesToRemove)
             {
-                await _bookCategoryService.RemoveAsync(categoryToRemove.Id);
+                if (!_bookService.IQueryableGetAllAsync().Where(x => x.Genre == categoryToRemove).Any())
+                {
+                    await _bookCategoryService.RemoveAsync(categoryToRemove.Id);
+                }
+                else
+                {
+                    output += $"The category: {categoryToRemove.CategoryName} has books connected to it and cannot be deleted!-";
+                }
             }
+            return output;
         }
-
 
         public async Task<bool> EditABook(BookDTO book, string imageObj)
         {
@@ -188,6 +220,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
         public IQueryable<string> GetAllBookCategories()
         {
             return _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
+        }
+
+        public IQueryable<BookSubject> GetAllBookSubjects()
+        {
+            return _bookSubjectService.IQueryableGetAllAsync();
         }
 
         public async Task<Book> GetBook(int bookId)

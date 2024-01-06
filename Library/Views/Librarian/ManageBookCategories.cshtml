@@ -1,5 +1,5 @@
 ﻿@using Library.Models.BaseModels;
-@model IEnumerable<BookSubject>
+@model IQueryable<BookSubject>
 
 @{
     Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
@@ -19,7 +19,52 @@
                         </tr>
                     </thead>
                     <tbody id="subjects-tbody">
-                        <!--Add options for change-->
+                        @foreach (var subject in Model)
+                        {
+                            <tr class="sub-row">
+                                <td><input type="text" class="form-control subject-name" required value="@subject.SubjectName"></td>
+                                <td id="for-book-categories">
+                                    @{
+                                        Guid guid = Guid.NewGuid();
+                                        var bCtId = $"book-categories-table-{guid}";
+                                    }
+                                    <a class="btn btn-primary" data-toggle="collapse" href="#@bCtId" role="button" aria-expanded="true" aria-controls="@bCtId">
+                                        Categories
+                                    </a>
+
+                                    <div class="card book-categories-table" id="@bCtId">
+                                        <div class="card-header"></div>
+                                        <div class="card-body">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Book Category Name</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="book-category-tbody">
+                                                    @foreach (var category in subject.BookCategories)
+                                                    {
+                                                        <tr class="cat-row">
+                                                            <td><input type="text" class="form-control category-name" value="@category.CategoryName" required></td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger delete-row m-1"><i class="fa fa-trash"></i></button>
+                                                            </td>
+                                                        </tr>
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                            <button type="button" class="btn btn-primary add-book-category-row-btn" id=""><i class="fas fa-plus"></i> Add Book Category</button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger delete-row m-1"><i class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>
+
+                        }
                     </tbody>
                 </table>
                 <button type="button" class="btn btn-primary" id="add-subject-row-btn"><i class="fas fa-plus"></i> Add Book Category</button>

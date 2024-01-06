@@ -46,6 +46,7 @@ namespace Library.DataAccess
                 .HasForeignKey(fb => fb.BookId);
 
             modelBuilder.Entity<Book>().Navigation(e => e.Genre).AutoInclude();
+            modelBuilder.Entity<BookSubject>().Navigation(e => e.BookCategories).AutoInclude();
 
             modelBuilder.Entity<BookCategory>()
             .HasIndex(ci => new { ci.CategoryName })

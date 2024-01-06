@@ -10,7 +10,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
         IQueryable<string> GetAllBookCategories();
         Task<Book> GetBook(int bookId);
         IQueryable<Book> GetAllBooks();
-        Task<bool> AddBookSubjectAndCategoriesToDb(List<BookSubjectDTO> bookSubjects, List<BookCategoryDTO> bookCategoriesDTO);
+        Task<string> AddBookSubjectAndCategoriesToDb(List<BookSubjectDTO> bookSubjects, List<BookCategoryDTO> bookCategoriesDTO);
         Task<int> RemoveABook(int bookId);
+        IQueryable<BookSubject> GetAllBookSubjects();
     }
 }
