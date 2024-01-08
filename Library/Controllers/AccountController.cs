@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Modum.Web.Areas.Identity.Pages.Account;
-using System.ComponentModel.DataAnnotations;
 
 namespace Library.Web.Controllers
 {
     public class AccountController : Controller
     {
+        #region FieldsAndConstructor
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _signInLogger;
         private readonly ILogger<RegisterModel> _signUpLogger;
@@ -25,6 +25,10 @@ namespace Library.Web.Controllers
             _signUpLogger = signUpLogger;
             _userManager = userManager;
         }
+
+        #endregion
+
+        #region SignIn
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -56,6 +60,9 @@ namespace Library.Web.Controllers
             return Json(new { success = false, message = errMsg });
         }
 
+        #endregion
+
+        #region SignUp
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -120,5 +127,6 @@ namespace Library.Web.Controllers
             }
         }
 
+        #endregion
     }
 }

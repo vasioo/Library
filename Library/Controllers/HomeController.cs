@@ -65,7 +65,7 @@ namespace Library.Controllers
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
 
-            var bookPageViewModel = _helper.GetBookPageAttributes(user, bookId);
+            var bookPageViewModel = _helper.GetBookPageAttributes(user!, bookId);
 
             return View("~/Views/Home/BookPage.cshtml", bookPageViewModel);
         }
@@ -79,7 +79,7 @@ namespace Library.Controllers
 
             var viewModel = _helper.GetBorrowedPageAttributes(user!);
 
-            return View("~/Views/Home/Borrowed.cshtml");
+            return View("~/Views/Home/Borrowed.cshtml",viewModel);
         }
         #endregion
 

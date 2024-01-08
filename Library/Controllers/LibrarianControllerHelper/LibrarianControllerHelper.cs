@@ -7,6 +7,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
 {
     public class LibrarianControllerHelper : ILibrarianControllerHelper
     {
+        #region FieldsAndConstructors
         private readonly IBookService _bookService;
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IBookSubjectService _bookSubjectService;
@@ -16,9 +17,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
             _bookSubjectService = bookSubjectService;
-
         }
+        #endregion
 
+        #region BooksHelpers
         public async Task<bool> AddABookToDatabase(BookDTO book, string image)
         {
             try
@@ -56,7 +58,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 string out2 = await RemoveAllCategoriesThatAreNotInTheDTO(bookCategoriesDTO);
                 string out1 = await RemoveAllSubjectsThatAreNotInTheDTO(bookSubjectsDTO);
 
-                if (!String.IsNullOrEmpty(out1)||!String.IsNullOrEmpty(out2))
+                if (!String.IsNullOrEmpty(out1) || !String.IsNullOrEmpty(out2))
                 {
                     return out1 + out2;
                 }
@@ -65,7 +67,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 {
                     var subjectObj = await _bookSubjectService
                         .IQueryableGetAllAsync()
-                        .Where(x => x.SubjectName == subject.SubjectName).Include(x=>x.BookCategories)
+                        .Where(x => x.SubjectName == subject.SubjectName).Include(x => x.BookCategories)
                         .FirstOrDefaultAsync();
 
                     if (subjectObj != null)
@@ -123,10 +125,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
         }
 
-
         private async Task<string> RemoveAllSubjectsThatAreNotInTheDTO(List<BookSubjectDTO> bookSubjectDTOs)
         {
-                var dbSubjects = await _bookSubjectService.GetAllAsync();
+            var dbSubjects = await _bookSubjectService.GetAllAsync();
             var output = "";
             var subjectsToRemove = dbSubjects
                 .Where(dbSubject => !bookSubjectDTOs
@@ -241,5 +242,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             return await _bookService.RemoveAsync(bookId);
         }
+        #endregion
     }
 }

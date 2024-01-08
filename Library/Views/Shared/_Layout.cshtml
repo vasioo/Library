@@ -13,7 +13,7 @@
     <title>Litify</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="icon" type="image/png" src="/images/litify-logo.png" />
+    <link rel="icon" type="image/png" src="~/images/litify-logo.png" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script type="text/javascript" src="https://kit.fontawesome.com/47edf10d0e.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
@@ -196,6 +196,12 @@
     @{
         var loginErrorMessage = TempData["LoginErrorMessage"] as string;
     }
+
+    <script type="text/javascript">
+        $(function () {
+            borrowBook.init($('.book-page'));
+        });
+    </script>
 
     @section Scripts {
         @if (!string.IsNullOrEmpty(loginErrorMessage))

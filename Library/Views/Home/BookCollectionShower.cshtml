@@ -7,6 +7,11 @@
         text-decoration: none;
     }
 
+    .category-names{
+        color:gray;
+        text-decoration:none;
+    }
+
     .scroller-title {
         color: rgba(7,175,211,1);
     }
@@ -16,13 +21,13 @@
 <div class="book-collection-shower">
     <div class="container">
         <div class="row">
-            <div class="row h2">Explore our genres</div>
-            <div class="row h4">Everything for everyone</div>
+            <div class="row h2 justify-content-center scroller-title ">Explore our genres</div>
+            <div class="row h4 justify-content-center">We have Everything for Everyone</div>
         </div>
         <hr />
     </div>
     <div class="container pt-3">
-        <div class="row h3 justify-content-center scroller-title">Categories</div>
+        <div class="row h3 justify-content-center scroller-title">Book Genres</div>
         <hr />
         <div class="row">
             @if (Model != null)
@@ -31,11 +36,13 @@
                 {
                     <div class="col-md-4">
                         <div class="h3">@subject.SubjectName</div>
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled ">
                             @foreach (var category in subject.BookCategories)
                             {
                                 <li>
-                                    <a class="category-names" asp-action="BookShower" asp-controller="Home" data-category="@category">@category.CategoryName</a>
+                                    <a class="category-names h5 p-3" href="BookShower?category=@category.CategoryName">
+                                        <i class="fa-solid fa-arrow-right mr-1"></i>&nbsp @category.CategoryName
+                                    </a>
                                 </li>
                             }
                         </ul>
