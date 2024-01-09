@@ -10,6 +10,8 @@ namespace Library.Models.BaseModels
         public string Author { get; set; } = "";
         [DataType(DataType.Date)]
         public DateTime DateOfBookCreation { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DateOfBookPublishment { get; set; } = DateTime.Now;
         public BookCategory? Genre { get; set; }
         public string Description { get; set; } = "";
         public int AvailableItems { get; set; }

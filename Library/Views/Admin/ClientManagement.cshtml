@@ -6,12 +6,12 @@
 <div class="client-management">
     <div class="container">
         <div id="filter-people">
-            <form asp-action="StaffManagement" method="get" id="staffManagementForm">
+            <form asp-action="ClientManagement" method="get" id="clientManagementForm">
                 <div class="form-actions no-color">
                     <p>
                         Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
                         <input type="submit" value="Search" class="btn btn-default" /> |
-                        <a asp-action="StaffManagement">Back to Full List</a>
+                        <a asp-action="ClientManagement">Back to Full List</a>
                     </p>
                 </div>
                 <label>Show Admins and Workers only:</label>

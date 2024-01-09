@@ -157,6 +157,9 @@ namespace Library.DataAccess.Migrations
                     b.Property<DateTime>("DateOfBookCreation")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DateOfBookPublishment")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -187,19 +190,19 @@ namespace Library.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BookSubjectId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("BookSubjectId");
 
                     b.HasIndex("CategoryName")
                         .IsUnique();
-
-                    b.HasIndex("SubjectId");
 
                     b.ToTable("Categories");
                 });
@@ -288,15 +291,10 @@ namespace Library.DataAccess.Migrations
                     b.Property<DateTime>("DateOfSending")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ReceiverId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("SenderId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
 
@@ -493,13 +491,9 @@ namespace Library.DataAccess.Migrations
 
             modelBuilder.Entity("Library.Models.BaseModels.BookCategory", b =>
                 {
-                    b.HasOne("Library.Models.BaseModels.BookSubject", "Subject")
+                    b.HasOne("Library.Models.BaseModels.BookSubject", null)
                         .WithMany("BookCategories")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
+                        .HasForeignKey("BookSubjectId");
                 });
 
             modelBuilder.Entity("Library.Models.BaseModels.FavouriteBooks", b =>
@@ -527,15 +521,9 @@ namespace Library.DataAccess.Migrations
 
             modelBuilder.Entity("Library.Models.BaseModels.Notification", b =>
                 {
-                    b.HasOne("Library.DataAccess.MainModels.ApplicationUser", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId");
-
                     b.HasOne("Library.DataAccess.MainModels.ApplicationUser", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId");
-
-                    b.Navigation("Receiver");
 
                     b.Navigation("Sender");
                 });

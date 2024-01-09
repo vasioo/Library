@@ -1,6 +1,9 @@
+using Hangfire;
+using Hangfire.Dashboard;
 using Library.DataAccess;
 using Library.DataAccess.MainModels;
 using Library.Models.Stripe;
+using Library.Services.Interfaces;
 using Library.Web.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +68,11 @@ namespace Modum.Web
                             options.ClientSecret = googleClientSecret;
                         });
 
+            builder.Services.AddHangfire(options =>
+            {
+                options.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             builder.Services.AddDistributedMemoryCache(); // Use a distributed cache for session data in a production environment
             builder.Services.AddSession(options =>
             {
@@ -113,6 +121,7 @@ namespace Modum.Web
                     options.HttpsPort = 443;
                 });
             }
+
             var app = builder.Build();
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
@@ -133,8 +142,26 @@ namespace Modum.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHangfireServer();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilter(new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilterOptions
+                {
+                      RequireSsl = false,
+                         SslRedirect = false,
+                         LoginCaseSensitive = true,
+                     Users = new []
+                     {
+                           new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationUser
+                           {
+                              Login = builder.Configuration.GetSection("HangfireSettings:Username").Get<string>(),
+                              PasswordClear =  builder.Configuration.GetSection("HangfireSettings:Password").Get<string>()
+                           }
+                        }
+                    })
+                }
+            });
             app.UseSession();
-
 
 
             app.MapControllerRoute(

@@ -1,4 +1,5 @@
-﻿using Library.DataAccess.MainModels;
+﻿using Hangfire;
+using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
@@ -59,6 +60,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #region MainPageHelper
         public MainPageViewModel GetMainPageAttributes(ApplicationUser user)
         {
+            RecurringJob.AddOrUpdate(() => _notificationService.AddDailyNotification(), "0 14 * * *", TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => _notificationService.AddWeeklyNotification(), "0 17 * * 0", TimeZoneInfo.Local);
             var viewModel = new MainPageViewModel();
 
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
@@ -69,10 +72,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #endregion
 
         #region NotificationsHelper
-        public IQueryable<Notification> GetNotificationsOfTheCurrentUser(ApplicationUser receiver)
+        public IQueryable<Notification> GetNotifications()
         {
-            var notifications = _notificationService.IQueryableGetAllAsync().Where(nt => nt.Receiver == receiver).OrderByDescending(nt => nt.DateOfSending);
-
+            var notifications = _notificationService.IQueryableGetAllAsync();
             return notifications;
         }
         #endregion

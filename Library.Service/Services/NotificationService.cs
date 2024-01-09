@@ -1,11 +1,6 @@
 ﻿using Library.DataAccess;
 using Library.Models.BaseModels;
 using Library.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.Services.Services
 {
@@ -16,6 +11,26 @@ namespace Library.Services.Services
         public NotificationService(DataContext context) : base(context)
         {
             _dataContext = context;
+        }
+
+        public async Task AddDailyNotification()
+        {
+            var notification = new Notification();
+
+            notification.DateOfSending = DateTime.Now;
+            notification.Content = $"<a href="+ "Home/BookShower" + ">View today's newest collections</a>";
+
+            await _dataContext.Notifications.AddAsync(notification);
+        }
+
+        public async Task AddWeeklyNotification()
+        {
+            var notification = new Notification();
+
+            notification.DateOfSending = DateTime.Now;
+            notification.Content = $"<a href=" + "Home/BookShower" + ">View this week's newest collections</a>";
+
+            await _dataContext.Notifications.AddAsync(notification);
         }
     }
 }

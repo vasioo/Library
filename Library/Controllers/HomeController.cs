@@ -1,4 +1,5 @@
-﻿using Library.DataAccess.MainModels;
+﻿using Hangfire;
+using Library.DataAccess.MainModels;
 using Library.Models;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
@@ -95,12 +96,8 @@ namespace Library.Controllers
         #region Notifications
         public async Task<IActionResult> Notifications()
         {
-            var username = HttpContext.User?.Identity?.Name ?? "";
-            var user = await _userManager.FindByNameAsync(username);
 
-            var notificationSpecificForUser = _helper.GetNotificationsOfTheCurrentUser(user!);
-
-            return View("~/Views/Home/Notifications.cshtml", notificationSpecificForUser);
+            return View("~/Views/Home/Notifications.cshtml", _helper.GetNotifications());
         }
         #endregion
     }

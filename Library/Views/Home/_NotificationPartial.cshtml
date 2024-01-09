@@ -51,7 +51,7 @@
         <div class="card-body">
             <div class="card-title d-flex align-items-center">
                 <div class="row">
-                    <div class="col-auto font-weight-bold h5 m-0 p-0">@Model.Sender @Model.Content</div>
+                    <div class="col-auto font-weight-bold h5 m-0 p-0">@Model.Sender @Html.Raw(Model.Content)</div>
                 </div>
             </div>
             <p class="card-text text-left">  @GetTimeDisplay(Model.DateOfSending)</p>
