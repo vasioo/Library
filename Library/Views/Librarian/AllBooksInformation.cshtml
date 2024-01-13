@@ -1,5 +1,6 @@
 ﻿@using Library.Models.BaseModels;
-@model IQueryable<Book>
+@using Library.Models.Pagination;
+@model PaginatedList<Book>
 @{
     Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
 }
@@ -9,19 +10,33 @@
         <div class="row pb-4">
             <a asp-controller="Librarian" asp-action="AddABook" class="btn btn-success">Add A Book</a>
         </div>
-        @if (Model != null)
-        {
-            <table class="table pt-3">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Author</th>
-                        <th>Date of Creation</th>
-                        <th>Available Items</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div id="book-filtering" class="row">
+            <div>
+                <form asp-action="AllBooksInformation" method="get">
+                    <div class="form-actions no-color">
+                        <p>
+                            Find by string: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                            <input type="submit" value="Search" class="btn btn-default" /> |
+                            <a asp-action="AllBooksInformation">Back to Full List</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <table class="table pt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Date of Creation</th>
+                    <th>Available Items</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
                     @foreach (var book in Model)
                     {
                         <tr>
@@ -35,9 +50,23 @@
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-
+                }
+            </tbody>
+        </table>
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
         }
+
+        <a asp-action="ManageUsers"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="ManageUsers"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>
     </div>
 </div>

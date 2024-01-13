@@ -1,9 +1,11 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Models.DTO;
+using Library.Models.Pagination;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Web.Controllers
 {
@@ -24,11 +26,26 @@ namespace Library.Web.Controllers
         //[Authorize(Roles = "Worker,Admin,SuperAdmin")]
 
         #region BookViews
-        public async Task<IActionResult> AllBooksInformation()
+        public async Task<IActionResult> AllBooksInformation(int? page, string searchString, string currentFilter)
         {
+            ViewData["CurrentFilter"] = searchString;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
             var books = _helper.GetAllBooks();
-
-            return View("~/Views/Librarian/AllBooksInformation.cshtml", books);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(book => book.Author.Contains(searchString) || book.Name.Contains(searchString)
+                ||book.DateOfBookCreation.ToString().Contains(searchString)||book.AvailableItems.ToString().Contains(searchString));
+            }
+            int pageSize = 30;
+            var paginatedList = PaginatedList<Book>.CreateAsync(books.AsNoTracking(), page ?? 1, pageSize);
+            return View("~/Views/Librarian/AllBooksInformation.cshtml", paginatedList);
         }
 
         public IActionResult AddABook()

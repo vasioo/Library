@@ -7,5 +7,6 @@ namespace Library.Services.Interfaces
     {
         Task<Book> MostLeasedBook();
         Task<List<string>> MostReadGenres();
+        Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(int bookId, string userId);
     }
 }

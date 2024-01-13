@@ -92,7 +92,7 @@ $(document).ready(function () {
             timer: timer,
             showConfirmButton: false
         }).then(function () {
-            location.reload(); 
+            location.reload();
         });
     }
 
@@ -139,4 +139,13 @@ $(document).ready(function () {
             }
         });
     });
+});
+
+
+$('#facebookLink').click(function () {
+    $('#facebookInput').click();
+});
+
+$('#googleLink').click(function () {
+    $('#googleInput').click();
 });

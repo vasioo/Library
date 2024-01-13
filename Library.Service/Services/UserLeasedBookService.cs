@@ -2,6 +2,7 @@
 using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services.Services
 {
@@ -45,6 +46,16 @@ namespace Library.Services.Services
             var mostLeasedBook = _dataContext.Books.Where(book => book.Id == mostLeasedBookEntity!.Key).FirstOrDefault();
 
             return Task.FromResult(mostLeasedBook!);
+        }
+
+        public async Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(int bookId, string userId)
+        {
+            var model = await _dataContext.UserLeasedBooks.Where(x => x.UserId == userId && bookId == bookId).FirstOrDefaultAsync();
+            if (model!=null)
+            {
+                return model;
+            }
+            return new UserLeasedBookMappingTable();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IBookSubjectService _bookSubjectService;
 
-        public HomeControllerHelper(INotificationService notificationService, IBookSubjectService  bookSubjectService,
+        public HomeControllerHelper(INotificationService notificationService, IBookSubjectService bookSubjectService,
             IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService)
         {
             _notificationService = notificationService;
@@ -31,7 +31,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             var viewModel = new BookCollectionShowerViewModel();
 
-            viewModel.BookSubjects = _bookSubjectService.IQueryableGetAllAsync().OrderBy(x=>x.SubjectName);
+            viewModel.BookSubjects = _bookSubjectService.IQueryableGetAllAsync().OrderBy(x => x.SubjectName);
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
@@ -89,8 +89,68 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             viewModel.User = user;
             viewModel.Book = await _bookService.GetByIdAsync(bookId);
-
+            if (user!=null)
+            {
+                var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
+                if (borrowedBook.Id != 0)
+                {
+                    viewModel.HasUserBorrowedIt = true;
+                }
+                else
+                {
+                    viewModel.HasUserBorrowedIt = false;
+                }
+            }
             return viewModel;
+        }
+
+        public async Task<bool> BorrowBookPostHelper(int bookId, string userId)
+        {
+            try
+            {
+                var book = await _bookService.GetByIdAsync(bookId);
+                if (book != null && !string.IsNullOrEmpty(userId))
+                {
+                    var userLeasedBook = new UserLeasedBookMappingTable();
+
+                    userLeasedBook.Book = book;
+                    userLeasedBook.BookId = bookId;
+                    userLeasedBook.UserId = userId;
+                    if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId,userId)!=null)
+                    {
+                        await _userLeasedBookService.AddAsync(userLeasedBook);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+        }
+        public async Task<bool> UnborrowBookPostHelper(int bookId, string userId)
+        {
+            try
+            {
+                if (bookId!=0 && !string.IsNullOrEmpty(userId))
+                {
+                    var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, userId);
+                    if (borrowedBook!.Id!=0)
+                    {
+                        await _userLeasedBookService.RemoveAsync(borrowedBook.Id);
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
         }
         #endregion
 
@@ -101,7 +161,16 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             var allLeasedBooks = _userLeasedBookService.IQueryableGetAllAsync();
 
-            viewModel.BorrowedBooks = allLeasedBooks.Where(us => us.UserId == user.Id).Select(x => x.Book);
+            if (user != null)
+            {
+                viewModel.BorrowedBooks = allLeasedBooks.Where(us => us.UserId == user.Id).Select(x => x.Book);
+            }
+            else
+            {
+                viewModel.BorrowedBooks = allLeasedBooks.Select(x => x.Book);
+            }
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
+            viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
             return viewModel;
         }

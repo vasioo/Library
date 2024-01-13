@@ -56,3 +56,12 @@
     width: 340px;
 }
 
+﻿.facebook-button {
+    background-color: dodgerblue;
+    border-radius: 8px;
+}
+
+.google-button {
+    background-color: indianred;
+    border-radius: 8px;
+}

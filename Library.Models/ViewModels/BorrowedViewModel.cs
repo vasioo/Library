@@ -10,5 +10,7 @@ namespace Library.Models.ViewModels
     public class BorrowedViewModel
     {
         public IQueryable<Book> BorrowedBooks{ get; set; }
+        public IQueryable<Book> RecommendedBooks { get; set; }
+        public IQueryable<Book> BestSellers { get; set; }
     }
 }

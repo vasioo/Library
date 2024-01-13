@@ -1,9 +1,6 @@
 ﻿@using Library.Models.ViewModels;
 @model BookPageViewModel
 
-@*show book specifications*@
-
-@*If a librarian or admin opens it show edit and delete pages*@
 @{
     var imageUrl = "";
     var book = Model.Book;
@@ -12,41 +9,50 @@
         imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.Book.Id}.png";
     }
 }
+<div class="book-page ">
+    <div class="container">
+        <div class="row">
+            <div class="col-5">
+                <div class="row">
+                    <img src="@imageUrl" style="width:400px" />
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-6">Name</div>
+                    <div class="col-6">@book.Name</div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-6">Author</div>
+                    <div class="col-6">@book.Author</div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-6">Creation Date</div>
+                    <div class="col-6">@book.DateOfBookCreation</div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-6">Genre</div>
+                    <div class="col-6">@book.Genre</div>
+                </div>
+                <hr />
+            </div>
+            <div class="col-7">
+                <div class="row">
+                    @if (!Model.HasUserBorrowedIt)
+                    {
+                        <a class="btn btn-success borrow-book-btn" id="@book.Id">Borrow Book</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-danger unborrow-book-btn" id="@book.Id">Remove from borrowed</a>
+                    }
 
-<div class="book-page container ">
-    <div class="row">
-        <div class="col-5">
-            <div class="row">
-                <img src="@imageUrl" style="width:400px" />
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-6">Name</div>
-                <div class="col-6">@book.Name</div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-6">Author</div>
-                <div class="col-6">@book.Author</div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-6">Creation Date</div>
-                <div class="col-6">@book.DateOfBookCreation</div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-6">Genre</div>
-                <div class="col-6">@book.Genre</div>
-            </div>
-            <hr />
-        </div>
-        <div class="col-7">
-            <div class="row">
-                <a class="btn btn-success" id="borrow-book-btn">Borrow Book</a>
-            </div>
-            <div class="row">
-                @book.Description
+                </div>
+                <div class="row">
+                    @book.Description
+                </div>
             </div>
         </div>
     </div>

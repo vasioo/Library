@@ -61,15 +61,60 @@ namespace Library.Controllers
         #endregion
 
         #region BookPage
+        //[Authorize]
         public async Task<IActionResult> BookPage(int bookId)
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
 
-            var bookPageViewModel = _helper.GetBookPageAttributes(user!, bookId);
+            var bookPageViewModel = await _helper.GetBookPageAttributes(user!, bookId);
 
             return View("~/Views/Home/BookPage.cshtml", bookPageViewModel);
         }
+
+        public async Task<JsonResult> BorrowBook(int bookId)
+        {
+            try
+            {
+                var username = HttpContext.User?.Identity?.Name ?? "";
+                var user = await _userManager.FindByNameAsync(username);
+                if (user!=null)
+                {
+                    if (!await _helper.BorrowBookPostHelper(bookId, user!.Id))
+                    {
+                        return Json(new { status = false, Message = "The book could't be borrowed!" });
+                    }
+                }
+                else
+                {
+                    return Json(new { status = true, Message = "There ist't a user with that username!" });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = true, Message = "Error Conflicted" });
+            }
+            return Json(new { status = true, Message = "The book was borrowed successfully" });
+        }
+
+        public async Task<JsonResult> UnborrowBook(int bookId)
+        {
+            try
+            {
+                var username = HttpContext.User?.Identity?.Name ?? "";
+                var user = await _userManager.FindByNameAsync(username);
+                if (!await _helper.UnborrowBookPostHelper(bookId, user!.Id))
+                {
+                    return Json(new { status = false, Message = "The book could't be removed!" });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = true, Message = "Error Conflicted" });
+            }
+            return Json(new { status = true, Message = "The book was removed from borrowed successfully" });
+        }
+
         #endregion
 
         #region Borrowed
@@ -80,7 +125,7 @@ namespace Library.Controllers
 
             var viewModel = _helper.GetBorrowedPageAttributes(user!);
 
-            return View("~/Views/Home/Borrowed.cshtml",viewModel);
+            return View("~/Views/Home/Borrowed.cshtml", viewModel);
         }
         #endregion
 

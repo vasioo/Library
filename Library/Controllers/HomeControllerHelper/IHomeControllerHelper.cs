@@ -12,5 +12,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         BookShowerViewModel GetBooksAttributes(ApplicationUser user, string category);
         Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, int bookId);
         BorrowedViewModel GetBorrowedPageAttributes(ApplicationUser user);
+        Task<bool> BorrowBookPostHelper(int bookId, string userId);
+        Task<bool> UnborrowBookPostHelper(int bookId, string userId);
     }
 }

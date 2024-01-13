@@ -11,5 +11,7 @@ namespace Library.Models.ViewModels
 
         public IQueryable<Book> RecommendedBooks { get; set; }
         public IQueryable<Book> BestSellers { get; set; }
+
+        public bool HasUserBorrowedIt { get; set; }
     }
 }

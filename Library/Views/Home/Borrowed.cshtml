@@ -3,12 +3,48 @@
 
 <div class="borrowed-page">
     <div class="container">
-        @if (Model != null)
+        @if (Model.BorrowedBooks != null || Model!.BorrowedBooks!.Count()>0)
         {
             @foreach (var book in Model.BorrowedBooks)
             {
-
+                <div class="col-lg-4 col-md-6 mb-4">
+                    @await Html.PartialAsync("~/Views/Home/_BorrowedBookPartial.cshtml", book)
+                </div>
             }
+        }
+        else
+        {
+            <h2 class="text-center">You have not borrowed any books!</h2>
+        }
+        @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+        {
+            <div class="container pt-5">
+                <div class="row">
+                    <div class="row scroller-title h3 justify-content-center">Recommended Books</div>
+                    <hr />
+                    @foreach (var book in Model.RecommendedBooks)
+                    {
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            @await Html.PartialAsync("~/Views/Home/_BookShowerPartial.cshtml", book)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+        {
+            <div class="container pt-5">
+                <div class="row">
+                    <div class="row scroller-title h3 justify-content-center">Best Sellers</div>
+                    <hr />
+                    @foreach (var book in Model.BestSellers)
+                    {
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            @await Html.PartialAsync("~/Views/Home/_BookShowerPartial.cshtml", book)
+                        </div>
+                    }
+                </div>
+            </div>
         }
     </div>
 </div>
