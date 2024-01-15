@@ -31,7 +31,7 @@
 </head>
 <body>
     <header>
-        <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow m-0 p-0 pt-2 pl-2 mb-3">
+        <nav id="navbar" class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light border-bottom box-shadow">
             <div class="container-fluid">
                 <a class="navbar-brand p-0 m-0 pb-1" asp-area="" asp-controller="Home" asp-action="MainPage">
                     <img src="~/images/litify-logo.png" style="width:65px" />
@@ -103,20 +103,20 @@
                                             <div class="row pt-4">
                                                 <div class="google-button">
                                                     <div class="col">
-                                                        <input type="submit" value="@google" name="provider" hidden id="googleInput" />
-                                                        <a class="btn btn-google w-100" id="googleLink">
+                                                        <input type="submit" value="@google" class="googleInput" name="provider" hidden id="" />
+                                                        <a class="btn btn-google w-100 googleLink" id="">
                                                             <span>
                                                                 <svg viewBox="0 0 48 48" width="32" height="32" class="svg-wrapper--8ky9e">
                                                                     <defs>
-                                                                        <path id="google-icon_svg__a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"></path>
+                                                                        <path id="google-icon_svg__a2" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"></path>
                                                                     </defs>
-                                                                    <clipPath id="google-icon_svg__b">
-                                                                        <use xlink:href="#google-icon_svg__a" overflow="visible"></use>
+                                                                    <clipPath id="google-icon_svg__b2">
+                                                                        <use xlink:href="#google-icon_svg__a2" overflow="visible"></use>
                                                                     </clipPath>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#FBBC05" d="M0 37V11l17 13z"></path>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"></path>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"></path>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b2)" fill="#FBBC05" d="M0 37V11l17 13z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b2)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b2)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b2)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"></path>
                                                                 </svg>
                                                             </span>
                                                         </a>
@@ -126,8 +126,8 @@
                                             <div class="row pt-2">
                                                 <div class="facebook-button">
                                                     <div class="col">
-                                                        <input type="submit" value="@facebook" name="provider" hidden id="facebookInput" />
-                                                        <a class="btn btn-facebook w-100" id="facebookLink">
+                                                        <input type="submit" class="facebookInput" value="@facebook" name="provider" hidden id="" />
+                                                        <a class="btn btn-facebook w-100 facebookLink" id="">
                                                             <span>
                                                                 <svg width="32" height="32" viewBox="0 0 18 18" class="svg-wrapper--8ky9e">
                                                                     <path d="M2.425 0A2.425 2.425 0 0 0 0 2.425v13.15A2.425 2.425 0 0 0 2.425 18H8.91l.012-6.432H7.25a.394.394 0 0 1-.394-.393l-.008-2.074c0-.218.176-.395.394-.395h1.669V6.702c0-2.325 1.42-3.59 3.493-3.59h1.702c.218 0 .395.176.395.394v1.748a.394.394 0 0 1-.394.394h-1.045c-1.128 0-1.346.537-1.346 1.323v1.735h2.478c.236 0 .42.206.392.44l-.246 2.074a.394.394 0 0 1-.392.348h-2.221L11.716 18h3.858A2.426 2.426 0 0 0 18 15.575V2.425A2.425 2.425 0 0 0 15.574 0H2.425z" fill="#FFF" fill-rule="evenodd"></path>
@@ -176,20 +176,20 @@
                                             <div class="row pt-4">
                                                 <div class="google-button">
                                                     <div class="col">
-                                                        <input type="submit" value="@google" name="provider" hidden id="googleInput" />
-                                                        <a class="btn btn-google w-100" id="googleLink">
+                                                        <input type="submit" value="@google" class="googleInput" name="provider" hidden id="" />
+                                                        <a class="btn btn-google w-100 googleLink" id="">
                                                             <span>
                                                                 <svg viewBox="0 0 48 48" width="32" height="32" class="svg-wrapper--8ky9e">
                                                                     <defs>
-                                                                        <path id="google-icon_svg__a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"></path>
+                                                                        <path id="google-icon_svg__a1" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"></path>
                                                                     </defs>
-                                                                    <clipPath id="google-icon_svg__b">
-                                                                        <use xlink:href="#google-icon_svg__a" overflow="visible"></use>
+                                                                    <clipPath id="google-icon_svg__b1">
+                                                                        <use xlink:href="#google-icon_svg__a1" overflow="visible"></use>
                                                                     </clipPath>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#FBBC05" d="M0 37V11l17 13z"></path>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"></path>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"></path>
-                                                                    <path clip-path="url(#google-icon_svg__b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b1)" fill="#FBBC05" d="M0 37V11l17 13z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b1)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b1)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"></path>
+                                                                    <path clip-path="url(#google-icon_svg__b1)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"></path>
                                                                 </svg>
                                                             </span>
                                                         </a>
@@ -199,8 +199,8 @@
                                             <div class="row pt-2">
                                                 <div class="facebook-button">
                                                     <div class="col">
-                                                        <input type="submit" value="@facebook" name="provider" hidden id="facebookInput" />
-                                                        <a class="btn btn-facebook w-100" id="facebookLink">
+                                                        <input type="submit" class="facebookInput" value="@facebook" name="provider" hidden id="" />
+                                                        <a class="btn btn-facebook w-100 facebookLink" id="">
                                                             <span>
                                                                 <svg width="32" height="32" viewBox="0 0 18 18" class="svg-wrapper--8ky9e">
                                                                     <path d="M2.425 0A2.425 2.425 0 0 0 0 2.425v13.15A2.425 2.425 0 0 0 2.425 18H8.91l.012-6.432H7.25a.394.394 0 0 1-.394-.393l-.008-2.074c0-.218.176-.395.394-.395h1.669V6.702c0-2.325 1.42-3.59 3.493-3.59h1.702c.218 0 .395.176.395.394v1.748a.394.394 0 0 1-.394.394h-1.045c-1.128 0-1.346.537-1.346 1.323v1.735h2.478c.236 0 .42.206.392.44l-.246 2.074a.394.394 0 0 1-.392.348h-2.221L11.716 18h3.858A2.426 2.426 0 0 0 18 15.575V2.425A2.425 2.425 0 0 0 15.574 0H2.425z" fill="#FFF" fill-rule="evenodd"></path>
@@ -274,6 +274,7 @@
     <script type="text/javascript">
         $(function () {
             bookPage.init($('.book-page'));
+            borrowBook.init($('.borrowed-page'));
         });
     </script>
 

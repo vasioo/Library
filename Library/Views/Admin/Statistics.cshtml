@@ -4,79 +4,94 @@
 }
 @model StatisticsViewModel
 
-<div>
-    <p>Amount of Users: @Model.AmountOfUsers</p>
-    <p>Amount of Workers: @Model.AmountOfWorkers</p>
-</div>
+<div class="statistics-page">
+    <div class="container">
+        <div class="d-flex h4" style="font-weight:400">
+            <div>Amount of Users&nbsp:&nbsp</div>
+            <div>@Model.AmountOfUsers</div>
 
-<div>
-    <h2>Most Leased Book</h2>
-    <p>Book Title: @Model.MostLeasedBook.Name</p>
-</div>
-
-<div>
-    <h2>Most Read Genres</h2>
-    <ul>
-        @foreach (var genre in Model.MostReadGenres)
-        {
-            <li>@genre</li>
-        }
-    </ul>
-</div>
-<canvas id="myChart" width="400" height="200"></canvas>
-
-<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Users', 'Workers'],
-            datasets: [{
-                label: 'Amount',
-                data: [@Model.AmountOfUsers, @Model.AmountOfWorkers],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+        </div>
+        <hr />
+        <div class="d-flex h4" style="font-weight:400">
+            <div class="">Amount of Workers&nbsp:&nbsp</div>
+            <div class="">@Model.AmountOfWorkers</div>
+        </div>
+        <hr />
+        <div class="d-flex h4" style="font-weight:400">
+            <div>Most Leased Book&nbsp:&nbsp</div>
+            <div>
+                <a href="/Home/BookPage?bookId=@Model.MostLeasedBook.Id">@Model.MostLeasedBook.Name</a>
+            </div>
+        </div>
+        <hr />
+        <div class="d-flex">
+            <div class="h4" style="font-weight:400">Most Read Genres&nbsp:&nbsp</div>
+            <ul>
+                @foreach (var genre in Model.MostReadGenres)
+                {
+                    <li>@genre</li>
                 }
-            }
-        }
-    });
-</script>
-<canvas id="genreChart" width="400" height="200"></canvas>
+            </ul>
+        </div>
+        <canvas id="myChart" width="400" height="200"></canvas>
 
-<script>
-    var ctx = document.getElementById('genreChart').getContext('2d');
-    var genreChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [@Model.MostReadGenres.Select(g => g.Split('-')[0])],  
-            datasets: [{
-                label: 'Percentile',
-                data: [@Model.MostReadGenres.Select(g => float.Parse(g.Split('-')[1]))],  
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Users', 'Workers'],
+                    datasets: [{
+                        label: 'Amount',
+                        data: [@Model.AmountOfUsers, @Model.AmountOfWorkers],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
                 }
-            }
-        }
-    });
-</script>
+            });
+        </script>
+        <canvas id="genreChart" width="400" height="200"></canvas>
+
+        <script>
+            var ctx = document.getElementById('genreChart').getContext('2d');
+            var genreChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [@Model.MostReadGenres.Select(g => g.Split('-')[0])],
+                    datasets: [{
+                        label: 'Percentile',
+                        data: [@Model.MostReadGenres.Select(g => float.Parse(g.Split('-')[1]))],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+ 
+   
+   
+</div>

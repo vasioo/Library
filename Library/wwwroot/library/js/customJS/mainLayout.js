@@ -142,10 +142,10 @@ $(document).ready(function () {
 });
 
 
-$('#facebookLink').click(function () {
-    $('#facebookInput').click();
+$(',facebookLink').click(function () {
+    $('.facebookInput').click();
 });
 
-$('#googleLink').click(function () {
-    $('#googleInput').click();
+$(',googleLink').click(function () {
+    $(',googleInput').click();
 });

@@ -4,18 +4,30 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <div class="client-management">
-    <div class="container">
-        <div id="filter-people">
-            <form asp-action="ClientManagement" method="get" id="clientManagementForm">
+    <div class="pt-3">
+        <div class="d-flex justify-content-center">
+            <div class="h2">
+                Manage Users Menu
+            </div>
+        </div>
+        <div id="user-filtering" class="d-flex pt-4 pb-4 justify-content-center">
+            <form asp-action="ClientManagement" method="get" id="clientManagementForm" class="row">
                 <div class="form-actions no-color">
-                    <p>
-                        Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                        <input type="submit" value="Search" class="btn btn-default" /> |
-                        <a asp-action="ClientManagement">Back to Full List</a>
-                    </p>
+                    <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
+                        Find by User name :
+                    </div>
+                    <div class=" row m-0 pb-2">
+                        <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
+                    </div>
+                    <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
+                        <input type="submit" value="Search" class="btn btn-dark col-5" />
+                        <a class="btn btn-danger col-5" asp-action="ClientManagement">Clear</a>
+                    </div>
                 </div>
-                <label>Show Admins and Workers only:</label>
-                <input type="checkbox" id="toggleAdminsAndWorkers" name="workersOnly" data-toggle="toggle" data-on="Yes" data-off="No" />
+                <div class="col text-center pt-4">
+                    <label class="pr-2 h6" style="font-weight:400">Show Admins and Workers only:</label>
+                    <input class="form-check-input" type="checkbox" id="toggleAdminsAndWorkers" name="workersOnly" data-toggle="toggle" data-on="Yes" data-off="No" />
+                </div>
             </form>
         </div>
         <div id="staff-table">

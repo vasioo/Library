@@ -13,8 +13,8 @@
             <p class="card-text">@Model.Author (@Model.DateOfBookCreation.Year)</p>
         </div>
     </a>
-    <div class="row">
-        <a href="@Url.Action("UnborrowBook","Home",new{bookId=Model.Id})" class="btn btn-danger">Unborrow</a>
+    <div class="d-flex">
+        <a id="@Model.Id" class="btn btn-danger unborrow-book-btn col">Remove form borrowed</a>
     </div>
     @*   @if (User.IsInRole())
     {

@@ -72,13 +72,14 @@ namespace Library.Controllers
             return View("~/Views/Home/BookPage.cshtml", bookPageViewModel);
         }
 
+        [HttpPost]
         public async Task<JsonResult> BorrowBook(int bookId)
         {
             try
             {
                 var username = HttpContext.User?.Identity?.Name ?? "";
                 var user = await _userManager.FindByNameAsync(username);
-                if (user!=null)
+                if (user != null)
                 {
                     if (!await _helper.BorrowBookPostHelper(bookId, user!.Id))
                     {
@@ -87,22 +88,28 @@ namespace Library.Controllers
                 }
                 else
                 {
-                    return Json(new { status = true, Message = "There ist't a user with that username!" });
+                    return Json(new { status = false, Message = "There isn't a user with that username!" });
                 }
             }
             catch (Exception)
             {
-                return Json(new { status = true, Message = "Error Conflicted" });
+                return Json(new { status = false, Message = "Error Conflicted" });
             }
             return Json(new { status = true, Message = "The book was borrowed successfully" });
         }
 
+        [HttpPost]
         public async Task<JsonResult> UnborrowBook(int bookId)
         {
             try
             {
                 var username = HttpContext.User?.Identity?.Name ?? "";
                 var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    return Json(new { status = false, Message = "There is no such user" });
+
+                }
                 if (!await _helper.UnborrowBookPostHelper(bookId, user!.Id))
                 {
                     return Json(new { status = false, Message = "The book could't be removed!" });
@@ -110,7 +117,7 @@ namespace Library.Controllers
             }
             catch (Exception)
             {
-                return Json(new { status = true, Message = "Error Conflicted" });
+                return Json(new { status = false, Message = "Error Conflicted" });
             }
             return Json(new { status = true, Message = "The book was removed from borrowed successfully" });
         }

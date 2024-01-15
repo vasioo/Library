@@ -1,6 +1,7 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Web.Controllers.AdminControllerHelper
 {
@@ -19,13 +20,21 @@ namespace Library.Web.Controllers.AdminControllerHelper
         {
             var viewModel = new StatisticsViewModel();
 
-            viewModel.AmountOfUsers =_userManager.Users.Count();
+            viewModel.AmountOfUsers = _userManager.Users.Count();
             var workerRoles = new[] { "Admin", "Worker" };
-            viewModel.AmountOfWorkers =_userManager.Users.Where(u => workerRoles.Any(role => _userManager.IsInRoleAsync(u, role).Result)).Count();
-            viewModel.MostLeasedBook =await _userLeasedBookService.MostLeasedBook();
-            viewModel.MostReadGenres =await _userLeasedBookService.MostReadGenres();
+            viewModel.AmountOfWorkers = await _userManager.Users
+                    .ToListAsync()  // Retrieve all users from the database
+                    .ContinueWith(users =>
+                        users.Result
+                        .Where(u => workerRoles.Any(role => _userManager.IsInRoleAsync(u, role).Result))
+                        .Count()
+                        );
+            viewModel.MostLeasedBook = await _userLeasedBookService.MostLeasedBook();
+            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres();
 
             return viewModel;
         }
+
+
     }
 }

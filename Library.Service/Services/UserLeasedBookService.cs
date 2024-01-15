@@ -14,39 +14,50 @@ namespace Library.Services.Services
         {
             _dataContext = context;
         }
-        public Task<List<string>> MostReadGenres()
+        public async Task<List<string>> MostReadGenres()
         {
-            var totalEntityCount = _dataContext.UserLeasedBooks.Count();
+            var leasedBooks = await _dataContext.UserLeasedBooks.ToListAsync();
+            var totalEntityCount = leasedBooks.Count;
 
-            var mostReadGenres = _dataContext.UserLeasedBooks
+            var mostReadGenres = leasedBooks
                 .GroupBy(bl => bl.Book.Genre)
                 .OrderByDescending(group => group.Count())
                 .Take(5)
-                .AsEnumerable()
                 .Select(group =>
                 {
                     var genre = group.Key;
                     var count = group.Count();
                     var percentile = (double)count / totalEntityCount * 100.0;
-                    return $"{genre}-{percentile:F2}";
+                    return $"{genre.CategoryName}-{percentile:F2}";
                 })
                 .ToList();
 
-            return Task.FromResult(mostReadGenres.ToList());
+            return mostReadGenres;
         }
 
 
-        public Task<Book> MostLeasedBook()
+        public async Task<Book> MostLeasedBook()
         {
-            var mostLeasedBookEntity = _dataContext.UserLeasedBooks
+            var mostLeasedBookId = await _dataContext.UserLeasedBooks
                 .GroupBy(ulb => ulb.BookId)
                 .OrderByDescending(group => group.Count())
-                .FirstOrDefault();
+                .Select(group => group.Key)
+                .FirstOrDefaultAsync();
 
-            var mostLeasedBook = _dataContext.Books.Where(book => book.Id == mostLeasedBookEntity!.Key).FirstOrDefault();
+            if (mostLeasedBookId != null)
+            {
+                var mostLeasedBook = await _dataContext.Books
+                    .Where(book => book.Id == mostLeasedBookId)
+                    .FirstOrDefaultAsync();
 
-            return Task.FromResult(mostLeasedBook!);
+                return mostLeasedBook;
+            }
+
+            // Handle the case when there are no leased books
+            return null;
         }
+
+
 
         public async Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(int bookId, string userId)
         {

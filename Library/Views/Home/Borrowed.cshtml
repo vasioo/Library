@@ -2,19 +2,33 @@
 @model BorrowedViewModel
 
 <div class="borrowed-page">
-    <div class="container">
-        @if (Model.BorrowedBooks != null || Model!.BorrowedBooks!.Count()>0)
+    <div class="container pt-3">
+        @if (Model.BorrowedBooks != null )
         {
-            @foreach (var book in Model.BorrowedBooks)
+            if (Model!.BorrowedBooks!.Count() > 0)
             {
-                <div class="col-lg-4 col-md-6 mb-4">
-                    @await Html.PartialAsync("~/Views/Home/_BorrowedBookPartial.cshtml", book)
+                <div class="row justify-content-center h3 scroller-title">
+                    Borrowed Books
                 </div>
+                <hr />
+
+                @foreach (var book in Model.BorrowedBooks)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        @await Html.PartialAsync("~/Views/Home/_BorrowedBookPartial.cshtml", book)
+                    </div>
+                }
+            }
+            else
+            {
+                <h2 class="text-center py-3 scroller-title">You have not borrowed any books!</h2>
+                <hr />
             }
         }
         else
         {
-            <h2 class="text-center">You have not borrowed any books!</h2>
+            <h2 class="text-center py-3 scroller-title">You have not borrowed any books!</h2>
+            <hr />
         }
         @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
         {

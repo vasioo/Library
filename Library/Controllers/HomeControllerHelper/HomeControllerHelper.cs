@@ -158,18 +158,12 @@ namespace Library.Web.Controllers.HomeControllerHelper
         public BorrowedViewModel GetBorrowedPageAttributes(ApplicationUser user)
         {
             var viewModel = new BorrowedViewModel();
-
-            var allLeasedBooks = _userLeasedBookService.IQueryableGetAllAsync();
-
             if (user != null)
             {
+                var allLeasedBooks = _userLeasedBookService.IQueryableGetAllAsync();
                 viewModel.BorrowedBooks = allLeasedBooks.Where(us => us.UserId == user.Id).Select(x => x.Book);
             }
-            else
-            {
-                viewModel.BorrowedBooks = allLeasedBooks.Select(x => x.Book);
-            }
-            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
+            viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user!, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
             return viewModel;

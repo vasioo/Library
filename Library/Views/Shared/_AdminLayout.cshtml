@@ -46,6 +46,28 @@
             &copy; 2023 - Library - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!-- VENDOR -->
+    <script src="~/library/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="~/library/js/vendor/popper.min.js"></script>
+    <script src="~/library/js/vendor/bootstrap.min.js"></script>
+    <script src="~/library/js/vendor/slick.min.js"></script>
+    <!-- CUSTOM -->
+    <!-- PAGES -->
+    <script src="~/library/js/pages.js"></script>
+
+    <!-- COMMON -->
+    <script src="~/library/js/common.js"></script>
+
+    <!-- CUSTOM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+
+
+
     <script type="text/javascript">
         $(function () {
             clientManagement.init($('.client-management'));
@@ -53,10 +75,6 @@
         });
     </script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.0.8/dist/umd/popper.min.js" integrity="sha384-pzjw8SSg1sEzZBQVESE3uUzQK1K1r+eLr9IF/Ai85Xf5Pc/LCQZaXbVRtBwF5Czy" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

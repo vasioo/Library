@@ -8,7 +8,6 @@
 }
 
 .sticky {
-    position: fixed;
     top: 0;
     width: 100%;
     animation: fadeInDown 0.5s;
@@ -55,13 +54,16 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     width: 340px;
 }
-
-﻿.facebook-button {
-    background-color: dodgerblue;
-    border-radius: 8px;
+.facebook-button {
+    background-color: dodgerblue !important;
+    border-radius: 8px !important;
 }
 
 .google-button {
     background-color: indianred;
     border-radius: 8px;
+}
+
+.scroller-title {
+    color: rgba(7,175,211,1);
 }

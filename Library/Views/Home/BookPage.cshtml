@@ -11,7 +11,7 @@
 }
 <div class="book-page ">
     <div class="container">
-        <div class="row">
+        <div class="row pt-5 justify-content-around">
             <div class="col-5">
                 <div class="row">
                     <img src="@imageUrl" style="width:400px" />
@@ -34,23 +34,29 @@
                 <hr />
                 <div class="row">
                     <div class="col-6">Genre</div>
-                    <div class="col-6">@book.Genre</div>
+                    <div class="col-6">@book.Genre.CategoryName</div>
                 </div>
                 <hr />
             </div>
-            <div class="col-7">
+            <div class="col-6">
                 <div class="row">
-                    @if (!Model.HasUserBorrowedIt)
+                    @if (User!.Identity!.IsAuthenticated)
                     {
-                        <a class="btn btn-success borrow-book-btn" id="@book.Id">Borrow Book</a>
+                        @if (!Model.HasUserBorrowedIt)
+                        {
+                            <a class="btn btn-success borrow-book-btn" id="@book.Id">Borrow Book</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger unborrow-book-btn" id="@book.Id">Remove from borrowed</a>
+                        }
                     }
                     else
                     {
-                        <a class="btn btn-danger unborrow-book-btn" id="@book.Id">Remove from borrowed</a>
+                        <a class="btn btn-success unauth-borrow-book-btn" id="@book.Id">Borrow Book</a>
                     }
-
                 </div>
-                <div class="row">
+                <div class="row pt-3">
                     @book.Description
                 </div>
             </div>

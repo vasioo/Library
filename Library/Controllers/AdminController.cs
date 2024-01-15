@@ -38,9 +38,9 @@ namespace Library.Web.Controllers
 
         #region Statistics
         //[Authorize(Roles = "Admin")]
-        public IActionResult Statistics()
+        public async Task<IActionResult> Statistics()
         {
-            var viewModel = new StatisticsViewModel();
+            var viewModel = await _helper.StatisticsHelper();
             return View("~/Views/Admin/Statistics.cshtml", viewModel);
         }
         #endregion

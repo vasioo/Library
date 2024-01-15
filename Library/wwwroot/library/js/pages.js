@@ -91,12 +91,13 @@ var addACategory = (function () {
 var bookPage = (function () {
     function init($container) {
         let $borrowBookBtn = $container.find('.borrow-book-btn'),
-         $unborrowBookBtn = $container.find('.unborrow-book-btn');
+            $UnathBorrowBookBtn = $container.find('.unauth-borrow-book-btn'),
+            $unborrowBookBtn = $container.find('.unborrow-book-btn');
 
         $borrowBookBtn.click(function () {
             var book = $(this).attr('id');
 
-            $.post('/Home/BorrowBook', { bookId:book }, function (response) {
+            $.post('/Home/BorrowBook', { bookId: book }, function (response) {
                 Swal.fire({
                     icon: 'success',
                     title: 'The book has been borrowed!',
@@ -116,30 +117,64 @@ var bookPage = (function () {
                 })
                 alert('AJAX request failed: ' + error);
             });
-            
+
         });
         $unborrowBookBtn.click(function () {
             var book = $(this).attr('id');
+            $.ajax({
+                type: 'POST',
+                url: '/Home/UnborrowBook',
+                data: { bookId: book },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === true) {
+                        // Handle success
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 5000);
 
-            $.post('/Home/UnborrowBook', { bookId: book }, function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'The book has been removed from borrowed!',
-                    showClass: {
-                        popup: 'animate__animated animate__fadeInDown'
-                    },
-                    hideClass: {
-                        popup: 'animate__animated animate__fadeOutUp'
+                    } else {
+                        // Handle failure
+                        Swal.fire({
+                            icon: 'error',
+                            title: response.message,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
                     }
-                })
-                location.reload();
-            }).fail(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!',
-                })
-                alert('AJAX request failed: ' + error);
+                },
+                error: function (error) {
+                    // Handle AJAX request failure
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                    });
+                    console.error('AJAX request failed:', error);
+                }
+            });
+        });
+
+        $UnathBorrowBookBtn.click(function () {
+            Swal.fire({
+                icon: "error",
+                title: "No no!",
+                text: "A non authenticated user cannot borrow a book!",
+                footer: '<a href="/Identity/Account/Register">Create an account</a>'
             });
         });
     }
@@ -149,7 +184,56 @@ var bookPage = (function () {
 })();
 var borrowBook = (function () {
     function init($container) {
-     
+        let $unborrowBookBtn = $container.find('.unborrow-book-btn');
+
+        $unborrowBookBtn.click(function () {
+            var book = $(this).attr('id');
+            $.ajax({
+                type: 'POST',
+                url: '/Home/UnborrowBook',
+                data: { bookId: book },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === true) {
+                        // Handle success
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 5000);
+                    } else {
+                        // Handle failure
+                        Swal.fire({
+                            icon: 'error',
+                            title: response.message,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+                    }
+                },
+                error: function (error) {
+                    // Handle AJAX request failure
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                    });
+                    console.error('AJAX request failed:', error);
+                }
+            });
+        });
     }
     return {
         init

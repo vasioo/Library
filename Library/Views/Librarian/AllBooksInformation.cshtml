@@ -6,22 +6,30 @@
 }
 
 <div class="all-books">
-    <div class="container">
-        <div class="row pb-4">
-            <a asp-controller="Librarian" asp-action="AddABook" class="btn btn-success">Add A Book</a>
-        </div>
-        <div id="book-filtering" class="row">
-            <div>
-                <form asp-action="AllBooksInformation" method="get">
-                    <div class="form-actions no-color">
-                        <p>
-                            Find by string: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                            <input type="submit" value="Search" class="btn btn-default" /> |
-                            <a asp-action="AllBooksInformation">Back to Full List</a>
-                        </p>
-                    </div>
-                </form>
+    <div class="pt-3">
+        <div class="d-flex justify-content-center">
+            <div class="h2">
+                Manage Users Menu
             </div>
+        </div>
+        <div class="d-flex pt-3">
+            <a class="col btn btn-success" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.2em">Add A Book</a>
+        </div>
+        <div id="book-filtering" class="d-flex pt-4 pb-4 justify-content-center">
+            <form asp-action="AllBooksInformation" method="get" class="row">
+                <div class="form-actions no-color">
+                    <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
+                        Find by Book entity :
+                        </div>
+                    <div class="row m-0 pb-2">
+                        <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
+                    </div>
+                    <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
+                        <input type="submit" value="Search" class="btn btn-dark col-5" />
+                        <a class="btn btn-danger col-5" asp-action="AllBooksInformation">Clear</a>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <table class="table pt-3">
