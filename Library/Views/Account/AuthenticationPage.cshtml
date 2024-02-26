@@ -1,0 +1,69 @@
+﻿@using Library.Models.UserModels;
+@model IdentityModel
+
+@section Styles{
+    <link rel="stylesheet" href="~/library/css/custom/AuthenticationPage.css" asp-append-version="true">
+}
+@section Scripts{
+    <script src="@Url.Content("~/library/js/customJS/authPage.js")" type="text/javascript" asp-append-version="true"></script>
+}
+
+<div class="wrapper">
+    <span class="bg-animate"></span>
+    <span class="bg-animate2"></span>
+    <div class="form-box login">
+        <h2 class="animation" style="--i:0; --j:21;">Login</h2>
+        <form id="loginForm" method="post" class="p-2" enctype="multipart/form-data">
+            <div class="input-box animation" style="--i:1; --j:22;">
+                <input asp-for="LoginEmail" type="text" required autocomplete="off">
+                <label>Username</label>
+                <i class="bx bxs-user"></i>
+            </div>
+            <div class="input-box animation" style="--i:2; --j:23;">
+                <input asp-for="LoginPassword" type="password" required autocomplete="off">
+                <label>Password</label>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+            <button type="submit" class="btn animation" style="--i:3; --j:24;">
+                Login
+            </button>
+            <div class="logreg-link animation" style="--i:4; --j:25;">
+                <p>Don't have an account? <a href="#" class="register-link">Sign Up</a></p>
+            </div>
+        </form>
+    </div>
+    <div class="info-text login">
+        <h2 class="animation" style="--i:0; --j:20;">Welcome Back</h2>
+        <p class="animation" style="--i:1; --j:21;">Happy to see you again!</p>
+    </div>
+
+    <div class="form-box register">
+        <h2 class="animation" style="--i:17; --j:0;">Sign Up</h2>
+        <form id="registerForm" method="post" class="p-2" enctype="multipart/form-data">
+            <div class="input-box animation" style="--i:18; --j:1;">
+                <input asp-for="RegisterUsername" type="text" required autocomplete="off">
+                <label>Username</label>
+                <i class="bx bxs-user"></i>
+            </div>
+            <div class="input-box animation" style="--i:19; --j:2;">
+                <input asp-for="RegisterEmail" type="text" required autocomplete="off">
+                <label>Email</label>
+                <i class="bx bxs-envelope"></i>
+            </div>
+            <div class="input-box animation" style="--i:20; --j:3;">
+                <input asp-for="RegisterPassword" type="password" required autocomplete="off">
+                <label>Password</label>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+            <button type="submit" class="btn animation" style="--i:21; --j:4;">Sign Up</button>
+            <div class="logreg-link animation" style="--i:22; --j:5;">
+                <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+            </div>
+        </form>
+    </div>
+
+    <div class="info-text register">
+        <h2 class="animation" style="--i:17; --j:0;">Why us?</h2>
+        <p class="animation" style="--i:18; --j:1;">Join us on the most secure and privacy-focused social media platform.</p>
+    </div>
+</div>

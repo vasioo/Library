@@ -28,6 +28,15 @@ namespace Library.Web.Controllers
 
         #endregion
 
+
+        #region AuthPage
+        public IActionResult AuthenticationPage()
+        {
+            return View("~/Views/Account/AuthenticationPage.cshtml");
+        }
+        #endregion
+
+
         #region SignIn
 
         [HttpPost]

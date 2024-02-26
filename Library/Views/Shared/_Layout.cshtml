@@ -20,13 +20,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
-
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!--ALERTS-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="~/library/css/custom/MainLayout.css" asp-append-version="true">
     <link rel="stylesheet" href="~/library/css/custom/ImagePost.css" asp-append-version="true">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
     @RenderSection("Styles", false)
 </head>
 <body>
@@ -61,7 +62,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link nav-item fontawesome-icons" id="signIn" style="cursor:pointer" asp-area="Identity" asp-page="/Account/Login">
+                                <a class="nav-link nav-item fontawesome-icons" id="signIn" style="cursor:pointer" asp-controller="Account" asp-action="AuthenticationPage">
                                     <i class="fa-solid fa-user-lock fa-2xl"></i>
                                 </a>
                                 <div class="sign-in-container">
