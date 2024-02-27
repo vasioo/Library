@@ -1,0 +1,63 @@
+﻿@using Library.Models.ViewModels;
+@model SearchViewModel
+
+<style>
+    .btn{
+        font-size: 1.1em;
+    }
+    .btn:hover {
+        text-decoration: underline;
+        color: blue;
+    }
+
+    .btn.active {
+        text-decoration: underline;
+        color: red;
+    }
+</style>
+
+<div class="container pt-3">
+    <div class="row">
+        <div class="h1">Search Books</div>
+    </div>
+    <div class="row pt-3">
+        <div class="col-1 h5">
+            @if (Model.searchCategory == "Books")
+            {
+                <a class="text-dark btn active" href="@Url.Action("Search", "Home", new { searchCategory = "Books" })">Books</a>
+            }
+            else
+            {
+                <a class="text-dark btn" href="@Url.Action("Search", "Home", new { searchCategory = "Books" })">Books</a>
+
+            }
+        </div>
+        <div class="col-1 h5">
+            @if (Model.searchCategory == "Authors")
+            {
+                <a class="text-dark btn active" href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Authors</a>
+            }
+            else
+            {
+                <a class="text-dark btn " href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Authors</a>
+
+            }
+        </div>
+        <div class="col-1 h5">
+            @if (Model.searchCategory == "Subjects")
+            {
+                <a class="text-dark btn active" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Subjects</a>
+            }
+            else
+            {
+                <a class="text-dark btn" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Subjects</a>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <input class="col-6" />
+        <div class="col">
+            <a class="btn btn-success">Search</a>
+        </div>
+    </div>
+</div>

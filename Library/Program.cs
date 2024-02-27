@@ -163,6 +163,7 @@ namespace Modum.Web
             });
             app.UseSession();
 
+          
 
             app.MapControllerRoute(
                 name: "admin",

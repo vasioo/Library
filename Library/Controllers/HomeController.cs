@@ -1,6 +1,6 @@
-﻿using Hangfire;
-using Library.DataAccess.MainModels;
+﻿using Library.DataAccess.MainModels;
 using Library.Models;
+using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -151,6 +151,17 @@ namespace Library.Controllers
 
             return View("~/Views/Home/Notifications.cshtml", _helper.GetNotifications());
         }
+        #endregion
+
+        #region Search
+
+        public IActionResult Search(string searchCategory)
+        {
+            var viewModel = new SearchViewModel();
+            viewModel.searchCategory = searchCategory;
+            return View($"~/Views/Home/Search.cshtml", viewModel);
+        }
+
         #endregion
     }
 }

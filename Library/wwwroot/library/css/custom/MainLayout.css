@@ -67,3 +67,24 @@
 .scroller-title {
     color: rgba(7,175,211,1);
 }
+
+
+#navbar {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    #navbar {
+        display: block;
+    }
+}
+
+#mobileNav {
+    display: block;
+}
+
+@media (min-width: 769px) {
+    #mobileNav {
+        display: none;
+    }
+}

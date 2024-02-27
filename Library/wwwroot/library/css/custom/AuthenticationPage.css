@@ -21,7 +21,9 @@ select:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px #fff inset;
     transition: background-color 5000s ease-in-out 0s;
 }
-
+#signIn{
+    display:none;
+}
 .body-under-container {
     display: flex;
     justify-content: center;
@@ -31,11 +33,6 @@ select:-webkit-autofill:focus {
     background-repeat: no-repeat;
     background-size: cover;
 }
-
-header {
-    display: none;
-}
-
 
 .wrapper {
     position: relative;
@@ -293,7 +290,7 @@ header {
     right: -0.25rem;
     width: 53.125rem;
     height: 37.5rem;
-    background: linear-gradient(45deg, #081b29, #00D1D1);
+    background: linear-gradient(45deg, orange, #00D1D1);
     transform: rotate(10deg) skewY(40deg);
     transform-origin: bottom right;
     border-bottom: 0.1875rem solid #00D1D1;
@@ -393,6 +390,8 @@ header {
         .wrapper.active .info-text.register .animation {
             transition-delay: calc(.01s * var(--i));
         }
+}
 
-
+.eye-toggler{
+    cursor:pointer;
 }

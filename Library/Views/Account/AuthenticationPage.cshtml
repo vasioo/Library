@@ -21,9 +21,9 @@
                     <i class="bx bxs-user"></i>
                 </div>
                 <div class="input-box animation" style="--i:2; --j:23;">
-                    <input asp-for="LoginPassword" type="password" required autocomplete="off">
+                    <input asp-for="LoginPassword" type="password" id="login-password" required autocomplete="off">
                     <label>Password</label>
-                    <i class="bx bxs-lock-alt"></i>
+                    <i class="far fa-eye eye-toggler" id="login-expose-password"></i>
                 </div>
                 <button type="submit" class="btn animation" style="--i:3; --j:24;">
                     Login
@@ -52,9 +52,9 @@
                     <i class="bx bxs-envelope"></i>
                 </div>
                 <div class="input-box animation" style="--i:20; --j:3;">
-                    <input asp-for="RegisterPassword" type="password" required autocomplete="off">
+                    <input asp-for="RegisterPassword" id="register-password" type="password" required autocomplete="off">
                     <label>Password</label>
-                    <i class="bx bxs-lock-alt"></i>
+                    <i class="far fa-eye eye-toggler" id="register-expose-password"></i>
                 </div>
                 <button type="submit" class="btn animation" style="--i:21; --j:4;">Sign Up</button>
                 <div class="logreg-link animation" style="--i:22; --j:5;">
