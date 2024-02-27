@@ -3,18 +3,28 @@
 
 <style>
     .category-names:hover {
-        color: black;
+        color: gray;
         text-decoration: none;
     }
 
-    .category-names{
-        color:gray;
-        text-decoration:none;
+    .category-names {
+        color: gray;
+        text-decoration: none;
     }
 
     .scroller-title {
         color: rgba(7,175,211,1);
     }
+
+    .hover-slide-right {
+        transition: transform 0.3s ease;
+    }
+
+        .hover-slide-right:hover {
+            transform: translateX(10px);
+            color: black;
+            text-decoration: none;
+        }
 
 </style>
 
@@ -24,7 +34,7 @@
             <div class="row h2 justify-content-center scroller-title ">Explore our genres</div>
             <div class="row h4 justify-content-center">We have Everything for Everyone</div>
         </div>
-        <hr />
+        <hr />  `1
     </div>
     <div class="container pt-3">
         <div class="row h3 justify-content-center scroller-title">Book Genres</div>
@@ -36,18 +46,23 @@
                 {
                     <div class="col-md-4">
                         <div class="h3">@subject.SubjectName</div>
-                        <ul class="list-unstyled ">
+                        <ul class="list-unstyled">
                             @foreach (var category in subject.BookCategories)
                             {
                                 <li>
-                                    <a class="category-names h5 p-3" href="BookShower?category=@category.CategoryName">
-                                        <i class="fa-solid fa-arrow-right mr-1"></i>&nbsp @category.CategoryName
-                                    </a>
+                                    <div class="d-flex">
+                                        <a class="category-names h5 p-3 hover-slide-right " href="BookShower?category=@category.CategoryName">
+                                            <i class="fa-solid fa-arrow-right mr-1"></i>&nbsp;
+                                            @category.CategoryName
+                                        </a>
+                                    </div>
+
                                 </li>
                             }
                         </ul>
                     </div>
                 }
+
             }
         </div>
 

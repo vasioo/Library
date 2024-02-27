@@ -208,7 +208,7 @@ var borrowBook = (function () {
                         });
                         setTimeout(function () {
                             location.reload()
-                        }, 5000);
+                        }, 1000);
                     } else {
                         // Handle failure
                         Swal.fire({
@@ -552,7 +552,7 @@ var manageBookCategories = (function () {
 
         });
 
-        $('.delete-row').click(function () {
+        $(document).on('click', '.delete-row',function () {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this row!",

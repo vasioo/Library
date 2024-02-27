@@ -280,15 +280,15 @@
             }
             @* @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Worker") || User.IsInRole("SuperAdmin")))
             { *@
-                <a asp-controller="Librarian" asp-action="AllBooksInformation" class="menu-item">
-                    <i class="fa-solid fa-book fa-lg"></i>
-                </a>
+            <a asp-controller="Librarian" asp-action="AllBooksInformation" class="menu-item">
+                <i class="fa-solid fa-book fa-lg"></i>
+            </a>
             @* } *@
-          @*   @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
+            @*   @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
             { *@
-                <a class="menu-item" asp-area="" asp-controller="Admin" asp-action="Statistics">
-                    <i class="fa-solid fa-lock fa-lg"></i>
-                </a>
+            <a class="menu-item" asp-area="" asp-controller="Admin" asp-action="Statistics">
+                <i class="fa-solid fa-lock fa-lg"></i>
+            </a>
             @* } *@
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <defs>

@@ -90,6 +90,12 @@
 .menu-item:nth-child(6) {
     transition-duration: 180ms;
 }
+.menu-item:nth-child(7) {
+    transition-duration: 180ms;
+}
+.menu-item:nth-child(8) {
+    transition-duration: 180ms;
+}
 
 .menu-open-button {
     z-index: 2;
@@ -131,4 +137,12 @@
     .menu-open:checked ~ .menu-item:nth-child(6) {
         transition-duration: 300ms;
         transform: translate3d(0, 237px, 0);
+    }
+    .menu-open:checked ~ .menu-item:nth-child(7) {
+        transition-duration: 300ms;
+        transform: translate3d(0, 294px, 0);
+    }
+    .menu-open:checked ~ .menu-item:nth-child(8) {
+        transition-duration: 300ms;
+        transform: translate3d(0, 351px, 0);
     }

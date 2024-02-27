@@ -8,16 +8,6 @@ var gulp = require("gulp"),
     replace = require('gulp-replace');
 
 
-const autoprefixer = require('gulp-autoprefixer');
-
-function compileSass() {
-    return gulp.src('./wwwroot/library/scss/*.scss')
-        .pipe(sass().on('error', sass.logError))
-        .pipe(autoprefixer())
-        .pipe(gulp.dest('.wwwroot/library/css/custom'));
-}
-exports.default = gulp.series(compileSass);
-
 //common.js
 gulp.task('bundle-common-js', function () {
     return gulp.src(
