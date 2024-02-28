@@ -17,13 +17,17 @@
             <div class="">@Model.AmountOfWorkers</div>
         </div>
         <hr />
-        <div class="d-flex h4" style="font-weight:400">
-            <div>Most Leased Book&nbsp:&nbsp</div>
-            <div>
-                <a href="/Home/BookPage?bookId=@Model.MostLeasedBook.Id">@Model.MostLeasedBook.Name</a>
+        @if (Model.MostLeasedBook!=null)
+        {
+            <div class="d-flex h4" style="font-weight:400">
+                <div>Most Leased Book&nbsp:&nbsp</div>
+                <div>
+                    <a href="/Home/BookPage?bookId=@Model.MostLeasedBook.Id">@Model.MostLeasedBook.Name</a>
+                </div>
             </div>
-        </div>
-        <hr />
+            <hr />
+        }
+     
         <div class="d-flex">
             <div class="h4" style="font-weight:400">Most Read Genres&nbsp:&nbsp</div>
             <ul>

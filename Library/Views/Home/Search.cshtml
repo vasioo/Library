@@ -2,62 +2,83 @@
 @model SearchViewModel
 
 <style>
-    .btn{
-        font-size: 1.1em;
-    }
-    .btn:hover {
-        text-decoration: underline;
-        color: blue;
+    .searcher-catalog {
+        font-size: 1.4em;
+        color: black;
+        position: relative;
+        padding:10px 0;
+        margin:0;
+        font-weight:500;
     }
 
-    .btn.active {
-        text-decoration: underline;
-        color: red;
+            .searcher-catalog:hover {
+                text-decoration: underline;
+            text-decoration-color:#00D1D1;
+            }
+
+        .searcher-catalog.active {
+            text-decoration: underline;
+            color: #00D1D1;
+        }
+
+    .searcher-main-div-for-catalog{
+        padding:0;
+        margin:0;
     }
+
+    .btn,
+    .btn:active,
+    .btn:focus,
+    .btn:hover {
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
+    }
+
 </style>
 
 <div class="container pt-3">
     <div class="row">
-        <div class="h1">Search Books</div>
+        <div class="h1">Търсачка на книги</div>
     </div>
     <div class="row pt-3">
-        <div class="col-1 h5">
-            @if (Model.searchCategory == "Books")
+        <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
+            @if (Model.searchCategory != "Authors" && Model.searchCategory != "Subjects")
             {
-                <a class="text-dark btn active" href="@Url.Action("Search", "Home", new { searchCategory = "Books" })">Books</a>
+                <a class="btn active searcher-catalog" href="@Url.Action("Search", "Home")">Книги</a>
             }
             else
             {
-                <a class="text-dark btn" href="@Url.Action("Search", "Home", new { searchCategory = "Books" })">Books</a>
+                <a class="btn searcher-catalog" href="@Url.Action("Search", "Home")">Книги</a>
 
             }
         </div>
-        <div class="col-1 h5">
+        <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
             @if (Model.searchCategory == "Authors")
             {
-                <a class="text-dark btn active" href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Authors</a>
+                <a class="btn active searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Автори</a>
             }
             else
             {
-                <a class="text-dark btn " href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Authors</a>
+                <a class="btn searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Автори</a>
 
             }
         </div>
-        <div class="col-1 h5">
+        <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
             @if (Model.searchCategory == "Subjects")
             {
-                <a class="text-dark btn active" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Subjects</a>
+                <a class="btn active searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Жанр</a>
             }
             else
             {
-                <a class="text-dark btn" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Subjects</a>
+                <a class="btn searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Жанр</a>
             }
         </div>
     </div>
-    <div class="row">
-        <input class="col-6" />
-        <div class="col">
-            <a class="btn btn-success">Search</a>
+    <div class="row justify-content-center justify-content-lg-start">
+        <input class="col-8 col-lg-6" />
+        <div class="col-3 col-lg-1 p-0 m-0 text-center">
+            <a class="btn btn-success">Търси</a>
         </div>
     </div>
 </div>

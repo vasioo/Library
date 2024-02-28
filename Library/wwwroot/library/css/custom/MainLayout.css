@@ -1,4 +1,5 @@
-﻿.fontawesome-icons {
+﻿
+.fontawesome-icons {
     margin-left: 15px;
     color: rgb(0,0,0,.55) !important;
 }
@@ -72,18 +73,14 @@
 #navbar {
     display: none;
 }
-
-@media (min-width: 769px) {
-    #navbar {
-        display: block;
-    }
-}
-
 #mobileNav {
     display: block;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 994px) {
+    #navbar {
+        display: block;
+    }
     #mobileNav {
         display: none;
     }
