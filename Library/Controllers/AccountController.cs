@@ -1,10 +1,12 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.UserModels;
+using Library.Models.UserModels.Interfaces;
 using Library.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Modum.Web.Areas.Identity.Pages.Account;
+using System.Net.Sockets;
 
 namespace Library.Web.Controllers
 {
@@ -29,14 +31,12 @@ namespace Library.Web.Controllers
 
         #endregion
 
-
         #region AuthPage
         public IActionResult AuthenticationPage()
         {
             return View("~/Views/Account/AuthenticationPage.cshtml");
         }
         #endregion
-
 
         #region SignIn
 
@@ -141,36 +141,43 @@ namespace Library.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(IdentityModel model)
+        public async Task<JsonResult> Login(IdentityModel model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.LoginEmail, model.LoginPassword, true, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                _signInLogger.LogInformation("User logged in.");
-                return LocalRedirect("~/");
+                return Json(new { success = true, message = "User logged in." });
             }
             if (result.RequiresTwoFactor)
             {
-                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = "~/", RememberMe = true });
+                return Json(new { success = false, message = "2FA Required.", redirectPage = "./LoginWith2fa", rememberMe = true });
             }
             if (result.IsLockedOut)
             {
-                _signInLogger.LogWarning("User account locked out.");
-                return RedirectToPage("./Lockout");
+                return Json(new { success = false, message = "User account locked out." });
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                return AuthenticationPage();
+                return Json(new { success = false, message = "Invalid Login Attempt." });
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(IdentityModel model)
+        public async Task<JsonResult> Register(IdentityModel model)
         {
             try
             {
+                var existingEmailUser = await _userManager.FindByEmailAsync(model.RegisterEmail);
+                if (existingEmailUser != null)
+                {
+                    return Json(new { success = false, message = "Email already exists." });
+                }
+                var existingUsernameUser = await _userManager.FindByNameAsync(model.RegisterUsername);
+                if (existingUsernameUser != null)
+                {
+                    return Json(new { success = false, message = "Username already exists.", usernameRelated = true });
+                }
                 var user = new ApplicationUser();
 
                 user.UserName = model.RegisterUsername;
@@ -183,7 +190,7 @@ namespace Library.Web.Controllers
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    return LocalRedirect("~/");
+                    return Json(new { success = true, message = "Successfull Account Creation." });
 
                     #region Send Email
 
@@ -211,10 +218,7 @@ namespace Library.Web.Controllers
                     //}
                     #endregion
                 }
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-
-                return LocalRedirect("~/");
+                return Json(new { success = false, message = "Invalid Account Creation." });
             }
             catch (Exception)
             {

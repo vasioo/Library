@@ -13,72 +13,61 @@
         <span class="bg-animate"></span>
         <span class="bg-animate2"></span>
         <div class="form-box login">
-            <h2 class="animation" style="--i:0; --j:21;">Login</h2>
+            <h2 class="animation" style="--i:0; --j:21;">Логин</h2>
             <form id="loginForm" asp-action="Login" asp-controller="Account" method="post" class="p-2" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div class="input-box animation" style="--i:1; --j:22;">
                     <input asp-for="LoginEmail" type="text" required autocomplete="off">
-                    <label>Username</label>
+                    <label>Имейл</label>
                     <i class="bx bxs-user"></i>
                 </div>
                 <div class="input-box animation" style="--i:2; --j:23;">
                     <input asp-for="LoginPassword" type="password" id="login-password" required autocomplete="off">
-                    <label>Password</label>
+                    <label>Парола</label>
                     <i class="far fa-eye eye-toggler" id="login-expose-password"></i>
                 </div>
                 <button type="submit" class="btn animation" style="--i:3; --j:24;">
-                    Login
+                    Логин
                 </button>
                 <div class="logreg-link animation" style="--i:4; --j:25;">
-                    <p>Don't have an account? <a href="#" class="register-link">Sign Up</a></p>
+                    <p>Нямате профил? <a href="#" class="register-link">Регистрация</a></p>
                 </div>
             </form>
         </div>
         <div class="info-text login">
-            <h2 class="animation" style="--i:0; --j:20;">Welcome Back</h2>
-            <p class="animation" style="--i:1; --j:21;">Happy to see you again!</p>
+            <h2 class="animation" style="--i:0; --j:20;">Здравейте отново</h2>
+            <p class="animation" style="--i:1; --j:21;">Изключително щастливи сме да ви посрещнем отново!</p>
         </div>
 
         <div class="form-box register">
-            <h2 class="animation" style="--i:17; --j:0;">Sign Up</h2>
+            <h2 class="animation" style="--i:17; --j:0;">Регистрация</h2>
             <form id="registerForm" method="post" asp-action="Register" asp-controller="Account" class="p-2" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div class="input-box animation" style="--i:18; --j:1;">
                     <input asp-for="RegisterUsername" type="text" required autocomplete="off">
-                    <label>Username</label>
+                    <label>Потребителско име</label>
                     <i class="bx bxs-user"></i>
                 </div>
                 <div class="input-box animation" style="--i:19; --j:2;">
                     <input asp-for="RegisterEmail" type="text" required autocomplete="off">
-                    <label>Email</label>
+                    <label>Имейл</label>
                     <i class="bx bxs-envelope"></i>
                 </div>
                 <div class="input-box animation" style="--i:20; --j:3;">
                     <input asp-for="RegisterPassword" id="register-password" type="password" required autocomplete="off">
-                    <label>Password</label>
+                    <label>Парола</label>
                     <i class="far fa-eye eye-toggler" id="register-expose-password"></i>
                 </div>
-                <button type="submit" class="btn animation" style="--i:21; --j:4;">Sign Up</button>
+                <button type="submit" class="btn animation" style="--i:21; --j:4;">Изпрати</button>
                 <div class="logreg-link animation" style="--i:22; --j:5;">
-                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                    <p>Вече имате профил? <a href="#" class="login-link">Логин</a></p>
                 </div>
             </form>
         </div>
 
         <div class="info-text register">
-            <h2 class="animation" style="--i:17; --j:0;">Why us?</h2>
-            <p class="animation" style="--i:18; --j:1;">Join us on the most secure and privacy-focused social media platform.</p>
+            <h2 class="animation" style="--i:17; --j:0;">Защо нас?</h2>
+            <p class="animation" style="--i:18; --j:1;">Защото сме най-добри. Това е най-голямата дигитална библиотека в света. </p>
         </div>
     </div>
 </div>
-@if (ViewData.ModelState.IsValid == false)
-{
-    <script>
-        $(document).ready(function () {
-            var errorMessage = '@Html.Raw(Json.Encode(ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage))';
-            if (errorMessage) {
-                alert(errorMessage);
-            }
-        });
-    </script>
-}

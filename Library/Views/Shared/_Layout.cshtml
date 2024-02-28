@@ -257,6 +257,9 @@
                 <span class="hamburger hamburger-3"></span>
             </label>
 
+            <a asp-area="" asp-controller="Home" asp-action="MainPage" class="menu-item">
+                <img src="~/images/litify-logo.png" style="width:30px" />
+            </a>
             <a asp-controller="Home" asp-action="Borrowed" class="menu-item">
                 <i class="fa-solid fa-book-open-reader fa-lg"></i>
             </a>
@@ -278,18 +281,18 @@
                     <i class="fa-solid fa-user-lock fa-lg"></i>
                 </a>
             }
-            @* @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Worker") || User.IsInRole("SuperAdmin")))
-            { *@
-            <a asp-controller="Librarian" asp-action="AllBooksInformation" class="menu-item">
-                <i class="fa-solid fa-book fa-lg"></i>
-            </a>
-            @* } *@
-            @*   @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
-            { *@
-            <a class="menu-item" asp-area="" asp-controller="Admin" asp-action="Statistics">
-                <i class="fa-solid fa-lock fa-lg"></i>
-            </a>
-            @* } *@
+            @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Worker") || User.IsInRole("SuperAdmin")))
+            {
+                <a asp-controller="Librarian" asp-action="AllBooksInformation" class="menu-item">
+                    <i class="fa-solid fa-book fa-lg"></i>
+                </a>
+            }
+            @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
+            {
+                <a class="menu-item" asp-area="" asp-controller="Admin" asp-action="Statistics">
+                    <i class="fa-solid fa-lock fa-lg"></i>
+                </a>
+            }
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <defs>
                     <filter id="shadowed-goo">

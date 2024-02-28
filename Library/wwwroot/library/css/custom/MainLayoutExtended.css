@@ -107,6 +107,11 @@ main.menu-opened {
     transition-duration: 180ms;
 }
 
+.menu-item:nth-child(9) {
+    transition-duration: 180ms;
+}
+
+
 .menu-open-button {
     z-index: 2;
     transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -150,11 +155,15 @@ main.menu-opened {
     }
 
     .menu-open:checked ~ .menu-item:nth-child(7) {
-        transition-duration: 300ms;
+        transition-duration: 350ms;
         transform: translate3d(0, 294px, 0);
     }
 
     .menu-open:checked ~ .menu-item:nth-child(8) {
-        transition-duration: 300ms;
+        transition-duration: 400ms;
+        transform: translate3d(0, 351px, 0);
+    }
+    .menu-open:checked ~ .menu-item:nth-child(9) {
+        transition-duration: 450ms;
         transform: translate3d(0, 351px, 0);
     }
