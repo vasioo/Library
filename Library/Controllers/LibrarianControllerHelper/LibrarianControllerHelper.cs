@@ -1,4 +1,5 @@
 ﻿using Library.Models.BaseModels;
+using Library.Models.Cloudinary;
 using Library.Models.DTO;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,15 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
                 await _bookService.AddAsync(bookNew);
 
-                await _bookService.SaveImage(book.Id, image);
+                var photo = new Photo();
+                if (image != null && image != "")
+                {
+                    photo.Image = image;
+                    photo.ImageName = $"image-for-book-{book.Id}";
+                    photo.PublicId = $"image-for-book-{book.Id}";
+                }
+                await _bookService.DeleteImage(photo);
+                await _bookService.SaveImage(photo);
                 return true;
             }
             catch (Exception)
@@ -206,8 +215,16 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
 
                 await _bookService.UpdateAsync(bookNew);
-
-                await _bookService.UpdateImageData(book.Id, imageObj);
+             
+                var photo = new Photo();
+                if (imageObj != null && imageObj != "")
+                {
+                    photo.Image = imageObj;
+                    photo.ImageName = $"image-for-book-{book.Id}";
+                    photo.PublicId = $"image-for-book-{book.Id}";
+                }
+                await _bookService.DeleteImage(photo);
+                await _bookService.SaveImage(photo);
 
                 return true;
             }
@@ -228,7 +245,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return _bookSubjectService.IQueryableGetAllAsync();
         }
 
-        public async Task<Book> GetBook(int bookId)
+        public async Task<Book> GetBook(Guid bookId)
         {
             return await _bookService.GetByIdAsync(bookId);
         }
@@ -238,7 +255,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return _bookService.IQueryableGetAllAsync();
         }
 
-        public async Task<int> RemoveABook(int bookId)
+        public async Task<int> RemoveABook(Guid bookId)
         {
             return await _bookService.RemoveAsync(bookId);
         }

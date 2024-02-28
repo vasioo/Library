@@ -9,7 +9,7 @@ namespace Library.Models.ViewModels
 {
     public class MainPageViewModel
     {
-        public IQueryable<Book> RecommendedBooks { get; set; }
-        public IQueryable<Book> BestSellers { get; set; }
+        public IQueryable<Book> RecommendedBooks { get; set; } = Enumerable.Empty<Book>().AsQueryable();
+        public IQueryable<Book> BestSellers { get; set; } = Enumerable.Empty<Book>().AsQueryable();
     }
 }

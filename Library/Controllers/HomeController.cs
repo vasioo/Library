@@ -62,7 +62,7 @@ namespace Library.Controllers
 
         #region BookPage
         //[Authorize]
-        public async Task<IActionResult> BookPage(int bookId)
+        public async Task<IActionResult> BookPage(Guid bookId)
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
@@ -73,7 +73,7 @@ namespace Library.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> BorrowBook(int bookId)
+        public async Task<JsonResult> BorrowBook(Guid bookId)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace Library.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> UnborrowBook(int bookId)
+        public async Task<JsonResult> UnborrowBook(Guid bookId)
         {
             try
             {
@@ -155,10 +155,9 @@ namespace Library.Controllers
 
         #region Search
 
-        public IActionResult Search(string searchCategory)
-        {
-            var viewModel = new SearchViewModel();
-            viewModel.searchCategory = searchCategory;
+        public async Task<IActionResult> Search(string searchCategory, string inputValue, int page = 1)
+            {
+            var viewModel = await _helper.SearchViewModelHelper(searchCategory, inputValue,page);
             return View($"~/Views/Home/Search.cshtml", viewModel);
         }
 

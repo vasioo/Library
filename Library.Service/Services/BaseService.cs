@@ -1,7 +1,11 @@
-﻿using Library.DataAccess;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Library.DataAccess;
 using Library.DataAccess.MainModels;
+using Library.Models.Cloudinary;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Linq.Expressions;
 using IEntity = Library.Models.UserModels.Interfaces.IEntity;
 
@@ -9,19 +13,31 @@ namespace Library.Services.Services
 {
     public class BaseService<T> : IBaseService<T> where T : class, IEntity
     {
+        public IConfiguration Configuration { get; }
+        private CloudinarySettings _cloudinarySettings;
+        private Cloudinary _cloudinary;
         private readonly DataContext _context;
 
-        public BaseService(DataContext context)
+        public BaseService(IConfiguration configuration, DataContext context)
         {
+            Configuration = configuration;
+            ConfigureCloudinary();
             _context = context;
         }
-
-        public async Task<int> AddAsync(T entity)
+        public async Task ConfigureCloudinary()
+        {
+            _cloudinarySettings = Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>() ?? new CloudinarySettings();
+            Account account = new Account(
+                _cloudinarySettings.CloudName,
+                _cloudinarySettings.ApiKey,
+                _cloudinarySettings.ApiSecret);
+            _cloudinary = new Cloudinary(account);
+        }
+        public async Task<Guid> AddAsync(T entity)
         {
             _context.Set<T>().Add(entity);
             await _context.SaveChangesAsync();
 
-            // Access the primary key value and return it
             return entity.Id;
         }
 
@@ -49,7 +65,7 @@ namespace Library.Services.Services
             return _context.Set<T>();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             try
             {
@@ -73,7 +89,7 @@ namespace Library.Services.Services
             return await _context.Set<T>().CountAsync();
         }
 
-        public async Task<int> RemoveAsync(int id)
+        public async Task<int> RemoveAsync(Guid id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
             if (entity == null)
@@ -93,7 +109,7 @@ namespace Library.Services.Services
         {
             if (!_context.Set<T>().Local.Any(e => e.Id == entity.Id))
             {
-                _context.Set<T>().Attach(entity); 
+                _context.Set<T>().Attach(entity);
             }
             _context.Entry(entity).State = EntityState.Modified;
 
@@ -118,5 +134,59 @@ namespace Library.Services.Services
             return users;
         }
 
+        public async Task<bool> SaveImages(List<Photo> images)
+        {
+            try
+            {
+                foreach (var image in images)
+                {
+                    await _cloudinary.UploadAsync(new ImageUploadParams()
+                    {
+                        File = new FileDescription(image.Image),
+                        DisplayName = image.ImageName,
+                        PublicId = image.PublicId,
+                        Overwrite = false,
+                    });
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> SaveImage(Photo image)
+        {
+            try
+            {
+                await _cloudinary.UploadAsync(new ImageUploadParams()
+                {
+                    File = new FileDescription(image.Image),
+                    DisplayName = image.ImageName,
+                    PublicId = image.PublicId,
+                    Overwrite = false,
+                });
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteImage(Photo image)
+        {
+            try
+            {
+                await _cloudinary.DeleteResourcesAsync(image.PublicId);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

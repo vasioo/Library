@@ -1,8 +1,12 @@
 ﻿using Hangfire;
 using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Library.Web.Controllers.HomeControllerHelper
 {
@@ -11,18 +15,21 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #region Fields&Constructor
         private readonly INotificationService _notificationService;
         private readonly IBookService _bookService;
+        private readonly IBlogPostService _blogPostService;
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IBookSubjectService _bookSubjectService;
 
         public HomeControllerHelper(INotificationService notificationService, IBookSubjectService bookSubjectService,
-            IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService)
+            IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService, IBlogPostService blogPostService)
         {
             _notificationService = notificationService;
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
             _userLeasedBookService = userLeasedBookService;
             _bookSubjectService = bookSubjectService;
+            _blogPostService = blogPostService;
+
         }
         #endregion
 
@@ -80,7 +87,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #endregion
 
         #region BookPageHelper
-        public async Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, int bookId)
+        public async Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, Guid bookId)
         {
             var viewModel = new BookPageViewModel();
 
@@ -92,7 +99,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             if (user!=null)
             {
                 var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
-                if (borrowedBook.Id != 0)
+                if (borrowedBook.Id != Guid.Empty)
                 {
                     viewModel.HasUserBorrowedIt = true;
                 }
@@ -104,7 +111,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return viewModel;
         }
 
-        public async Task<bool> BorrowBookPostHelper(int bookId, string userId)
+        public async Task<bool> BorrowBookPostHelper(Guid bookId, string userId)
         {
             try
             {
@@ -114,7 +121,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                     var userLeasedBook = new UserLeasedBookMappingTable();
 
                     userLeasedBook.Book = book;
-                    userLeasedBook.BookId = bookId;
+                    userLeasedBook.Book.Id = bookId;
                     userLeasedBook.UserId = userId;
                     if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId,userId)!=null)
                     {
@@ -130,14 +137,14 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 throw;
             }
         }
-        public async Task<bool> UnborrowBookPostHelper(int bookId, string userId)
+        public async Task<bool> UnborrowBookPostHelper(Guid bookId, string userId)
         {
             try
             {
-                if (bookId!=0 && !string.IsNullOrEmpty(userId))
+                if (bookId!=Guid.Empty && !string.IsNullOrEmpty(userId))
                 {
                     var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, userId);
-                    if (borrowedBook!.Id!=0)
+                    if (borrowedBook!.Id!=Guid.Empty)
                     {
                         await _userLeasedBookService.RemoveAsync(borrowedBook.Id);
                         return true;
@@ -166,6 +173,68 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user!, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
+            return viewModel;
+        }
+        #endregion
+
+        #region SearchPageHelper
+
+        public async Task<SearchViewModel> SearchViewModelHelper(string searchCategory,string inputValue, int page = 1)
+        {
+            var viewModel = new SearchViewModel();
+          
+            if (searchCategory == "Authors")
+            {
+                var authors = _blogPostService.IQueryableGetAllAsync().Where(x=>x.IsForAuthor).Skip((page-1)*20).Take(20);
+                viewModel.TotalPages = (int)Math.Ceiling((double)_blogPostService.IQueryableGetAllAsync().Count() / 20);
+                viewModel.PageNumber = page;
+                var authorDTO = authors.Select(blogPost => new BlogPost
+                {
+                    Id = blogPost.Id,
+                    Title = blogPost.Title,
+                    DateOfCreation = blogPost.DateOfCreation,
+                    Content = blogPost.Content,
+                }).AsQueryable();
+
+                viewModel.BlogPosts = authorDTO;
+            }
+
+            else if (searchCategory == "Subjects")
+            {
+                var subjects = _bookSubjectService.IQueryableGetAllAsync().Skip((page - 1) * 20).Take(20);
+                viewModel.TotalPages = (int)Math.Ceiling((double)_bookSubjectService.IQueryableGetAllAsync().Count() / 20);
+                viewModel.PageNumber = page;
+                var subjectDTOs = subjects.Select(subject => new SubjectDTO
+                {
+                    Subject = subject.SubjectName,
+                    AmountOfBooksWithinThatSubject = _bookSubjectService.GetBookCountByBookSubject(subject)
+                }).AsQueryable();
+
+
+                viewModel.Subjects = subjectDTOs;
+            }
+
+            else
+            {
+                var books = _bookService.IQueryableGetAllAsync().Skip((page - 1) * 20).Take(20);
+                viewModel.TotalPages = (int)Math.Ceiling((double)_bookService.IQueryableGetAllAsync().Count() / 20);
+                viewModel.PageNumber = page;
+                var bookDTOs = books.Select(book => new BookDTO
+                {
+                    Id = book.Id,
+                    Name = book.Name,
+                    Author = book.Author,
+                    DateOfBookCreation = book.DateOfBookCreation,
+                    Description = book.Description,
+                }).AsQueryable();
+
+                viewModel.Books = bookDTOs;
+
+                searchCategory = "";
+            }
+
+            viewModel.searchCategory = searchCategory;
+            viewModel.inputValue = inputValue;
             return viewModel;
         }
         #endregion

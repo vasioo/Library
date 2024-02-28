@@ -1,4 +1,5 @@
 ﻿using Library.DataAccess.MainModels;
+using Library.Models.UserModels;
 using Library.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -137,5 +138,90 @@ namespace Library.Web.Controllers
         }
 
         #endregion
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(IdentityModel model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.LoginEmail, model.LoginPassword, true, lockoutOnFailure: false);
+            if (result.Succeeded)
+            {
+                _signInLogger.LogInformation("User logged in.");
+                return LocalRedirect("~/");
+            }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = "~/", RememberMe = true });
+            }
+            if (result.IsLockedOut)
+            {
+                _signInLogger.LogWarning("User account locked out.");
+                return RedirectToPage("./Lockout");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return AuthenticationPage();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(IdentityModel model)
+        {
+            try
+            {
+                var user = new ApplicationUser();
+
+                user.UserName = model.RegisterUsername;
+                user.Email = model.RegisterEmail;
+                var result = await _userManager.CreateAsync(user, model.RegisterPassword);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "Admin");
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    return LocalRedirect("~/");
+
+                    #region Send Email
+
+                    // _logger.LogInformation("User created a new account with password.");
+
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    //var callbackUrl = Url.Page(
+                    //    "/Account/ConfirmEmail",
+                    //    pageHandler: null,
+                    //    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                    //    protocol: Request.Scheme);
+
+                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    //{
+                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    //}
+                    //else
+                    //{
+                    //  await _signInManager.SignInAsync(user, isPersistent: false);
+                    //  return LocalRedirect(returnUrl);
+                    //}
+                    #endregion
+                }
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return LocalRedirect("~/");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

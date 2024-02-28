@@ -14,7 +14,8 @@
         <span class="bg-animate2"></span>
         <div class="form-box login">
             <h2 class="animation" style="--i:0; --j:21;">Login</h2>
-            <form id="loginForm" method="post" class="p-2" enctype="multipart/form-data">
+            <form id="loginForm" asp-action="Login" asp-controller="Account" method="post" class="p-2" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div class="input-box animation" style="--i:1; --j:22;">
                     <input asp-for="LoginEmail" type="text" required autocomplete="off">
                     <label>Username</label>
@@ -40,7 +41,8 @@
 
         <div class="form-box register">
             <h2 class="animation" style="--i:17; --j:0;">Sign Up</h2>
-            <form id="registerForm" method="post" class="p-2" enctype="multipart/form-data">
+            <form id="registerForm" method="post" asp-action="Register" asp-controller="Account" class="p-2" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div class="input-box animation" style="--i:18; --j:1;">
                     <input asp-for="RegisterUsername" type="text" required autocomplete="off">
                     <label>Username</label>
@@ -69,3 +71,14 @@
         </div>
     </div>
 </div>
+@if (ViewData.ModelState.IsValid == false)
+{
+    <script>
+        $(document).ready(function () {
+            var errorMessage = '@Html.Raw(Json.Encode(ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage))';
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
+}

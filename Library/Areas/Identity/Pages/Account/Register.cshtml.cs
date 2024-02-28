@@ -91,10 +91,8 @@ namespace Modum.Web.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
             try
             {
-
                 var user = new ApplicationUser();
 
                 user.UserName = Input.Email;

@@ -64,7 +64,7 @@ namespace Library.Web.Controllers
             return View("~/Views/Librarian/ManageBookCategories.cshtml", data);
         }
 
-        public async Task<IActionResult> EditBookInformation(int bookId)
+        public async Task<IActionResult> EditBookInformation(Guid bookId)
         {
             ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
 
@@ -132,7 +132,7 @@ namespace Library.Web.Controllers
             return Json(new { status = true, Message = "The item was added successfully" });
         }
 
-        public async Task<JsonResult> RemoveABook(int bookId)
+        public async Task<JsonResult> RemoveABook(Guid bookId)
         {
             try
             {

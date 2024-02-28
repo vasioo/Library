@@ -4,6 +4,7 @@ namespace Library.Services.Interfaces
 {
     public interface IBookSubjectService:IBaseService<BookSubject>
     {
-        IQueryable<BookSubject> GetBookCategoriesByBookSubject(int bookSubjectId);
+        IQueryable<BookSubject> GetBookCategoriesByBookSubject(Guid bookSubjectId); 
+        int GetBookCountByBookSubject(BookSubject bookSubject);
     }
 }

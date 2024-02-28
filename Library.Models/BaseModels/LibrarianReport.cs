@@ -9,7 +9,7 @@ namespace Library.Models.BaseModels
 {
     public class LibrarianReport:IEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Reason { get; set; } = "";
 

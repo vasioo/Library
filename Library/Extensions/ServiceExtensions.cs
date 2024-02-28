@@ -34,6 +34,9 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<BookSubject>, BaseService<BookSubject>>();
             service.AddScoped<IBookSubjectService, BookSubjectService>();
 
+            service.AddScoped<IBaseService<BlogPost>, BaseService<BlogPost>>();
+            service.AddScoped<IBlogPostService, BlogPostService>();
+
             service.AddScoped<UserManager<ApplicationUser>>();
 
         }

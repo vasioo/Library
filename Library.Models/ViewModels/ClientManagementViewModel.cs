@@ -1,4 +1,5 @@
 ﻿using Library.DataAccess.MainModels;
+using Library.Models.BaseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Library.Models.ViewModels
 {
     public class ClientManagementViewModel
     {
-        public IQueryable<ApplicationUser> Users{ get; set; }
+        public IQueryable<ApplicationUser> Users{ get; set; } = Enumerable.Empty<ApplicationUser>().AsQueryable();
     }
 }

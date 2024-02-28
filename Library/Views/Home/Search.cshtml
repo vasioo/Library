@@ -6,24 +6,24 @@
         font-size: 1.4em;
         color: black;
         position: relative;
-        padding:10px 0;
-        margin:0;
-        font-weight:500;
+        padding: 10px 0;
+        margin: 0;
+        font-weight: 500;
     }
 
-            .searcher-catalog:hover {
-                text-decoration: underline;
-            text-decoration-color:#00D1D1;
-            }
+        .searcher-catalog:hover {
+            text-decoration: underline;
+            text-decoration-color: #00D1D1;
+        }
 
         .searcher-catalog.active {
             text-decoration: underline;
             color: #00D1D1;
         }
 
-    .searcher-main-div-for-catalog{
-        padding:0;
-        margin:0;
+    .searcher-main-div-for-catalog {
+        padding: 0;
+        margin: 0;
     }
 
     .btn,
@@ -35,6 +35,40 @@
         outline: none !important;
     }
 
+    .blog-card {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 20px;
+    }
+
+        .blog-card img {
+            width: 200px;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .blog-card .card-body {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .blog-card .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .blog-card .card-date {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .blog-card .card-content {
+            margin-top: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 </style>
 
 <div class="container pt-3">
@@ -43,42 +77,107 @@
     </div>
     <div class="row pt-3">
         <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
-            @if (Model.searchCategory != "Authors" && Model.searchCategory != "Subjects")
-            {
-                <a class="btn active searcher-catalog" href="@Url.Action("Search", "Home")">Книги</a>
-            }
-            else
-            {
-                <a class="btn searcher-catalog" href="@Url.Action("Search", "Home")">Книги</a>
-
-            }
+            <a class="btn @(Model.searchCategory != "Authors" && Model.searchCategory != "Subjects" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "", inputValue = Model.inputValue })">Книги</a>
         </div>
         <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
-            @if (Model.searchCategory == "Authors")
-            {
-                <a class="btn active searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Автори</a>
-            }
-            else
-            {
-                <a class="btn searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Authors" })">Автори</a>
-
-            }
+            <a class="btn @(Model.searchCategory == "Authors" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Authors", inputValue = Model.inputValue })">Автори</a>
         </div>
         <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
-            @if (Model.searchCategory == "Subjects")
-            {
-                <a class="btn active searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Жанр</a>
-            }
-            else
-            {
-                <a class="btn searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects" })">Жанр</a>
-            }
+            <a class="btn @(Model.searchCategory == "Subjects" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects", inputValue = Model.inputValue })">Жанр</a>
         </div>
     </div>
     <div class="row justify-content-center justify-content-lg-start">
-        <input class="col-8 col-lg-6" />
-        <div class="col-3 col-lg-1 p-0 m-0 text-center">
-            <a class="btn btn-success">Търси</a>
-        </div>
+        <form method="get" action="@Url.Action("Search", "Home")" class="row g-2 align-items-center">
+            <div class="col-8 col-lg-6">
+                <input class="form-control" type="text" name="inputValue" placeholder="Search..." value="@Model.inputValue">
+            </div>
+            <div class="col-3 col-lg-1 p-0 m-0 text-center">
+                <button type="submit" class="btn btn-success">Search</button>
+            </div>
+            <input type="hidden" name="searchCategory" value="@Model.searchCategory" />
+        </form>
+    </div>
+
+    <div id="items-show-container">
+
+        @if (Model.searchCategory != "Authors" && Model.searchCategory != "Subjects")
+        {
+            @foreach (var item in Model.Books)
+            {
+                var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{item.Id}.png";
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="blog-card">
+                            <img src="imageUrl" alt="Blog Image">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-date">@item.DateOfBookCreation</p>
+                                <p class="card-content">@Truncate(item.Description, 100)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        @if (Model.searchCategory == "Authors")
+        {
+            @foreach (var item in Model.BlogPosts)
+            {
+                var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{item.Id}.png";
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="blog-card">
+                            <img src="imageUrl" alt="Blog Image">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Title</h5>
+                                <p class="card-date">@item.DateOfCreation</p>
+                                <p class="card-content">@Truncate(item.Content, 100)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        @if (Model.searchCategory == "Subjects")
+        {
+            <ul>
+                @foreach (var item in Model.Subjects)
+                {
+                    <li>
+                        <div class="row">
+                            <a>@item.Subject</a>
+                            @item.AmountOfBooksWithinThatSubject
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div class="row justify-content-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Search", "Home", new { searchCategory = Model.searchCategory, inputValue = Model.inputValue, page = i })">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
+@functions
+{
+    string Truncate(string value, int maxLength)
+    {
+        if (value.Length <= maxLength)
+        {
+            return value;
+        }
+        else
+        {
+            return value.Substring(0, maxLength) + "...";
+        }
+    }
+}

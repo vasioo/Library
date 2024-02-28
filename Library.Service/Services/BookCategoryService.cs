@@ -1,25 +1,23 @@
 ﻿using Library.DataAccess;
 using Library.Models.BaseModels;
 using Library.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Library.Services.Services
 {
     public class BookCategoryService : BaseService<BookCategory>, IBookCategoryService
     {
-        private DataContext _context;
-        public BookCategoryService(DataContext context) : base(context)
+        private DataContext _dataContext;
+        private readonly IConfiguration _configuration;
+        public BookCategoryService(IConfiguration configuration, DataContext context) : base(configuration, context)
         {
-            _context = context;
+            _configuration = configuration;
+            _dataContext = context;
         }
 
         public BookCategory GetBookCategoryByBookCategoryName(string bookCategoryName)
         {
-            return _context.Categories.Where(x => x.CategoryName! == bookCategoryName!).FirstOrDefault();
+            return _dataContext.Categories.Where(x => x.CategoryName! == bookCategoryName!).FirstOrDefault();
         }
     }
 }

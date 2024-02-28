@@ -10,9 +10,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
         MainPageViewModel GetMainPageAttributes(ApplicationUser user);
         BookCollectionShowerViewModel GetBookCollectionAttributes(ApplicationUser user);
         BookShowerViewModel GetBooksAttributes(ApplicationUser user, string category);
-        Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, int bookId);
+        Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, Guid bookId);
         BorrowedViewModel GetBorrowedPageAttributes(ApplicationUser user);
-        Task<bool> BorrowBookPostHelper(int bookId, string userId);
-        Task<bool> UnborrowBookPostHelper(int bookId, string userId);
+        Task<bool> BorrowBookPostHelper(Guid bookId, string userId);
+        Task<bool> UnborrowBookPostHelper(Guid bookId, string userId);
+        Task<SearchViewModel> SearchViewModelHelper(string searchCategory, string inputValue,int page);
     }
 }

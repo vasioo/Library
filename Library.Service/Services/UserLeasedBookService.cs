@@ -3,16 +3,19 @@ using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Library.Services.Services
 {
     public class UserLeasedBookService : BaseService<UserLeasedBookMappingTable>, IUserLeasedBookService
     {
         private DataContext _dataContext;
+        private IConfiguration _configuration;
 
-        public UserLeasedBookService(DataContext context) : base(context)
+        public UserLeasedBookService(DataContext context, IConfiguration configuration) : base(configuration,context)
         {
             _dataContext = context;
+            _configuration = configuration;
         }
         public async Task<List<string>> MostReadGenres()
         {
@@ -39,12 +42,12 @@ namespace Library.Services.Services
         public async Task<Book> MostLeasedBook()
         {
             var mostLeasedBookId = await _dataContext.UserLeasedBooks
-                .GroupBy(ulb => ulb.BookId)
+                .GroupBy(ulb => ulb.Book.Id)
                 .OrderByDescending(group => group.Count())
                 .Select(group => group.Key)
                 .FirstOrDefaultAsync();
 
-            if (mostLeasedBookId != null)
+            if (mostLeasedBookId != Guid.Empty)
             {
                 var mostLeasedBook = await _dataContext.Books
                     .Where(book => book.Id == mostLeasedBookId)
@@ -59,10 +62,10 @@ namespace Library.Services.Services
 
 
 
-        public async Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(int bookId, string userId)
+        public async Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(Guid bookId, string userId)
         {
-            var model = await _dataContext.UserLeasedBooks.Where(x => x.UserId == userId && bookId == bookId).FirstOrDefaultAsync();
-            if (model!=null)
+            var model = await _dataContext.UserLeasedBooks.Where(x => x.UserId == userId && x.Book.Id== bookId).FirstOrDefaultAsync();
+            if (model != null)
             {
                 return model;
             }

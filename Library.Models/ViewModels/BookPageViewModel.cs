@@ -9,8 +9,8 @@ namespace Library.Models.ViewModels
 
         public ApplicationUser User { get; set; } = new ApplicationUser();
 
-        public IQueryable<Book> RecommendedBooks { get; set; }
-        public IQueryable<Book> BestSellers { get; set; }
+        public IQueryable<Book> RecommendedBooks { get; set; } = Enumerable.Empty<Book>().AsQueryable();
+        public IQueryable<Book> BestSellers { get; set; } = Enumerable.Empty<Book>().AsQueryable();
 
         public bool HasUserBorrowedIt { get; set; }
     }
