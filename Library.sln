@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Web", "Library\Library.Web.csproj", "{05BCDE93-9520-424C-ACC6-86ADBD14D84D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Web", "Library\Library.Web.csproj", "{05BCDE93-9520-424C-ACC6-86ADBD14D84D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Services", "Library.Service\Library.Services.csproj", "{1FDDCE5C-AC74-4977-B467-BFA9C7E5FEA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Services", "Library.Service\Library.Services.csproj", "{1FDDCE5C-AC74-4977-B467-BFA9C7E5FEA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.DataAccess", "Library.DataAccess\Library.DataAccess.csproj", "{8EADF7FE-6EB0-4FFC-9A18-02C04ED492A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.DataAccess", "Library.DataAccess\Library.DataAccess.csproj", "{8EADF7FE-6EB0-4FFC-9A18-02C04ED492A2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D95FD69B-AF28-4D35-8F14-7FFFE2D534B4} = {D95FD69B-AF28-4D35-8F14-7FFFE2D534B4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Models", "Library.Models\Library.Models.csproj", "{D95FD69B-AF28-4D35-8F14-7FFFE2D534B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Models", "Library.Models\Library.Models.csproj", "{D95FD69B-AF28-4D35-8F14-7FFFE2D534B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

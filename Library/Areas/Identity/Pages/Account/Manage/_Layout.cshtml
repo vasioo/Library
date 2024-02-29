@@ -1,26 +1,21 @@
 ﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
-    {
-        Layout = parentLayout.ToString();
-    }
-    else
-    {
-        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
-    }
+    Layout = "/Areas/Identity/Pages/_AccountLayout.cshtml";
 }
 @section Styles {
     <link href="@Url.Content("~/library/css/custom/UserNav.css")" rel="stylesheet" type="text/css" />
 }
-<div class="container">
+<div class="">
     <div>
-        <h2 class="p-4 d-flex justify-content-center align-items-center">Manage your Account Settings</h2>
+        <h2 class="p-4 d-flex justify-content-center align-items-center">Настройки</h2>
         <hr />
-        <div class="row">
-            <div class="col-md-3">
-                <partial name="_ManageNav" />
-            </div>
-            <div class="col-md-9">
+        <div class="row justify-content-center">
+            <div class="col-xxl-9 col-12 row">
+                <div class="col-md-3">
+                    <partial name="_ManageNav" />
+                </div>
+                <div class="col-md-9">
                     @RenderBody()
+                </div>
             </div>
         </div>
     </div>

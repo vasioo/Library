@@ -346,10 +346,10 @@ var manageBookCategories = (function () {
                 '<tr class="sub-row">' +
                 '   <td><input type="text" class="form-control subject-name" required></td>' +
                 '   <td id="for-book-categories">' +
-                '       <a class="btn btn-primary" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
+                '       <a class="btn btn-primary col-12" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
                 '        Categories' +
                 '       </a > ' +
-                '       <div class="card book-categories-table" id="">' +
+                '       <div class="card book-categories-table show" id="">' +
                 '               <div class="card-header"></div>' +
                 '               <div class="card-body">' +
                 '                 <table>' +

@@ -9,72 +9,85 @@
     <div class="pt-3">
         <div class="d-flex justify-content-center">
             <div class="h2">
-                Manage Users Menu
+                Управление на Книги
             </div>
         </div>
         <div class="d-flex pt-3">
-            <a class="col btn btn-success" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.2em">Add A Book</a>
+            <a class="col btn btn-success" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.2em">Добави книга</a>
         </div>
-        <div id="book-filtering" class="d-flex pt-4 pb-4 justify-content-center">
-            <form asp-action="AllBooksInformation" method="get" class="row">
-                <div class="form-actions no-color">
-                    <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
-                        Find by Book entity :
+        @if (Model != null)
+        {
+            @if (Model.Count > 0)
+            {
+                <div id="book-filtering" class="d-flex pt-4 pb-4 justify-content-center">
+                    <form asp-action="AllBooksInformation" method="get" class="row">
+                        <div class="form-actions no-color">
+                            <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
+                                Find by Book entity :
+                            </div>
+                            <div class="row m-0 pb-2">
+                                <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
+                            </div>
+                            <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
+                                <input type="submit" value="Search" class="btn btn-dark col-5" />
+                                <a class="btn btn-danger col-5" asp-action="AllBooksInformation">Clear</a>
+                            </div>
                         </div>
-                    <div class="row m-0 pb-2">
-                        <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
-                    </div>
-                    <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
-                        <input type="submit" value="Search" class="btn btn-dark col-5" />
-                        <a class="btn btn-danger col-5" asp-action="AllBooksInformation">Clear</a>
-                    </div>
+                    </form>
                 </div>
-            </form>
-        </div>
 
-        <table class="table pt-3">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Author</th>
-                    <th>Date of Creation</th>
-                    <th>Available Items</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null)
-                {
-                    @foreach (var book in Model)
-                    {
+                <table class="table pt-3">
+                    <thead>
                         <tr>
-                            <td>@book.Name</td>
-                            <td>@book.Author</td>
-                            <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
-                            <td>@book.AvailableItems</td>
-                            <td class="row justify-content-between">
-                                <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning col-5" onclick="editBook(@book.Id)">Edit</a>
-                                <a class="remove-book btn btn-danger col-5" id="@book.Id">Delete</a>
-                            </td>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>Date of Creation</th>
+                            <th>Available Items</th>
+                            <th>Action</th>
                         </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        @{
-            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-        }
+                    </thead>
+                    <tbody>
 
-        <a asp-action="ManageUsers"
-           asp-route-pageNumber="@(Model.PageIndex - 1)"
-           class="btn btn-default @prevDisabled">
-            Previous
-        </a>
-        <a asp-action="ManageUsers"
-           asp-route-pageNumber="@(Model.PageIndex + 1)"
-           class="btn btn-default @nextDisabled">
-            Next
-        </a>
+                        @foreach (var book in Model)
+                        {
+                            <tr>
+                                <td>@book.Name</td>
+                                <td>@book.Author</td>
+                                <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
+                                <td>@book.AvailableItems</td>
+                                <td class="row justify-content-between">
+                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning col-5" onclick="editBook(@book.Id)">Edit</a>
+                                    <a class="remove-book btn btn-danger col-5" id="@book.Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+                <a asp-action="ManageUsers"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   class="btn btn-default @prevDisabled">
+                    Previous
+                </a>
+                <a asp-action="ManageUsers"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   class="btn btn-default @nextDisabled">
+                    Next
+                </a>
+            }
+            else
+            {
+                <h2 class="row justify-content-center py-5" style="color:red">
+                    Няма налични книги в базата данни
+                </h2>
+            }
+        }
+        else
+        {
+            <h2 class="row justify-content-center py-5" style="color:red">Няма налични книги в базата данни</h2>
+        }
     </div>
 </div>
