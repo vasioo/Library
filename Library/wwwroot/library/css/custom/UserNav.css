@@ -1,8 +1,10 @@
-﻿﻿.custom-nav-menu {
+﻿#custom-nav-menu {
     list-style: none;
-    background-color: #ccc;
+    background-color: #fff;
     padding: 0;
+    margin: 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius:1em;
 }
 
 .custom-nav-item-user-menu {
@@ -10,6 +12,7 @@
     cursor: pointer !important;
     padding: 8px 15px;
     transition: background-color 0.3s, color 0.3s;
+
 }
 
     .custom-nav-item-user-menu a {
@@ -22,18 +25,37 @@
     }
 
     .custom-nav-item-user-menu:hover {
-        background-color: #888;
+        background-color: #fc8600;
     }
 
         .custom-nav-item-user-menu:hover a {
-            color: #000 !important;
+            color: #fff !important;
         }
 
 
     .custom-nav-item-user-menu > .custom-nav-link.active {
-        background-color: #888;
+        background-color: #fc8600;
     }
 
 .custom-nav-link.active {
-    color: #000 !important;
+    color: #fff !important;
 }
+.green-button {
+    background: green !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19); 
+    transition: all 0.3s ease; 
+}
+
+.red-button {
+    background: red !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    transition: all 0.3s ease; 
+}
+
+    .green-button:hover,
+    .red-button:hover {
+        opacity: 0.8;
+        transform: translateY(-2px);
+    }

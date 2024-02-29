@@ -25,6 +25,7 @@ namespace Modum.Web.Areas.Identity.Pages.Account.Manage
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
+        public string Email { get; set; }
 
         
         [TempData]
@@ -45,6 +46,7 @@ namespace Modum.Web.Areas.Identity.Pages.Account.Manage
             public string username { get; set; }
             public string lastName { get; set; }
             public string firstName { get; set; }
+            public string email { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -53,12 +55,14 @@ namespace Modum.Web.Areas.Identity.Pages.Account.Manage
             Username = user.UserName;
             FirstName = user.FirstName; 
             LastName = user.LastName;
+            Email = user.Email;
 
             Input = new InputModel
             {
                 username = this.Username,
                 firstName = this.FirstName,
                 lastName = this.LastName,
+                email = this.Email,
             };
         }
 

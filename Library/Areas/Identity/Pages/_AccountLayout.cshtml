@@ -24,20 +24,30 @@
     <!--ALERTS-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="~/library/css/custom/AccountLayout.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/library/css/custom/UserNav.css" asp-append-version="true">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     @RenderSection("Styles", false)
 </head>
 <body>
     <header>
-        <nav id="accountNav" class="menu">
-            <a href="/Home/MainPage" id="return-url-for-mobile">
-                <label class="menu-open-button" for="menu-open">
-                    <span class="hamburger hamburger-1"></span>
-                    <span class="hamburger hamburger-2"></span>
-                    <span class="hamburger hamburger-3"></span>
-                </label>
-            </a>
+        <nav class="row">
+            <div class="col-xxl-9 mx-auto">
+                <div class="d-flex align-items-center">
+                    <img src="~/images/litify-logo.png" class="mr-auto" style="width: 6em;" />
+                    <div class="p-4 py-3 text-center flex-grow-1 display-4 header-name-holder">Настройки</div>
+                    <div id="accountNav" class="menu d-flex justify-content-center align-items-center">
+                        <a href="/Home/MainPage" id="return-url-for-mobile" class="d-flex align-items-end">
+                            <label class="menu-open-button" for="menu-open">
+                                <span class="hamburger hamburger-1"></span>
+                                <span class="hamburger hamburger-2"></span>
+                                <span class="hamburger hamburger-3"></span>
+                            </label>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
     <div class="">
@@ -70,7 +80,7 @@
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <script type="text/javascript">
         $(function () {
-           
+
         });
     </script>
 

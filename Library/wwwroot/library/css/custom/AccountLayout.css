@@ -14,7 +14,6 @@
     border-radius: 100%;
     width: 50px;
     height: 50px;
-    position: absolute;
     top: 20px;
     color: white;
     text-align: center;
@@ -23,12 +22,11 @@
     transition: transform ease-out 200ms;
 }
 .menu {
-    filter: url('#shadowed-goo');
     z-index: 1;
     cursor: pointer;
-    height: 100vh;
-    width: 8vw;
-    position: fixed;
+    width: 4em;
+    box-sizing: border-box;
+    font-size: 20px;
 }
 .hamburger {
     width: 25px;
@@ -45,23 +43,15 @@
 
 .hamburger-1 {
     transform: translate3d(0, 0, 0) rotate(45deg);
-    color: orange;
 }
 
 .hamburger-2 {
     transform: translate3d(0, 0, 0) scale(0.1, 1);
-    color: orange;
 }
 
 .hamburger-3 {
     transform: translate3d(0, 0, 0) rotate(-45deg);
-    color:orange;
 }
-
-.menu {
-    position: absolute;
-    left: 90%;
-    box-sizing: border-box;
-    font-size: 20px;
-    text-align: left;
+.header-name-holder{
+    font-weight:600;
 }

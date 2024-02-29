@@ -4,19 +4,14 @@
 @section Styles {
     <link href="@Url.Content("~/library/css/custom/UserNav.css")" rel="stylesheet" type="text/css" />
 }
-<div class="">
-    <div>
-        <h2 class="p-4 d-flex justify-content-center align-items-center">Настройки</h2>
-        <hr />
-        <div class="row justify-content-center">
-            <div class="col-xxl-9 col-12 row">
-                <div class="col-md-3">
-                    <partial name="_ManageNav" />
-                </div>
-                <div class="col-md-9">
-                    @RenderBody()
-                </div>
-            </div>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-xxl-9 col-12 row">
+        <div class="col-md-3" style="padding-left:0px !important;">
+            <partial name="_ManageNav"/>
+        </div>
+        <div class="col-md-9">
+            @RenderBody()
         </div>
     </div>
 </div>
