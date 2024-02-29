@@ -5,8 +5,6 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 <style>
-
-
     .custom-container {
         background-color: #ffffff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -21,8 +19,8 @@
     }
 
     .img-thumbnail {
-        width: 150px;
-        height: 150px;
+        width: 13rem;
+        height: 13rem;
         border-radius: 50%;
     }
 
@@ -37,36 +35,38 @@
 </style>
 <div class="custom-container">
     <div class="row justify-content-center">
-        <div class="col-11">
-            <h2 class="py-3">Профил</h2>
+        <div class="col-11 p-0 m-0">
+            <h1 class="py-3">Вашият Профил</h1>
         </div>
     </div> 
     <partial name="_StatusMessage" for="StatusMessage" />
-
-    <div class="row ">
-        <div class="col-md-4 img-container">
-            <img src="path/to/your/image.jpg" alt="User Image" class="img-thumbnail" />
+    @{
+        var profileImageLink = $"";
+    }
+    <div class="row justify-content-around">
+        <div class="col-md-3 img-container">
+            <img src="path/to/your/image.jpg" alt="User Image" class="img-thumbnail" id="userImage" onerror="replaceImage()" />
         </div>
         <div class="col-md-8">
             <form method="post" asp-page-handler="EditInfo">
                 <div class="form-group d-flex justify-content-around">
                     <div class="col-5">
                         <label asp-for="FirstName">Име</label>
-                        <input type="text" class="form-control" asp-for="FirstName" value="@Model.Username" />
+                        <input type="text" class="form-control" asp-for="FirstName" placeholder="Въведете своето име..." value="@Model.FirstName" />
                     </div>
                     <div class="col-5">
                         <label asp-for="LastName">Фамилия</label>
-                        <input type="text" class="form-control" asp-for="LastName" value="@Model.Username" />
+                        <input type="text" class="form-control" asp-for="LastName" placeholder="Въведете своята фамилия..." value="@Model.LastName" />
                     </div>
                 </div>
                 <div class="form-group d-flex justify-content-around">
                     <div class="col-5">
                         <label asp-for="Username">Потребителско име</label>
-                        <input type="text" class="form-control" asp-for="Username" value="@Model.Username" />
+                        <input type="text" class="form-control" asp-for="Username" placeholder="Въведете своето потребителско име..." value="@Model.Username" />
                     </div>
                     <div class="col-5">
                         <label asp-for="Email">Имейл</label>
-                        <input type="text" class="form-control" asp-for="Email" value="@Model.Email" />
+                        <input type="text" class="form-control" asp-for="Email" placeholder="Въведете своят имейл..." value="@Model.Email" />
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -79,3 +79,8 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+<script>
+    function replaceImage() {
+        document.getElementById('userImage').src = '/images/anonymous-user.jpg';
+    }
+</script>

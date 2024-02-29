@@ -1,25 +1,62 @@
 ﻿@page
 @model PersonalDataModel
 @{
-    ViewData["Title"] = "Personal Data";
-    ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
+<style>
+    .custom-container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+    }
 
-<h3>@ViewData["Title"]</h3>
+    form label {
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
 
-<div class="row">
-    <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
-        <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-        </p>
-        <div class="row jutify-content-around">
-            <form id="download-data" class="pr-2 col" asp-page="DownloadPersonalData" method="post">
-                <button class="btn btn-success" type="submit">Download</button>
-            </form>
-            <p class="">
-                <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Delete</a>
-            </p>
+    .custom-confirm {
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background: #00d1d1;
+        font-size: 1.3rem;
+    }
+
+        .custom-confirm:hover {
+            background-color: #008b8b;
+            color: white;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        #custom-deletion-key{
+            display:none;
+        }
+
+    .btn{
+        font-size:1.2rem;
+    }
+</style>
+<div class="custom-container">
+    <div class="row justify-content-center">
+        <div class="" style="padding-left:3rem;">
+            <h2 class="py-3">Лични данни</h2>
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-md-11">
+            <div class="h5 py-2">Вашият профил съдържа лични данни, които сте ни предоставили.<br />Можете да ги изтеглите или да ги изтриете.</div>
+            <div class="row jutify-content-around border">
+                <div class="py-3">
+                    <div class="d-flex h5 justify-content-center">Изтеглете Вашите данни</div>
+                    <form id="download-data" class="pr-2 col" asp-page="DownloadPersonalData" method="post">
+                        <button class="btn btn-success  w-100" type="submit">Изтегли</button>
+                    </form>
+                </div>
+
+                <div class="py-3">
+                    <div class="d-flex h5 justify-content-center">Изтрийте Вашите данни</div>
+                    <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger w-100">Изтрий</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

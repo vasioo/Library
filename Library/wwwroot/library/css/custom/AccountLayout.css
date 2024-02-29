@@ -9,6 +9,7 @@
     .menu-open-button:hover {
         transform: scale(1.2, 1.2) translate3d(0, 0, 0);
     }
+
 .menu-item, .menu-open-button {
     background: #00d1d1;
     border-radius: 100%;
@@ -21,6 +22,7 @@
     transform: translate3d(0, 0, 0);
     transition: transform ease-out 200ms;
 }
+
 .menu {
     z-index: 1;
     cursor: pointer;
@@ -28,6 +30,7 @@
     box-sizing: border-box;
     font-size: 20px;
 }
+
 .hamburger {
     width: 25px;
     height: 3px;
@@ -52,6 +55,16 @@
 .hamburger-3 {
     transform: translate3d(0, 0, 0) rotate(-45deg);
 }
-.header-name-holder{
-    font-weight:600;
+
+.header-name-holder {
+    font-weight: 600;
+}
+
+.alert-success {
+    background-color: #d1f3dd !important;
+    font-size: 1.2rem !important;
+}
+
+.alert-danger {
+    font-size: 1.2rem !important;
 }
