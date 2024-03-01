@@ -1,0 +1,110 @@
+﻿@using Library.Models.BaseModels;
+@model IQueryable<Membership>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    form label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 0.5em 0px;
+    }
+
+    .modal {
+        top: 25% !important;
+    }
+
+    .modal-header a {
+        font-size: 2.1em;
+    }
+</style>
+<div class="manage-memberships">
+    <div class="container mt-5">
+        <h1 class="text-center py-2">Управление на членства</h1>
+        <hr class="py-1" style="color:#00d1d1" />
+        <a class="btn btn-primary addMembershipBtn mb-3 fs-4 col-12">Добави ново членство</a>
+        <div id="memberships-list d-flex">
+            @foreach (var membership in Model)
+            {
+                <div class="card mb-2 col-12 col-md-6 col-lg-4 col-xl-3">
+                    <div class="card-body">
+                        <h3 class="card-title">@membership.MembershipName</h3>
+                        <p class="card-text">Минимален брой точки: @membership.StartingNeededAmountOfPoints</p>
+                        <p class="card-text">Максимален брой точки: @membership.EndAmountOfPoints</p>
+                        <button class="btn btn-primary editBtn" data-id="@membership.Id" data-name="@membership.MembershipName" data-start="@membership.StartingNeededAmountOfPoints" data-end="@membership.EndAmountOfPoints">Редактирай</button>
+                        <button class="btn btn-danger deleteBtn" data-id="@membership.Id">Изтрий</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="modal fade" id="addMembershipModal" tabindex="-1" role="dialog" aria-labelledby="addMembershipModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8" id="addMembershipModalLabel">Добави ново членство</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+                <form id="addMembershipForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="addMembershipName">Име на членство</label>
+                            <input type="text" class="form-control" id="addMembershipName" name="membershipName" placeholder="Въведете име на членството..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addStarterNeededPoints">Нужен брой точки за достигане на това членство</label>
+                            <input type="number" class="form-control" id="addStarterNeededPoints" name="starterNeededPoints" placeholder="Въведете начален нужен брой точки..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addNeededAmountOfPoints">Краен брой точки важащи в членството</label>
+                            <input type="number" class="form-control" id="addNeededAmountOfPoints" name="neededAmountOfPoints" placeholder="Въведете краен брой точки..." required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success col-12" type="submit" id="saveAddMembershipBtn">Запази членство</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editMembershipModal" tabindex="-1" role="dialog" aria-labelledby="editMembershipModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8" id="editMembershipModalLabel">
+                        Промени Членство
+                    </h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+                <form id="editMembershipForm">
+                    <input type="hidden" id="membershipId" name="membershipId" value="">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="editMembershipName">Име на членство</label>
+                            <input type="text" class="form-control" id="editMembershipName" name="membershipName" placeholder="Въведете име на членството..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStarterNeededPoints">Нужен брой точки за достигане на това членство</label>
+                            <input type="number" class="form-control" id="editStarterNeededPoints" name="starterNeededPoints" placeholder="Въведете начален нужен брой точки..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editNeededAmountOfPoints">Краен брой точки важащи в членството</label>
+                            <input type="number" class="form-control" id="editNeededAmountOfPoints" name="neededAmountOfPoints" placeholder="Въведете краен брой точки..." required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success col-12" type="submit" id="saveEditMembershipBtn">Запази членство</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

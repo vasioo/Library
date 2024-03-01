@@ -6,7 +6,7 @@
                 Name: $('#Name').val(),
                 Author: $('#Author').val(),
                 DateOfBookCreation: $('#DateOfBookCreation').val(),
-                Genre: { CategoryName: $('#Genre_CategoryName').val() },
+                Genre: $('#Genre').val() ,
                 Description: $('#Description').val(),
                 AvailableItems: $('#AvailableItems').val(),
                 NeededMembership: $('#NeededMembership').val()

@@ -4,6 +4,20 @@
 @{
     Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
 }
+<style>
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: white;
+    }
+
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: lightgrey;
+    }
+
+    .header-row {
+        background-color: darkgrey;
+        color: white;
+    }
+</style>
 
 <div class="all-books">
     <div class="pt-3">
@@ -19,45 +33,43 @@
         {
             @if (Model.Count > 0)
             {
-                <div id="book-filtering" class="d-flex pt-4 pb-4 justify-content-center">
+                <div id="book-filtering" class="d-flex py-5 justify-content-center">
                     <form asp-action="AllBooksInformation" method="get" class="row">
                         <div class="form-actions no-color">
                             <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
-                                Find by Book entity :
+                                Търси книга :
                             </div>
                             <div class="row m-0 pb-2">
                                 <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
                             </div>
                             <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
-                                <input type="submit" value="Search" class="btn btn-dark col-5" />
-                                <a class="btn btn-danger col-5" asp-action="AllBooksInformation">Clear</a>
+                                <input type="submit" value="Търси..." class="btn btn-dark col-5" />
+                                <a class="btn btn-danger col-5" asp-action="AllBooksInformation">Изчисти</a>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <table class="table pt-3">
+                <table class="table table-striped" border="1">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Author</th>
-                            <th>Date of Creation</th>
-                            <th>Available Items</th>
-                            <th>Action</th>
+                        <tr class="header-row">
+                            <th>Име</th>
+                            <th>Автор</th>
+                            <th>Дата на създаване</th>
+                            <th>Операции</th>
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach (var book in Model)
                         {
                             <tr>
                                 <td>@book.Name</td>
                                 <td>@book.Author</td>
                                 <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
-                                <td>@book.AvailableItems</td>
-                                <td class="row justify-content-between">
-                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning col-5" onclick="editBook(@book.Id)">Edit</a>
-                                    <a class="remove-book btn btn-danger col-5" id="@book.Id">Delete</a>
+                                <td class="d-flex">
+                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning  col-5" onclick="editBook(@book.Id)">Промени</a>
+                                    <div class="col-2"></div>
+                                    <a class="remove-book btn btn-danger col-5" id="@book.Id">Изтрий</a>
                                 </td>
                             </tr>
                         }

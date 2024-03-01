@@ -29,7 +29,6 @@ namespace Modum.Web
                      sqlOptions.EnableRetryOnFailure();
                  });
             });
-
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(

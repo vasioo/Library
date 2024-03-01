@@ -14,8 +14,7 @@ namespace Library.Models.BaseModels
         public DateTime DateOfBookPublishment { get; set; } = DateTime.Now;
         public BookCategory? Genre { get; set; }
         public string Description { get; set; } = "";
-        public int AvailableItems { get; set; }
-        public string NeededMembership { get; set; } = "";
+        public Membership NeededMembership { get; set; } = new Membership();
         public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
     }
 }

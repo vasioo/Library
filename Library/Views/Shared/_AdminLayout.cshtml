@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/library/css/custom/ImagePost.css" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="~/library/css/custom/AdminLayout.css" asp-append-version="true">
     @RenderSection("Styles", false)
 </head>
@@ -25,10 +26,13 @@
                 <div class="p-3 navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav align-items-center flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Statistics">Statistics</a>
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Statistics">Статистики</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="ClientManagement">Client Management</a>
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="ClientManagement">Клиенти</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="ManageMemberships">Членства</a>
                         </li>
                     </ul>
                 </div>
@@ -40,13 +44,11 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - Library - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
     <!-- VENDOR -->
     <script src="~/library/js/vendor/jquery-1.12.4.min.js"></script>
     <script src="~/library/js/vendor/popper.min.js"></script>
@@ -72,6 +74,7 @@
         $(function () {
             clientManagement.init($('.client-management'));
             editStaffInformation.init($('.edit-staff-information'));
+            manageMemberships.init($('.manage-memberships'));
         });
     </script>
 

@@ -8,6 +8,7 @@ namespace Library.Models.UserModels.Interfaces
 {
     public interface IUser
     {
+        public int Points { get; set; }
         public String? SecondaryPhone { get; set; }
         public String Street { get; set; }
         public String City { get; set; }
@@ -18,7 +19,5 @@ namespace Library.Models.UserModels.Interfaces
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
-
-        //add more for books
     }
 }

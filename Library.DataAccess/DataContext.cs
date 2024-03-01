@@ -23,6 +23,7 @@ namespace Library.DataAccess
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<BookSubject> BookSubjects { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<Membership> Memberships { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,8 @@ namespace Library.DataAccess
                      new IdentityRole { Id = "3", Name = "Worker", NormalizedName = "WORKER" }
                  );
             }
+            modelBuilder.Entity<Book>().Navigation(e => e.Genre).AutoInclude();
+            modelBuilder.Entity<BookSubject>().Navigation(e => e.BookCategories).AutoInclude();
             modelBuilder.Entity<FavouriteBooks>()
                 .HasKey(fb => new { fb.UserId, fb.BookId });
             modelBuilder.Entity<FavouriteBooks>()
@@ -46,8 +49,7 @@ namespace Library.DataAccess
                 .WithMany()
                 .HasForeignKey(fb => fb.BookId);
 
-            modelBuilder.Entity<Book>().Navigation(e => e.Genre).AutoInclude();
-            modelBuilder.Entity<BookSubject>().Navigation(e => e.BookCategories).AutoInclude();
+         
 
             modelBuilder.Entity<BookCategory>()
             .HasIndex(ci => new { ci.CategoryName })

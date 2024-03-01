@@ -1,8 +1,10 @@
 ﻿using Library.DataAccess.MainModels;
+using Library.Models.BaseModels;
 using Library.Models.ViewModels;
 using Library.Web.Controllers.AdminControllerHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.Common;
 
 namespace Library.Web.Controllers
 {
@@ -69,6 +71,97 @@ namespace Library.Web.Controllers
         public IActionResult ManageCategories()
         {
             return View("~/Views/Admin/ManageCategories.cshtml");
+        }
+
+        #endregion
+
+        #region ManageMemberships
+        public IActionResult ManageMemberships()
+        {
+            var data = _helper.GetMemberships();
+            return View("~/Views/Admin/ManageMemberships.cshtml", data);
+        }
+
+        public async Task<JsonResult> AddMembership(string addMembershipName, int addStarterNeededPoints, int addNeededAmountOfPoints)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(addMembershipName) || addStarterNeededPoints < 0 || addNeededAmountOfPoints < 0 || addNeededAmountOfPoints <= addStarterNeededPoints)
+                {
+                    return Json(new { status = false, Message = "Невалидни параметри." });
+                }
+
+                var result = await _helper.AddMembershipHelper(addMembershipName, addStarterNeededPoints, addNeededAmountOfPoints);
+                if (result == "confirmed")
+                {
+                    return Json(new { status = true, Message = "Вашето ново членство беше записано." });
+                }
+                else if (!string.IsNullOrEmpty(result))
+                {
+                    return Json(new { status = false, Message = result });
+                }
+                return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
+            }
+            catch (DbException ex)
+            {
+                return Json(new { status = false, Message = "Проблем в базата. Свържете се с отдел ИТ." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
+            }
+        }
+
+        public async Task<JsonResult> EditMembership(string membershipId, string membershipName, int starterNeededPoints, int neededAmountOfPoints)
+        {
+            try
+            {
+                var membershipIdGUID = Guid.Parse(membershipId);
+                if (membershipIdGUID == Guid.Empty || string.IsNullOrWhiteSpace(membershipName) || starterNeededPoints < 0 || neededAmountOfPoints < 0 || neededAmountOfPoints <= starterNeededPoints)
+                {
+                    return Json(new { status = false, Message = "Невалидни параметри." });
+                }
+
+                var result = await _helper.EditMembershipHelper(membershipIdGUID, membershipName, starterNeededPoints, neededAmountOfPoints);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return Json(new { status = true, Message = "Вашето членство беше променено." });
+                }
+                else if (!string.IsNullOrEmpty(result))
+                {
+                    return Json(new { status = false, Message = result });
+                }
+                return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
+            }
+            catch (DbException ex)
+            {
+                return Json(new { status = false, Message = "Проблем в базата. Свържете се с отдел ИТ." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
+            }
+        }
+
+        public async Task<JsonResult> DeleteMembership(Guid id)
+        {
+            try
+            {
+                if (id == Guid.Empty)
+                {
+                    return Json(new { status = false, Message = "Невалидни параметри." });
+                }
+                await _helper.DeleteMembershipHelper(id);
+                return Json(new { status = true, Message = "Вашето членство беше изтрито." });
+            }
+            catch (DbException ex)
+            {
+                return Json(new { status = false, Message = "Проблем в базата. Свържете се с отдел ИТ." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
+            }
         }
 
         #endregion

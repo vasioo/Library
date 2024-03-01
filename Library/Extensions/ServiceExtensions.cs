@@ -37,6 +37,9 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<BlogPost>, BaseService<BlogPost>>();
             service.AddScoped<IBlogPostService, BlogPostService>();
 
+            service.AddScoped<IBaseService<Membership>, BaseService<Membership>>();
+            service.AddScoped<IMembershipService, MembershipService>();
+
             service.AddScoped<UserManager<ApplicationUser>>();
 
         }

@@ -2,6 +2,7 @@
 using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.Pagination;
+using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -41,24 +42,22 @@ namespace Library.Web.Controllers
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(book => book.Author.Contains(searchString) || book.Name.Contains(searchString)
-                ||book.DateOfBookCreation.ToString().Contains(searchString)||book.AvailableItems.ToString().Contains(searchString));
+                || book.DateOfBookCreation.ToString().Contains(searchString));
             }
             int pageSize = 30;
             var paginatedList = PaginatedList<Book>.CreateAsync(books.AsNoTracking(), page ?? 1, pageSize);
             return View("~/Views/Librarian/AllBooksInformation.cshtml", paginatedList);
         }
 
-        public IActionResult AddABook()
+        public async Task<IActionResult> AddABook()
         {
-            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
+            var viewModel = await _helper.AddABookHelper();
 
-            return View("~/Views/Librarian/AddABook.cshtml");
+            return View("~/Views/Librarian/AddABook.cshtml", viewModel);
         }
 
         public async Task<IActionResult> ManageBookCategories()
         {
-            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
-
             var data = _helper.GetAllBookSubjects();
 
             return View("~/Views/Librarian/ManageBookCategories.cshtml", data);
@@ -66,11 +65,9 @@ namespace Library.Web.Controllers
 
         public async Task<IActionResult> EditBookInformation(Guid bookId)
         {
-            ViewBag.BookCategories = _helper.GetAllBookCategories().ToList();
+            var viewModel = await _helper.EditABookHelper(bookId);
 
-            var book = await _helper.GetBook(bookId);
-
-            return View("~/Views/Librarian/EditBookInformation.cshtml", book);
+            return View("~/Views/Librarian/EditBookInformation.cshtml", viewModel);
         }
 
         #endregion
@@ -78,7 +75,7 @@ namespace Library.Web.Controllers
         #region BookActions
 
         [HttpPost]
-        public async Task<JsonResult> AddABookPost(BookDTO book, string imageObj)
+        public async Task<JsonResult> AddABookPost(BookChangersViewModel book, string imageObj)
         {
             try
             {
@@ -118,7 +115,7 @@ namespace Library.Web.Controllers
             return Json(new { status = true, Message = "The item was added successfully" });
         }
 
-        public async Task<JsonResult> EditABookPost(BookDTO book, string imageObj)
+        public async Task<JsonResult> EditABookPost(BookChangersViewModel book, string imageObj)
         {
             //implement
             try

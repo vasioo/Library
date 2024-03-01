@@ -1,6 +1,7 @@
 ﻿using Library.Models.BaseModels;
 using Library.Models.Cloudinary;
 using Library.Models.DTO;
+using Library.Models.ViewModels;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,22 +13,32 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IBookService _bookService;
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IBookSubjectService _bookSubjectService;
+        private readonly IMembershipService _membershipService;
 
-        public LibrarianControllerHelper(IBookService bookService, IBookCategoryService bookCategoryService, IBookSubjectService bookSubjectService)
+        public LibrarianControllerHelper(IBookService bookService, IBookCategoryService bookCategoryService, IBookSubjectService bookSubjectService, IMembershipService membershipService)
         {
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
             _bookSubjectService = bookSubjectService;
+            _membershipService = membershipService;
         }
         #endregion
 
         #region BooksHelpers
-        public async Task<bool> AddABookToDatabase(BookDTO book, string image)
+        public async Task<BookChangersViewModel> AddABookHelper()
+        {
+            var viewModel = new BookChangersViewModel();
+            viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
+            viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
+
+            return viewModel;
+        }
+
+        public async Task<bool> AddABookToDatabase(BookChangersViewModel book, string image)
         {
             try
             {
-                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!.CategoryName);
-
+                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book!.Genre!);
                 var bookNew = new Book();
 
                 bookNew.Id = book.Id;
@@ -36,18 +47,16 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
                 bookNew.Description = book.Description;
-                bookNew.AvailableItems = book.AvailableItems;
-                bookNew.NeededMembership = book.NeededMembership;
-                bookNew.FavouriteBooks = book.FavouriteBooks;
+                bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
 
-                await _bookService.AddAsync(bookNew);
+                var id = await _bookService.AddAsync(bookNew);
 
                 var photo = new Photo();
                 if (image != null && image != "")
                 {
                     photo.Image = image;
-                    photo.ImageName = $"image-for-book-{book.Id}";
-                    photo.PublicId = $"image-for-book-{book.Id}";
+                    photo.ImageName = $"image-for-book-{id}";
+                    photo.PublicId = $"image-for-book-{id}";
                 }
                 await _bookService.DeleteImage(photo);
                 await _bookService.SaveImage(photo);
@@ -195,11 +204,29 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return output;
         }
 
-        public async Task<bool> EditABook(BookDTO book, string imageObj)
+        public async Task<BookChangersViewModel> EditABookHelper(Guid id)
+        {
+            var book = await GetBook(id);
+            var viewModel = new BookChangersViewModel();
+            viewModel.Id = book.Id;
+            viewModel.Name = book.Name;
+            viewModel.Author = book.Author;
+            viewModel.DateOfBookPublishment = book.DateOfBookPublishment;
+            viewModel.DateOfBookCreation = book.DateOfBookCreation;
+            viewModel.Genre = book.Genre.CategoryName;
+            viewModel.Description = book.Description;
+            viewModel.NeededMembership = book.NeededMembership.MembershipName;
+            viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
+            viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
+
+            return viewModel;
+        }
+
+        public async Task<bool> EditABook(BookChangersViewModel book, string imageObj)
         {
             try
             {
-                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!.CategoryName);
+                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!);
 
                 var bookNew = new Book();
 
@@ -209,9 +236,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
                 bookNew.Description = book.Description;
-                bookNew.AvailableItems = book.AvailableItems;
-                bookNew.NeededMembership = book.NeededMembership;
-                bookNew.FavouriteBooks = book.FavouriteBooks;
+                bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
 
 
                 await _bookService.UpdateAsync(bookNew);
@@ -233,11 +258,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 return false;
                 throw;
             }
-        }
-
-        public IQueryable<string> GetAllBookCategories()
-        {
-            return _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
         }
 
         public IQueryable<BookSubject> GetAllBookSubjects()

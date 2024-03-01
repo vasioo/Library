@@ -6,6 +6,7 @@ namespace Library.DataAccess.MainModels
 {
     public class ApplicationUser : IdentityUser, IUser
     {
+        public int Points { get; set; }
         public string? SecondaryPhone { get; set; } = "";
         public string Street { get; set; } = "";
         public string City { get; set; } = "";

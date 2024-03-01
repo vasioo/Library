@@ -29,16 +29,14 @@
 </style>
 
 <div class="book-collection-shower">
-    <div class="container">
-        <div class="row">
-            <div class="row h2 justify-content-center scroller-title ">Explore our genres</div>
-            <div class="row h4 justify-content-center">We have Everything for Everyone</div>
+    <div class="container py-3">
+        <div class="row py-2">
+            <div class="row h2 justify-content-center scroller-title ">Проучете нашите жанрове</div>
+            <div class="row h4 justify-content-center">Имаме всичко за всички</div>
         </div>
         <hr />
     </div>
     <div class="container pt-3">
-        <div class="row h3 justify-content-center scroller-title">Book Genres</div>
-        <hr />
         <div class="row">
             @if (Model != null)
             {
@@ -56,7 +54,6 @@
                                             @category.CategoryName
                                         </a>
                                     </div>
-
                                 </li>
                             }
                         </ul>
@@ -74,7 +71,7 @@
         {
             <div class="container pt-5">
                 <div class="row">
-                    <div class="row scroller-title h3 justify-content-center">Recommended Books</div>
+                    <div class="row scroller-title h3 justify-content-center">Препоръчани книги</div>
                     <hr />
                     @foreach (var book in Model.RecommendedBooks)
                     {
@@ -92,7 +89,7 @@
         {
             <div class="container pt-5">
                 <div class="row">
-                    <div class="row scroller-title h3 justify-content-center">Best Sellers</div>
+                    <div class="row scroller-title h3 justify-content-center">Най-търсени</div>
                     <hr />
                     @foreach (var book in Model.BestSellers)
                     {
