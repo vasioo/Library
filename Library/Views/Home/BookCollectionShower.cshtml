@@ -26,23 +26,32 @@
             text-decoration: none;
         }
 
+    .custom-container {
+        background-color: #ffffff;
+        box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .book-collection-shower {
+        background: url('/images/book-collection-shower-bg.svg');
+    }
 </style>
 
-<div class="book-collection-shower">
-    <div class="container py-3">
-        <div class="row py-2">
-            <div class="row h2 justify-content-center scroller-title ">Проучете нашите жанрове</div>
-            <div class="row h4 justify-content-center">Имаме всичко за всички</div>
+<div class="book-collection-shower py-3">
+    <div class="container custom-container ">
+        <div class="row justify-content-center py-5">
+            <div class="row display-4 justify-content-center scroller-title ">Проучете нашите жанрове</div>
+            <div class="row h3 justify-content-center py-2">Имаме всичко за всички</div>
+            <hr style="width:80%;opacity: 0.4;color: #fc8600;" class="py-1" />
         </div>
         <hr />
-    </div>
-    <div class="container pt-3">
-        <div class="row">
+        <div class="row justify-content-around">
             @if (Model != null)
             {
                 @foreach (var subject in Model.BookSubjects)
                 {
-                    <div class="col-md-4">
+                    <div class="col-md-3 col-5 pt-3">
                         <div class="h3">@subject.SubjectName</div>
                         <ul class="list-unstyled">
                             @foreach (var category in subject.BookCategories)
@@ -63,14 +72,11 @@
             }
         </div>
 
-    </div>
-
-    @if (Model != null)
-    {
-        @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+        @if (Model != null)
         {
-            <div class="container pt-5">
-                <div class="row">
+            @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+            {
+                <div class="row pt-5">
                     <div class="row scroller-title h3 justify-content-center">Препоръчани книги</div>
                     <hr />
                     @foreach (var book in Model.RecommendedBooks)
@@ -80,15 +86,13 @@
                         </div>
                     }
                 </div>
-            </div>
+            }
         }
-    }
-    @if (Model != null)
-    {
-        @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+        @if (Model != null)
         {
-            <div class="container pt-5">
-                <div class="row">
+            @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+            {
+                <div class="row pt-5">
                     <div class="row scroller-title h3 justify-content-center">Най-търсени</div>
                     <hr />
                     @foreach (var book in Model.BestSellers)
@@ -98,7 +102,7 @@
                         </div>
                     }
                 </div>
-            </div>
+            }
         }
-    }
+    </div>
 </div>

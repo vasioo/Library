@@ -5,10 +5,25 @@
     .scroller-title {
         color: rgba(7,175,211,1);
     }
+
+    .custom-container {
+        background-color: #ffffff;
+        box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 20px;
+    }
+    .book-shower{
+        background: url('/images/book-shower-bg.svg');
+    }
 </style>
 
-<div class="book-shower">
-    <div class="container">
+<div class="book-shower py-3">
+    <div class="container custom-container">
+        <div class="row justify-content-center py-5">
+            <div class="h1 text-center  scroller-title">@Model.CategorySortBy.CategoryName</div>
+            <hr class="py-1" style="color:orange; width:80%" />
+        </div>
+
         <div class="row">
             @foreach (var book in Model.Books)
             {
@@ -17,11 +32,9 @@
                 </div>
             }
         </div>
-    </div>
-    @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
-    {
-        <div class="container pt-5">
-            <div class="row">
+        @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+        {
+            <div class="row pt-5">
                 <div class="row scroller-title h3 justify-content-center">Recommended Books</div>
                 <hr />
                 @foreach (var book in Model.RecommendedBooks)
@@ -31,12 +44,10 @@
                     </div>
                 }
             </div>
-        </div>
-    }
-    @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
-    {
-        <div class="container pt-5">
-            <div class="row">
+        }
+        @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
+        {
+            <div class="row pt-5">
                 <div class="row scroller-title h3 justify-content-center">Best Sellers</div>
                 <hr />
                 @foreach (var book in Model.BestSellers)
@@ -46,6 +57,6 @@
                     </div>
                 }
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

@@ -13,6 +13,9 @@
     .modal-header a {
         font-size: 2.1em;
     }
+    .change-counter-margin{
+        margin-bottom:0.5rem !important;
+    }
 </style>
 <div class="manage-memberships">
     <div class="container mt-5">
@@ -24,16 +27,28 @@
 
         <hr class="py-1" style="color:#00d1d1" />
         <a class="btn btn-primary addMembershipBtn mb-3 fs-4 col-12">Добави ново членство</a>
-        <div id="memberships-list d-flex">
+        <div id="memberships-list" class="d-flex">
             @foreach (var membership in Model)
             {
                 <div class="card mb-2 col-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="card-body">
-                        <h3 class="card-title">@membership.MembershipName</h3>
-                        <p class="card-text">Минимален брой точки: @membership.StartingNeededAmountOfPoints</p>
-                        <p class="card-text">Максимален брой точки: @membership.EndAmountOfPoints</p>
-                        <button class="btn btn-warning editBtn" data-id="@membership.Id" data-name="@membership.MembershipName" data-start="@membership.StartingNeededAmountOfPoints" data-end="@membership.EndAmountOfPoints">Редактирай</button>
-                        <button class="btn btn-danger deleteBtn" data-id="@membership.Id">Изтрий</button>
+                        <h3 class="card-title text-center">@membership.MembershipName</h3>
+                        <hr />
+                        <p class="card-text change-counter-margin">
+                            <strong>Минимален брой точки:</strong>
+                        </p>
+                        <p>
+                            @membership.StartingNeededAmountOfPoints
+                        </p>
+                        <p class="card-text change-counter-margin">
+                            <strong>Максимален брой точки:</strong>
+                        </p>
+                        <p>@membership.EndAmountOfPoints</p>
+                        <hr />
+                        <div class="row justify-content-around">
+                            <button class="btn col-5 btn-warning editBtn" data-id="@membership.Id" data-name="@membership.MembershipName" data-start="@membership.StartingNeededAmountOfPoints" data-end="@membership.EndAmountOfPoints">Редактирай</button>
+                            <button class="btn col-5 btn-danger deleteBtn" data-id="@membership.Id">Изтрий</button>
+                        </div>
                     </div>
                 </div>
             }
@@ -118,7 +133,7 @@
                         <span aria-hidden="true">&times;</span>
                     </a>
                 </div>
-              
+
                 <div class="container">
                     <div>
                         <div class="container">
