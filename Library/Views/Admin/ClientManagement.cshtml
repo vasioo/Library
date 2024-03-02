@@ -3,57 +3,81 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<style>
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: white;
+    }
+
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: lightgrey;
+    }
+
+    .header-row {
+        background-color: darkgrey;
+        color: white;
+    }
+
+    .table tr, th, td, thead, tbody {
+        border: 1px solid black !important
+    }
+</style>
 <div class="client-management">
     <div class="pt-3">
-        <div class="d-flex justify-content-center">
-            <div class="h2">
-                Manage Users Menu
+        <div class="row justify-content-center">
+            <div class="h1 text-center py-2">
+                Управление на потребители
             </div>
+            <hr class="py-1" style="color:#00d1d1" />
         </div>
         <div id="user-filtering" class="d-flex pt-4 pb-4 justify-content-center">
             <form asp-action="ClientManagement" method="get" id="clientManagementForm" class="row">
                 <div class="form-actions no-color">
-                    <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
-                        Find by User name :
+                    <div class="pr-2 h4 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
+                        Намери по име :
                     </div>
-                    <div class=" row m-0 pb-2">
+                    <div class=" row m-0 pb-3">
                         <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
                     </div>
                     <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
-                        <input type="submit" value="Search" class="btn btn-dark col-5" />
-                        <a class="btn btn-danger col-5" asp-action="ClientManagement">Clear</a>
+                        <input type="submit" value="Търси" class="btn  fs-5 btn-dark col-5" />
+                        <a class="btn btn-danger col-5  fs-5" asp-action="ClientManagement">Изчисти</a>
                     </div>
                 </div>
                 <div class="col text-center pt-4">
-                    <label class="pr-2 h6" style="font-weight:400">Show Admins and Workers only:</label>
+                    <label class="pr-2 h5" style="font-weight:400">Показвай само работници и администратори:</label>
                     <input class="form-check-input" type="checkbox" id="toggleAdminsAndWorkers" name="workersOnly" data-toggle="toggle" data-on="Yes" data-off="No" />
                 </div>
             </form>
         </div>
         <div id="staff-table">
-            <div class="table-responsive">
-                <div class="table-header row">
-                    <div class="col">First Name</div>
-                    <div class="col">Last Name</div>
-                    <div class="col">Position</div>
-                    <div class="col">Salary</div>
-                    <div class="col"></div>
-                </div>
-                @foreach (var worker in Model)
-                {
-                    <div class="table-row row">
-                        <div class="col">@worker.FirstName</div>
-                        <div class="col">@worker.LastName</div>
-                        <div class="col">@worker.Position</div>
-                        <div class="col">@worker.Salary</div>
-                        <div class="col">
-                            <a href="@Url.Action("EditStaffInformation", "Admin", new { userId = worker.Id })" class="btn btn-warning">
-                                Edit
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
+            <table class="table table-striped" border="1">
+                <thead>
+                    <tr class="header-row">
+                        <th class="fs-4 text-center">Име</th>
+                        <th class="fs-4 text-center">Фамилия</th>
+                        <th class="fs-4 text-center">Операции</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var worker in Model)
+                    {
+                        <tr>
+                            <td class="fs-5">@worker.FirstName</td>
+                            <td class="fs-5">@worker.LastName</td>
+                            <td class="">
+                                <div class="d-flex justify-content-around">
+                                    <a href="@Url.Action("EditStaffInformation", "Admin", new { userId = worker.Id })" class="btn col-5 fs-5 btn-warning">
+                                        Редактирай
+                                    </a>
+                                    <a class="btn btn-danger fs-5 col-5">
+                                        Блокирай
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
