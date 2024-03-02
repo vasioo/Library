@@ -9,6 +9,6 @@ namespace Library.Web.Controllers.AdminControllerHelper
         IQueryable<Membership> GetMemberships();
         Task<string> AddMembershipHelper(string name,int startPoints, int points);
         Task<string> EditMembershipHelper(Guid id, string name, int startPoints, int endPoints);
-        Task DeleteMembershipHelper(Guid id);
+        Task DeleteMembershipHelper(Guid id,bool upper);
     }
 }

@@ -8,24 +8,25 @@
                 '<tr class="sub-row">' +
                 '   <td><input type="text" class="form-control subject-name" required></td>' +
                 '   <td id="for-book-categories">' +
-                '       <a class="btn btn-primary col-12" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
-                '        Categories' +
+                '       <a class="btn btn-warning fs-5 p-1 col-12 toggle-categories" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
+                '           Скрий Категории' +
                 '       </a > ' +
                 '       <div class="card book-categories-table show" id="">' +
                 '               <div class="card-header"></div>' +
                 '               <div class="card-body">' +
-                '                 <table>' +
+                '                 <table class="col-12">' +
                 '                     <thead>' +
                 '                         <tr>' +
-                '                             <th>Book Category Name</th>' +
+                '                             <th class="fs-4 text-center">Име на категорията</th>' +
                 '                             <th></th>' +
                 '                         </tr>' +
                 '                     </thead>' +
                 '                     <tbody class="book-category-tbody">' +
-                '                         <!--Add options for change-->' +
                 '                     </tbody>' +
                 '                 </table>' +
-                '                 <button type="button" class="btn btn-primary add-book-category-row-btn" id=""><i class="fas fa-plus"></i> Add Book Category</button>' +
+                '                <div class="d-flex pt-3">'+
+                '                   <button type="button" class="btn btn-primary col-12 add-book-category-row-btn fs-5" id=""><i class="fas fa-plus"></i> Добави нова категория</button>'+
+                '                </div>' +
                 '              </div>' +
                 '           </div>' +
                 '   </td>' +
@@ -230,11 +231,21 @@
             })
         });
 
-
         $container.on('change', '.subject-name', function () {
             let $categoryTable = $bookSubjectTableDiv.closest('#book-categories-table')
             $categoryTable.attr('id', 'for-categories-' + $(this).val() + '');
             $categoryTable.attr('href', '#for-categories-' + $(this).val() + '');
+        });
+
+
+        $(document).on('click', '.toggle-categories',function () {
+            var $this = $(this);
+            var expanded = $this.attr('aria-expanded');
+            if (expanded === "true") {
+                $this.text('Скрий Категории');
+            } else {
+                $this.text('Покажи Категории');
+            }
         });
     }
     return {

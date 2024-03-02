@@ -19,5 +19,26 @@ namespace Library.Services.Services
         {
             return _context.Memberships.Where(x => x.MembershipName == name).FirstOrDefault();
         }
+
+        public Membership GetNextMembersip(Guid id)
+        {
+            var currMembership = _context.Memberships.Where(x=>x.Id==id).FirstOrDefault();
+
+            var membership = _context.Memberships.Where(x=>x.StartingNeededAmountOfPoints>currMembership.EndAmountOfPoints)
+                .OrderBy(x=>x.StartingNeededAmountOfPoints)
+                .FirstOrDefault();
+
+            return membership;
+        }
+        public Membership GetPreviousMembersip(Guid id)
+        {
+            var currMembership = _context.Memberships.Where(x => x.Id == id).FirstOrDefault();
+
+            var membership = _context.Memberships.Where(x => x.EndAmountOfPoints < currMembership.StartingNeededAmountOfPoints)
+                .OrderByDescending(x => x.StartingNeededAmountOfPoints)
+                .FirstOrDefault();
+
+            return membership;
+        }
     }
 }

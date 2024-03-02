@@ -91,7 +91,7 @@ namespace Library.Web.Controllers
                     return Json(new { status = false, Message = "Невалидни параметри." });
                 }
 
-                var result = await _helper.AddMembershipHelper(addMembershipName, addStarterNeededPoints, addNeededAmountOfPoints);
+                var result = await _helper.AddMembershipHelper(addMembershipName.Trim(), addStarterNeededPoints, addNeededAmountOfPoints);
                 if (result == "confirmed")
                 {
                     return Json(new { status = true, Message = "Вашето ново членство беше записано." });
@@ -143,7 +143,7 @@ namespace Library.Web.Controllers
             }
         }
 
-        public async Task<JsonResult> DeleteMembership(Guid id)
+        public async Task<JsonResult> DeleteMembership(Guid id,bool upper)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace Library.Web.Controllers
                 {
                     return Json(new { status = false, Message = "Невалидни параметри." });
                 }
-                await _helper.DeleteMembershipHelper(id);
+                await _helper.DeleteMembershipHelper(id,upper);
                 return Json(new { status = true, Message = "Вашето членство беше изтрито." });
             }
             catch (DbException ex)

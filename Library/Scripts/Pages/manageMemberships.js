@@ -31,42 +31,55 @@
                 confirmButtonText: 'Потвърждавам!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/Admin/DeleteMembership',
-                        type: 'POST',
-                        data: { membershipId: membershipItemId },
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Успех',
-                                text: response.Message,
-                                showConfirmButton: false,
-                                timer: 3000
-                            }).then((result) => {
-                                location.reload();
-                            });
-                        },
-                        error: function (xhr, status, error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Възникна грешка. Опитайте отново'
-                            });
-                        }
+                    Swal.fire({
+                        title: 'Накъде искате да преместите съществуващите елементи в даденото членство?',
+                        text:'Нагоре(в горната категория по точки), Надолу(в по-долната категория по точки)',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Нагоре',
+                        cancelButtonText: 'Надолу'
+                    }).then((transferResult) => {
+                        var isUpperConfirmed = transferResult.isConfirmed;
+                        $.ajax({
+                            url: '/Admin/DeleteMembership',
+                            type: 'POST',
+                            data: { id: membershipItemId, upper: isUpperConfirmed },
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Успех',
+                                    text: response.message,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Грешка',
+                                    text: 'Възникна грешка. Опитайте отново'
+                                });
+                            }
+                        });
                     });
                 }
             });
         });
 
+
         $('#addMembershipForm').submit(function (event) {
             event.preventDefault();
 
-            var membershipName = $('#membershipName').val().trim();
-            var starterNeededPoints = parseInt($('#starterNeededPoints').val().trim());
-            var neededAmountOfPoints = parseInt($('#neededAmountOfPoints').val().trim());
+            var membershipName = $('#addMembershipName').val();
+            var starterNeededPoints = parseInt($('#addStarterNeededPoints').val());
+            var neededAmountOfPoints = parseInt($('#addNeededAmountOfPoints').val());
 
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
-                starterNeededPoints < 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints <= 0) {
+                starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Грешка',
@@ -86,7 +99,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
-                            text: response.Message,
+                            text: response.message,
                             showConfirmButton: false, 
                             timer: 3000 
                         }).then((result) => {
@@ -97,7 +110,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
-                            text: response.Message
+                            text: response.message
                         });
                     }
                 },
@@ -120,7 +133,7 @@
 
             // Check if input fields are valid
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
-                starterNeededPoints < 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints <= 0) {
+                starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
                 Swal.fire({
 
                     icon: 'error',
@@ -141,7 +154,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
-                            text: response.Message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 3000
                         }).then((result) => {
@@ -151,7 +164,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
-                            text: response.Message
+                            text: response.message
                         });
                     }
                 },

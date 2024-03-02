@@ -10,17 +10,18 @@
         padding: 0.5em 0px;
     }
 
-    .modal {
-        top: 25% !important;
-    }
-
     .modal-header a {
         font-size: 2.1em;
     }
 </style>
 <div class="manage-memberships">
     <div class="container mt-5">
-        <h1 class="text-center py-2">Управление на членства</h1>
+        <div class="row">
+            <div class="col-1"></div>
+            <h1 class="text-center py-2 col-10">Управление на членства</h1>
+            <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+        </div>
+
         <hr class="py-1" style="color:#00d1d1" />
         <a class="btn btn-primary addMembershipBtn mb-3 fs-4 col-12">Добави ново членство</a>
         <div id="memberships-list d-flex">
@@ -31,7 +32,7 @@
                         <h3 class="card-title">@membership.MembershipName</h3>
                         <p class="card-text">Минимален брой точки: @membership.StartingNeededAmountOfPoints</p>
                         <p class="card-text">Максимален брой точки: @membership.EndAmountOfPoints</p>
-                        <button class="btn btn-primary editBtn" data-id="@membership.Id" data-name="@membership.MembershipName" data-start="@membership.StartingNeededAmountOfPoints" data-end="@membership.EndAmountOfPoints">Редактирай</button>
+                        <button class="btn btn-warning editBtn" data-id="@membership.Id" data-name="@membership.MembershipName" data-start="@membership.StartingNeededAmountOfPoints" data-end="@membership.EndAmountOfPoints">Редактирай</button>
                         <button class="btn btn-danger deleteBtn" data-id="@membership.Id">Изтрий</button>
                     </div>
                 </div>
@@ -39,11 +40,11 @@
         </div>
     </div>
     <div class="modal fade" id="addMembershipModal" tabindex="-1" role="dialog" aria-labelledby="addMembershipModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="col-1"></div>
-                    <h3 class="modal-title col-8" id="addMembershipModalLabel">Добави ново членство</h3>
+                    <h3 class="modal-title col-8 text-center" id="addMembershipModalLabel">Добави ново членство</h3>
                     <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </a>
@@ -52,15 +53,15 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="addMembershipName">Име на членство</label>
-                            <input type="text" class="form-control" id="addMembershipName" name="membershipName" placeholder="Въведете име на членството..." required>
+                            <input type="text" class="form-control" id="addMembershipName" name="addMembershipName" placeholder="Въведете име на членството..." required>
                         </div>
                         <div class="form-group">
                             <label for="addStarterNeededPoints">Нужен брой точки за достигане на това членство</label>
-                            <input type="number" class="form-control" id="addStarterNeededPoints" name="starterNeededPoints" placeholder="Въведете начален нужен брой точки..." required>
+                            <input type="number" class="form-control" id="addStarterNeededPoints" name="addStarterNeededPoints" placeholder="Въведете начален нужен брой точки..." required>
                         </div>
                         <div class="form-group">
                             <label for="addNeededAmountOfPoints">Краен брой точки важащи в членството</label>
-                            <input type="number" class="form-control" id="addNeededAmountOfPoints" name="neededAmountOfPoints" placeholder="Въведете краен брой точки..." required>
+                            <input type="number" class="form-control" id="addNeededAmountOfPoints" name="addNeededAmountOfPoints" placeholder="Въведете краен брой точки..." required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -72,11 +73,11 @@
     </div>
 
     <div class="modal fade" id="editMembershipModal" tabindex="-1" role="dialog" aria-labelledby="editMembershipModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="col-1"></div>
-                    <h3 class="modal-title col-8" id="editMembershipModalLabel">
+                    <h3 class="modal-title col-8 text-center" id="editMembershipModalLabel">
                         Промени Членство
                     </h3>
                     <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
@@ -107,4 +108,37 @@
         </div>
     </div>
 
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8 text-center" id="infoModalLabel">Допълнителна информация</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+              
+                <div class="container">
+                    <div>
+                        <div class="container">
+                            <p style="font-weight: bold; font-size:larger">Предоставената страница дава възможност на администраторите да редактират, добавят и изтриват дадени членства.</p>
+                        </div>
+                        <hr />
+                        <br />
+                        <div class="containter">
+                            <strong style="font-size: larger;">Задължително е:</strong>
+                            <ul>
+                                <li>елементите да запълват напълно диапазоните</li>
+                                <li>имената да не съвпадат</li>
+                                <li>да има елемент приравнен към 0</li>
+                                <li>елементите да са през 1 (стартова точка на един е с 1 повече от крайна на друг)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
