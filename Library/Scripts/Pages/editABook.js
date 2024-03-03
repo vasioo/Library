@@ -2,7 +2,7 @@
     function init($container) {
         $('#editBookButton').click(function () {
             var bookData = {
-                Id: $('#editBookForm').attr('class'),
+                Id: $('#editBookForm').data('id'),
                 Name: $('#Name').val(),
                 Author: $('#Author').val(),
                 DateOfBookCreation: $('#DateOfBookCreation').val(),

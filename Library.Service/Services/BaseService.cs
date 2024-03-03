@@ -111,7 +111,7 @@ namespace Library.Services.Services
             {
                 _context.Set<T>().Attach(entity);
             }
-            _context.Entry(entity).State = EntityState.Modified;
+            _context.Entry(entity).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
 
             return await _context.SaveChangesAsync();
         }

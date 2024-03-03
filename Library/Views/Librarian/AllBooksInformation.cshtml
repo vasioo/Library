@@ -17,34 +17,43 @@
         background-color: darkgrey;
         color: white;
     }
+
+    .table tr, th, td, thead, tbody {
+        border: 1px solid black !important
+    }
+
+    .modal-header a {
+        font-size: 2.1em;
+    }
 </style>
 
 <div class="all-books">
     <div class="pt-3">
-        <div class="d-flex justify-content-center">
-            <div class="h2">
-                Управление на Книги
-            </div>
+        <div class="row">
+            <div class="col-1"></div>
+            <h1 class="text-center py-2 col-10">Управление на книги</h1>
+            <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+            <hr class="py-1" style="color:#00d1d1" />
         </div>
         <div class="d-flex pt-3">
-            <a class="col btn btn-success" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.2em">Добави книга</a>
+            <a class="col btn btn-success" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.3em">Добави книга</a>
         </div>
         @if (Model != null)
         {
             @if (Model.Count > 0)
             {
                 <div id="book-filtering" class="d-flex py-5 justify-content-center">
-                    <form asp-action="AllBooksInformation" method="get" class="row">
+                    <form asp-action="AllBooksInformation" method="get" class="row col-6">
                         <div class="form-actions no-color">
-                            <div class="pr-2 h5 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 400">
+                            <div class="pr-2 h3 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 700">
                                 Търси книга :
                             </div>
                             <div class="row m-0 pb-2">
-                                <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
+                                <input type="text" name="SearchString" class="form-control fs-5" value="@ViewData["CurrentFilter"]" />
                             </div>
                             <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
-                                <input type="submit" value="Търси..." class="btn btn-dark col-5" />
-                                <a class="btn btn-danger col-5" asp-action="AllBooksInformation">Изчисти</a>
+                                <input type="submit" value="Търси..." class="btn btn-dark col-5 fs-5" />
+                                <a class="btn btn-danger col-5 fs-5" asp-action="AllBooksInformation">Изчисти</a>
                             </div>
                         </div>
                     </form>
@@ -53,23 +62,22 @@
                 <table class="table table-striped" border="1">
                     <thead>
                         <tr class="header-row">
-                            <th>Име</th>
-                            <th>Автор</th>
-                            <th>Дата на създаване</th>
-                            <th>Операции</th>
+                            <th class="fs-4 text-center">Име</th>
+                            <th class="fs-4 text-center">Автор</th>
+                            <th class="fs-4 text-center">Дата на създаване</th>
+                            <th class="fs-4 text-center">Операции</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var book in Model)
                         {
                             <tr>
-                                <td>@book.Name</td>
-                                <td>@book.Author</td>
-                                <td>@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
-                                <td class="d-flex">
-                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning  col-5" onclick="editBook(@book.Id)">Промени</a>
-                                    <div class="col-2"></div>
-                                    <a class="remove-book btn btn-danger col-5" id="@book.Id">Изтрий</a>
+                                <td class="fs-5">@book.Name</td>
+                                <td class="fs-5">@book.Author</td>
+                                <td class="fs-5">@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
+                                <td class="d-flex justify-content-around">
+                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning fs-5 col-5" onclick="editBook(@book.Id)">Редактирай</a>
+                                    <a class="remove-book btn btn-danger col-5 fs-5" id="@book.Id">Изтрий</a>
                                 </td>
                             </tr>
                         }
@@ -101,5 +109,37 @@
         {
             <h2 class="row justify-content-center py-5" style="color:red">Няма налични книги в базата данни</h2>
         }
+    </div>
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8 text-center" id="infoModalLabel">Допълнителна информация</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+
+                <div class="container">
+                    <div>
+                        <div class="container">
+                            <p style="font-weight: bold; font-size:larger">Предоставената страница дава възможност на персонала да управлява книгите.</p>
+                        </div>
+                        <hr />
+                        <br />
+                        <div class="containter">
+                            <strong style="font-size: larger;">Могат да:</strong>
+                            <ul>
+                                <li>Променят информацията за дадена книга с бутон "Редактирай"</li>
+                                <li>Изтрият дадена книга с бутон"Изтрий"</li>
+                                <li>Разгледат информацията за дадена книга</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -8,56 +8,130 @@
     {
         imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.Book.Id}.png";
     }
+    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("bg-BG");
+    var month = book.DateOfBookCreation.Month;
+
+    string abbreviation;
+    switch (month)
+    {
+        case 1:
+            abbreviation = "яну.";
+            break;
+        case 2:
+            abbreviation = "фев.";
+            break;
+        case 3:
+            abbreviation = "март";
+            break;
+        case 4:
+            abbreviation = "апр.";
+            break;
+        case 5:
+            abbreviation = "май";
+            break;
+        case 6:
+            abbreviation = "юни";
+            break;
+        case 7:
+            abbreviation = "юли";
+            break;
+        case 8:
+            abbreviation = "авг.";
+            break;
+        case 9:
+            abbreviation = "септ.";
+            break;
+        case 10:
+            abbreviation = "окт.";
+            break;
+        case 11:
+            abbreviation = "ное.";
+            break;
+        case 12:
+            abbreviation = "дек.";
+            break;
+        default:
+            abbreviation = "";
+            break;
+    }
 }
+<style>
+    .left-table-prop, .right-table-prop{
+        font-size:1.25rem;
+    }
+    .left-table-prop{
+        font-weight:700
+    }
+
+    .btns-for-borrowing a{
+        font-size:1.35rem !important;
+    }
+    .description-header{
+        border-top: 0.3em solid aliceblue;
+        border-bottom:0.3em solid aliceblue;
+        font-size:2em;
+        font-weight:700;
+    }
+
+    .description-content{
+        font-size:1.25em;
+    }
+</style>
 <div class="book-page ">
     <div class="container">
-        <div class="row pt-5 justify-content-around">
-            <div class="col-5">
+        <div class="row  pt-5 mt-5 mt-lg-0 justify-content-around">
+            <div class="col-11 col-lg-5">
                 <div class="row">
                     <img src="@imageUrl" />
                 </div>
                 <hr />
                 <div class="row">
-                    <div class="col-6">Name</div>
-                    <div class="col-6">@book.Name</div>
+                    <div class="col-6 left-table-prop">Име на книгата:</div>
+                    <div class="col-6 right-table-prop">@book.Name</div>
                 </div>
                 <hr />
                 <div class="row">
-                    <div class="col-6">Author</div>
-                    <div class="col-6">@book.Author</div>
+                    <div class="col-6 left-table-prop">Автор:</div>
+                    <div class="col-6 right-table-prop">@book.Author</div>
                 </div>
                 <hr />
                 <div class="row">
-                    <div class="col-6">Creation Date</div>
-                    <div class="col-6">@book.DateOfBookCreation</div>
+                    <div class="col-6 left-table-prop">Дата на създаване:</div>
+                    <div class="col-6 right-table-prop">@book.DateOfBookCreation.ToString("dd") @abbreviation @book.DateOfBookCreation.ToString("yyyy") г.</div>
                 </div>
                 <hr />
                 <div class="row">
-                    <div class="col-6">Genre</div>
-                    <div class="col-6">@book.Genre.CategoryName</div>
+                    <div class="col-6 left-table-prop">Жанр</div>
+                    <div class="col-6 right-table-prop">@book.Genre.CategoryName</div>
                 </div>
                 <hr />
             </div>
-            <div class="col-6">
-                <div class="row">
+            <div class="col-11 col-lg-6">
+                <div class="row btns-for-borrowing">
                     @if (User!.Identity!.IsAuthenticated)
                     {
                         @if (!Model.HasUserBorrowedIt)
                         {
-                            <a class="btn btn-success borrow-book-btn" id="@book.Id">Borrow Book</a>
+                            <a class="btn btn-success borrow-book-btn" id="@book.Id">Вземи книгата назаем</a>
                         }
                         else
                         {
-                            <a class="btn btn-danger unborrow-book-btn" id="@book.Id">Remove from borrowed</a>
+                            <a class="btn btn-danger unborrow-book-btn" id="@book.Id">Върни книгата</a>
                         }
                     }
                     else
                     {
-                        <a class="btn btn-success unauth-borrow-book-btn" id="@book.Id">Borrow Book</a>
+                        <a class="btn btn-success unauth-borrow-book-btn" id="@book.Id">Вземи книгата назаем</a>
                     }
                 </div>
                 <div class="row pt-3">
-                    @book.Description
+                    <div class="d-flex p-2  justify-content-center align-items-center description-header">
+                        Описание на книгата
+                    </div>
+                    <div class="d-flex p-3 description-content">
+                        @book.Description
+
+                    </div>
                 </div>
             </div>
         </div>

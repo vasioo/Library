@@ -20,13 +20,19 @@
     .table tr, th, td, thead, tbody {
         border: 1px solid black !important
     }
+
+    .modal-header a {
+        font-size: 2.1em;
+    }
 </style>
 <div class="client-management">
-    <div class="pt-3">
-        <div class="row justify-content-center">
-            <div class="h1 text-center py-2">
+    <div class="">
+        <div class="row justify-content-center mt-5 mb-3">
+            <div class="col-1"></div>
+            <div class="h1 text-center py-2 col-10">
                 Управление на потребители
             </div>
+            <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
             <hr class="py-1" style="color:#00d1d1" />
         </div>
         <div id="user-filtering" class="d-flex pt-4 pb-4 justify-content-center">
@@ -53,8 +59,8 @@
             <table class="table table-striped" border="1">
                 <thead>
                     <tr class="header-row">
-                        <th class="fs-4 text-center">Име</th>
-                        <th class="fs-4 text-center">Фамилия</th>
+                        <th class="fs-4 text-center">Имейл</th>
+                        <th class="fs-4 text-center">Потребителско име</th>
                         <th class="fs-4 text-center">Операции</th>
                     </tr>
                 </thead>
@@ -62,8 +68,8 @@
                     @foreach (var worker in Model)
                     {
                         <tr>
-                            <td class="fs-5">@worker.FirstName</td>
-                            <td class="fs-5">@worker.LastName</td>
+                            <td class="fs-5">@worker.Email</td>
+                            <td class="fs-5">@worker.UserName</td>
                             <td class="">
                                 <div class="d-flex justify-content-around">
                                     <a href="@Url.Action("EditStaffInformation", "Admin", new { userId = worker.Id })" class="btn col-5 fs-5 btn-warning">
@@ -78,6 +84,39 @@
                     }
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8 text-center" id="infoModalLabel">Допълнителна информация</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+
+                <div class="container">
+                    <div>
+                        <div class="container">
+                            <p style="font-weight: bold; font-size:larger">Предоставената страница дава възможност на администраторите да управляват потребителите.</p>
+                        </div>
+                        <hr />
+                        <br />
+                        <div class="containter">
+                            <strong style="font-size: larger;">Могат да:</strong>
+                            <ul>
+                                <li>Променят информацията за даден потребител с бутон "Редактирай"</li>
+                                <li>Блокират даден потребител от уебсайта с бутон "Блокирай"</li>
+                                <li>Разгледат информацията за даден потребител</li>
+                           
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

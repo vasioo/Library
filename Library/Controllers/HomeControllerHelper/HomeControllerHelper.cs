@@ -182,10 +182,19 @@ namespace Library.Web.Controllers.HomeControllerHelper
         public async Task<SearchViewModel> SearchViewModelHelper(string searchCategory,string inputValue, int page = 1)
         {
             var viewModel = new SearchViewModel();
-          
+            if (searchCategory==null)
+            {
+                searchCategory = "";
+            }
+            if (inputValue == null)
+            {
+                inputValue = "";
+            }
             if (searchCategory == "Authors")
             {
-                var authors = _blogPostService.IQueryableGetAllAsync().Where(x=>x.IsForAuthor).Skip((page-1)*20).Take(20);
+                var authors = _blogPostService.IQueryableGetAllAsync()
+                    .Where(x=>x.IsForAuthor&&x.Title.Contains(inputValue)||x.Content.Contains(inputValue))
+                    .Skip((page-1)*20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_blogPostService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
                 var authorDTO = authors.Select(blogPost => new BlogPost
@@ -201,7 +210,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             else if (searchCategory == "Subjects")
             {
-                var subjects = _bookSubjectService.IQueryableGetAllAsync().Skip((page - 1) * 20).Take(20);
+                var subjects = _bookSubjectService.IQueryableGetAllAsync()
+                    .Where(x=>x.SubjectName.Contains(inputValue))
+                    .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookSubjectService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
                 var subjectDTOs = subjects.Select(subject => new SubjectDTO
@@ -216,7 +227,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             else
             {
-                var books = _bookService.IQueryableGetAllAsync().Skip((page - 1) * 20).Take(20);
+                var books = _bookService.IQueryableGetAllAsync()
+                    .Where(x=>x.Name.Contains(inputValue))
+                    .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
                 var bookDTOs = books.Select(book => new BookDTO

@@ -85,3 +85,12 @@
         display: none;
     }
 }
+
+.book-s-p .main-link, p {
+    text-decoration: none !important;
+    color: black;
+}
+
+.book-s-p h3 {
+    color: #fc8600;
+}

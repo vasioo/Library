@@ -36,7 +36,7 @@
     <div class="container custom-container">
         <h1 class="row justify-content-center" style="color:#00d1d1">Промяна на данни за книга</h1>
         <hr class="py-1" style="color:#fc8600">
-        <div id="editBookForm" class="@Model.Id py-3">
+        <div id="editBookForm" class="py-3" data-id="@Model.Id">
             <div class="row">
                 <div class="col">
                     <label asp-for="Name">Име на книгата</label>
@@ -113,10 +113,10 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="row justify-content-center py-2">
-                            <a id="addBookButton" class="btn  text-center fs-5 col-10 btn-success ">Потвърди добавянето</a>
+                            <a id="editBookButton" class="btn  text-center fs-5 col-10 btn-success ">Потвърди промяната</a>
                         </div>
                         <div class="row justify-content-center">
-                            <a asp-controller="Librarian" asp-action="AllBooksInformation" class="btn btn-danger col-10 fs-5 text-center">Откажи добавянето</a>
+                            <a asp-controller="Librarian" asp-action="AllBooksInformation" class="btn btn-danger col-10 fs-5 text-center">Откажи промяната</a>
                         </div>
                     </div>
                 </div>

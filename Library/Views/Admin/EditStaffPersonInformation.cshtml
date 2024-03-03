@@ -8,7 +8,7 @@
         background-color: #f8f9fa;
     }
 
-    .container {
+    .custom-container {
         background-color: #ffffff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
@@ -21,8 +21,8 @@
     }
 
     .img-thumbnail {
-        width: 150px;
-        height: 150px;
+        width: 13rem;
+        height: 13rem;
         border-radius: 50%;
     }
 
@@ -31,32 +31,53 @@
     }
 </style>
 <div class="edit-staff-information"></div>
-<div class="container">
-    <h2 class="mb-4">User Information</h2>
-
-    <div class="row">
-        <div class="col-md-4 img-container">
-            <img src="path/to/your/image.jpg" alt="User Image" class="img-thumbnail" />
+<div class="custom-container">
+    <div class="row justify-content-center mb-4">
+        <h1 class="py-2 text-center">Потребителска информация</h1>
+        <hr style="width:95%;color:#00d1d1;" class="py-1"/>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-md-3 img-container">
+            @{
+                var profileImage = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/library-profile-image-for-{Model.Id}";
+            }
+            <img src="@profileImage" alt="User Image" class="img-thumbnail" id="userImage" onerror="replaceImage()" />
         </div>
         <div class="col-md-8">
             <form method="post" asp-page-handler="EditInfo">
-                <div class="form-group">
-                    <label for="FirstName">First Name: @Model.FirstName</label>
+                <div class="row justify-content-between">
+                    <div class="form-group col-6">
+                        <label for="FirstName" class="fs-5"><strong>Име:</strong><br />&#x2022; @Model.FirstName</label>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="LastName" class="fs-5"><strong>Фамилия:</strong><br />&#x2022; @Model.LastName</label>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="LastName">Last Name: @Model.LastName</label>
-                </div>
-                <div class="form-group">
-                    <label for="Position">Position:</label>
-                    <input type="text" class="form-control" id="Position" name="Position" value="@Model.Position" />
-                </div>
-                <div class="form-group">
-                    <label for="Salary">Salary:</label>
-                    <input type="number" class="form-control" id="Salary" name="Salary" value="@Model.Salary" />
+                <div class="row justify-content-between">
+                    <div class="form-group col-6">
+                        <label for="Username" class="fs-5"><strong>Потребителско име:</strong><br />&#x2022; @Model.UserName</label>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="Email" class="fs-5"><strong>Имейл:</strong><br />&#x2022; @Model.Email</label>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-success">Save Changes</button>
+                <div class="form-group">
+                    <label for="Position" class="fs-5"><strong>Позиция:</strong></label>
+                    <input type="text" class="form-control fs-5" id="Position" name="Position" value="@Model.Position" />
+                </div>
+                <div class="form-group">
+                    <label for="Salary" class="fs-5"><strong>Годишна заплата:</strong></label>
+                    <input type="number" class="form-control fs-5" id="Salary" name="Salary" value="@Model.Salary" placeholder="0" />
+                </div>
+
+                <button type="submit" class="btn btn-success col-12 fs-5">Запази промените</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+    function replaceImage() {
+        document.getElementById('userImage').src = '/images/anonymous-user.jpg';
+    }
+</script>
