@@ -315,6 +315,12 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate,endDate, selectedCountOfItems);
         }
+
+        public async Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate)
+        {
+            return await _userLeasedBookService.MostReadGenres(startDate, endDate);
+        }
+        
         #endregion
     }
 }

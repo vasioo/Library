@@ -1,6 +1,5 @@
-﻿var reportPageLibrarian = (function () {
+﻿var statisticsPage = (function () {
     function init($container) {
-      
         function loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity) {
             $.ajax({
                 type: 'POST',

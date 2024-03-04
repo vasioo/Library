@@ -214,12 +214,27 @@ namespace Library.Web.Controllers
             return View("~/Views/Librarian/Report.cshtml", viewModel);
         }
 
+        [HttpPost]
         public async Task<JsonResult> LoadBookInformation(DateTime startDate,DateTime endDate, int selectedCountOfItems)
         {
             try
             {
                 var returnData =await _helper.GetBookInformationByTimeAndCount(startDate,endDate, selectedCountOfItems);
                 return Json(new { status = true, Data=returnData });
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Error Conflicted" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> LoadGenreInformation(DateTime startDate, DateTime endDate, int selectedCountOfItems)
+        {
+            try
+            {
+                var returnData = await _helper.GetGenreInformationByTimeAndCount(startDate, endDate);
+                return Json(new { status = true, Data = returnData });
             }
             catch (Exception)
             {

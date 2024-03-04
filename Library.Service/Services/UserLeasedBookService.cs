@@ -20,7 +20,9 @@ namespace Library.Services.Services
         }
         public async Task<List<string>> MostReadGenres(DateTime startDate, DateTime endDate)
         {
-            var leasedBooks = await _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing >= startDate && x.DateOfBorrowing <= endDate).ToListAsync();
+            var leasedBooks = await _dataContext.UserLeasedBooks
+                .Where(x => x.DateOfBorrowing >= startDate && x.DateOfBorrowing <= endDate && x.Book.Genre != null)
+                .ToListAsync();
             var totalEntityCount = leasedBooks.Count;
 
             var mostReadGenres = leasedBooks
@@ -35,6 +37,7 @@ namespace Library.Services.Services
                     return $"{genre.CategoryName}-{percentile:F2}";
                 })
                 .ToList();
+
 
             return mostReadGenres;
         }
@@ -72,7 +75,7 @@ namespace Library.Services.Services
         public async Task<IEnumerable<ReportBookDTO>> GetBooksInformationByTimeAndCountOfItems(DateTime startTimeSpan, DateTime endTimeSpan, int selectedCountOfItems)
         {
             var mostLeasedBookIds = _dataContext.UserLeasedBooks
-                .Where(x=>x.DateOfBorrowing>=startTimeSpan&&x.DateOfBorrowing<=endTimeSpan)
+                .Where(x => x.DateOfBorrowing >= startTimeSpan && x.DateOfBorrowing <= endTimeSpan)
                 .GroupBy(ulb => ulb.Book.Id)
                 .OrderByDescending(group => group.Count())
                 .Select(group => group.Key)

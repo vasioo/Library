@@ -17,5 +17,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
         Task<BookChangersViewModel> EditABookHelper(Guid id);
         Task<ReportViewModel> GetReportPageModel();
         Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems);
+        Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate);
     }
 }

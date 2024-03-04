@@ -1,9 +1,11 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.Pagination;
 using Library.Models.ViewModels;
 using Library.Web.Controllers.AdminControllerHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
 namespace Library.Web.Controllers
@@ -34,7 +36,7 @@ namespace Library.Web.Controllers
         public async Task<IActionResult> EditInfo(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);
-            return View(ClientManagement("", false));
+            return View(ClientManagement("","All", 1));
         }
         #endregion
 
@@ -45,26 +47,73 @@ namespace Library.Web.Controllers
             var viewModel = await _helper.StatisticsHelper();
             return View("~/Views/Admin/Statistics.cshtml", viewModel);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> LoadBookInformation(DateTime startDate, DateTime endDate, int selectedCountOfItems)
+        {
+            try
+            {
+                var returnData = await _helper.GetBookInformationByTimeAndCount(startDate, endDate, selectedCountOfItems);
+                return Json(new { status = true, Data = returnData });
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Error Conflicted" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> LoadGenreInformation(DateTime startDate, DateTime endDate, int selectedCountOfItems)
+        {
+            try
+            {
+                var returnData = await _helper.GetGenreInformationByTimeAndCount(startDate, endDate);
+                return Json(new { status = true, Data = returnData });
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Error Conflicted" });
+            }
+        }
         #endregion
 
         #region ClientManagement
         //[Authorize(Roles = "Admin")]
-        public IActionResult ClientManagement(string searchString, bool workersOnly)
+        public async Task<IActionResult> ClientManagement(string searchString, string roleFilter, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
+            ViewData["RoleFilter"] = roleFilter ?? "All"; 
+
             var users = _userManager.Users;
-            if (workersOnly)
+
+            if (!string.IsNullOrEmpty(roleFilter) && roleFilter != "All")
             {
-                var workerRoles = new[] { "Admin", "Worker" };
-                users = users.Where(u => workerRoles.Any(role => _userManager.IsInRoleAsync(u, role).Result));
+                var usersInRole = await _userManager.GetUsersInRoleAsync(roleFilter);
+                users = users.Where(u => usersInRole.Contains(u));
             }
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                users = users.Where(usr => usr.LastName.Contains(searchString) || usr.FirstName.Contains(searchString));
+                string searchStringLower = searchString.ToLower();
+
+                users = users.Where(usr =>
+                    usr.Email.ToLower().Contains(searchStringLower) ||
+                    usr.UserName.ToLower().Contains(searchStringLower)
+                );
             }
-            return View("~/Views/Admin/ClientManagement.cshtml", users);
+
+
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+
+            int pageSize = 30;
+            var paginatedList = PaginatedList<ApplicationUser>.CreateAsync(users.AsNoTracking(), page ?? 1, pageSize);
+            return View("~/Views/Admin/ClientManagement.cshtml", paginatedList);
         }
+
         #endregion
 
         #region BookCategories

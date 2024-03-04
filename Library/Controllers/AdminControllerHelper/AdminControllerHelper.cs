@@ -1,5 +1,6 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -28,16 +29,37 @@ namespace Library.Web.Controllers.AdminControllerHelper
             viewModel.AmountOfUsers = _userManager.Users.Count();
             var workerRoles = new[] { "Admin", "Worker" };
             viewModel.AmountOfWorkers = await _userManager.Users
-                    .ToListAsync()  // Retrieve all users from the database
+                    .ToListAsync() 
                     .ContinueWith(users =>
                         users.Result
                         .Where(u => workerRoles.Any(role => _userManager.IsInRoleAsync(u, role).Result))
                         .Count()
                         );
-            viewModel.MostLeasedBook = await _userLeasedBookService.MostLeasedBook();
+            var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24), DateTime.Now, 1);
+
+            foreach (var item in leasedBook)
+            {
+                var mostLeasedBook = new ReportBookDTO
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                };
+                viewModel.MostLeasedBook = mostLeasedBook;
+            }
+            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres(DateTime.Now.AddHours(-24), DateTime.Now);
 
             return viewModel;
         }
+        public async Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems)
+        {
+            return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate, endDate, selectedCountOfItems);
+        }
+
+        public async Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate)
+        {
+            return await _userLeasedBookService.MostReadGenres(startDate, endDate);
+        }
+
 
         #region MembershipHelpers
         public IQueryable<Membership> GetMemberships()

@@ -123,6 +123,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                     userLeasedBook.Book = book;
                     userLeasedBook.Book.Id = bookId;
                     userLeasedBook.UserId = userId;
+                    userLeasedBook.DateOfBorrowing = DateTime.Now;
                     if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId,userId)!=null)
                     {
                         await _userLeasedBookService.AddAsync(userLeasedBook);
