@@ -21,20 +21,20 @@
             }
             else
             {
-                <h2 class="text-center py-3 scroller-title">You have not borrowed any books!</h2>
+                <h1 class="text-center py-5 mb-4 scroller-title">Нямате взети книги назаем!</h1>
                 <hr />
             }
         }
         else
         {
-            <h2 class="text-center py-3 scroller-title">You have not borrowed any books!</h2>
+            <h1 class="text-center py-5 mb-4 scroller-title">Нямате взети книги назаем!</h1>
             <hr />
         }
         @if (Model.BestSellers != null && Model.BestSellers.Count() > 0)
         {
             <div class="container pt-5">
                 <div class="row">
-                    <div class="row scroller-title h3 justify-content-center">Recommended Books</div>
+                    <div class="row scroller-title h3 justify-content-center">Препоръчани книги</div>
                     <hr />
                     @foreach (var book in Model.RecommendedBooks)
                     {
@@ -49,7 +49,7 @@
         {
             <div class="container pt-5">
                 <div class="row">
-                    <div class="row scroller-title h3 justify-content-center">Best Sellers</div>
+                    <div class="row scroller-title h3 justify-content-center">Най-продавани</div>
                     <hr />
                     @foreach (var book in Model.BestSellers)
                     {

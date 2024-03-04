@@ -1,6 +1,7 @@
 ﻿using Library.DataAccess;
 using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.DTO;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,14 +13,14 @@ namespace Library.Services.Services
         private DataContext _dataContext;
         private IConfiguration _configuration;
 
-        public UserLeasedBookService(DataContext context, IConfiguration configuration) : base(configuration,context)
+        public UserLeasedBookService(DataContext context, IConfiguration configuration) : base(configuration, context)
         {
             _dataContext = context;
             _configuration = configuration;
         }
-        public async Task<List<string>> MostReadGenres()
+        public async Task<List<string>> MostReadGenres(DateTime startDate, DateTime endDate)
         {
-            var leasedBooks = await _dataContext.UserLeasedBooks.ToListAsync();
+            var leasedBooks = await _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing >= startDate && x.DateOfBorrowing <= endDate).ToListAsync();
             var totalEntityCount = leasedBooks.Count;
 
             var mostReadGenres = leasedBooks
@@ -55,21 +56,39 @@ namespace Library.Services.Services
 
                 return mostLeasedBook;
             }
-
-            // Handle the case when there are no leased books
-            return null;
+            return new Book();
         }
-
-
 
         public async Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(Guid bookId, string userId)
         {
-            var model = await _dataContext.UserLeasedBooks.Where(x => x.UserId == userId && x.Book.Id== bookId).FirstOrDefaultAsync();
+            var model = await _dataContext.UserLeasedBooks.Where(x => x.UserId == userId && x.Book.Id == bookId).FirstOrDefaultAsync();
             if (model != null)
             {
                 return model;
             }
             return new UserLeasedBookMappingTable();
+        }
+
+        public async Task<IEnumerable<ReportBookDTO>> GetBooksInformationByTimeAndCountOfItems(DateTime startTimeSpan, DateTime endTimeSpan, int selectedCountOfItems)
+        {
+            var mostLeasedBookIds = _dataContext.UserLeasedBooks
+                .Where(x=>x.DateOfBorrowing>=startTimeSpan&&x.DateOfBorrowing<=endTimeSpan)
+                .GroupBy(ulb => ulb.Book.Id)
+                .OrderByDescending(group => group.Count())
+                .Select(group => group.Key)
+                .Take(selectedCountOfItems);
+
+            var items = new List<ReportBookDTO>();
+
+            foreach (var item in mostLeasedBookIds)
+            {
+                var bookEntity = _dataContext.Books.Where(x => x.Id == item).FirstOrDefault();
+                var rbEntity = new ReportBookDTO();
+                rbEntity.Id = bookEntity.Id;
+                rbEntity.Name = bookEntity.Name;
+                items.Add(rbEntity);
+            }
+            return items;
         }
     }
 }

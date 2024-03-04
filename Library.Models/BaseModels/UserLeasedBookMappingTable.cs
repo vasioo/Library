@@ -9,5 +9,7 @@ namespace Library.Models.BaseModels
         public string UserId { get; set; } = "";
 
         public Book Book { get; set; } = new Book();
+
+        public DateTime DateOfBorrowing { get; set; } = DateTime.Now;
     }
 }

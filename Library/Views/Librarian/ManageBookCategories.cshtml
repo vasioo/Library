@@ -7,8 +7,8 @@
 <style>
     .subject-name,
     .category-name {
-        border: 1px solid #ccc; 
-        padding: 5px; 
+        border: 1px solid #ccc;
+        padding: 5px;
     }
 
     .subject-table,
@@ -23,7 +23,7 @@
         .book-categories-table td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left; 
+            text-align: left;
         }
 
     #add-subject-row-btn {
@@ -32,11 +32,12 @@
         box-shadow: brown !important;
     }
 
-    #add-subject-row-btn:hover{
-        background:brown !important;
-    }
-    .btn-warning:hover{
-        background:orange !important;
+        #add-subject-row-btn:hover {
+            background: brown !important;
+        }
+
+    .btn-warning:hover {
+        background: orange !important;
     }
 
     .btn:focus {
@@ -44,9 +45,19 @@
         box-shadow: none !important;
     }
 
+    .modal-header a {
+        font-size: 2.1em;
+    }
+
 </style>
 <div class="manage-book-categories">
     <div class="container">
+        <div class="row pt-3 pb-5 mb-2">
+            <div class="col-1"></div>
+            <h1 class="text-center py-2 col-10">Управление на категории</h1>
+            <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+            <hr class="py-1" style="color:#00d1d1" />
+        </div>
         <div class="card" id="bookSubject">
             <div class="card-header"></div>
             <div class="card-body">
@@ -120,6 +131,54 @@
         <div class="py-4">
             <button id="save-btn" class="btn col-12 fs-5 btn-success">Запази всички промени</button>
         </div>
+    </div>
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8 text-center" id="infoModalLabel">Допълнителна информация</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
 
+                <div class="container">
+                    <div>
+                        <div class="container">
+                            <p style="font-weight: bold; font-size:larger">Предоставената страница дава възможност на персонала да управлява темите и категориите на книгите.</p>
+                        </div>
+                        <hr />
+                        <div class="container">
+                            <div class="row">
+                                <div>Под тема се разбира -> История, Езици, Държави и т.н</div>
+                                <div>Под категория се разбира -> Археология, Английски, Индия и т.н</div>
+                            </div>
+                        </div>
+                        <hr />  
+                        <br />
+                        <div class="containter">
+                            <strong style="font-size: larger;">Могат да:</strong>
+                            <ul>
+                                <li>Променят информацията за дадена категория/тема със записване на име в текстовото поле.</li>
+                                <li>Изтрият дадена тема с бутона, който има кошче в него с цвят червен и е най-вдясно от таблицата на нивото на темата".</li>
+                                <li>Изтрият дадена категория с бутона, който има кошче в него с цвят червен и се намира вдясно от текстовото поле".</li>
+                                <li>Добавят нова категория с бутон "Добави нова категория", като полето за името е задължително.</li>
+                                <li>Добавят нова тема с бутон "Добави нова тема", като полето за името е задължително и в темата трябва да има поне една категория.</li>
+                                <li>Скрият категориите, за да преглеждат другите по-спокойно.</li>
+                                <li>
+                                    <strong>
+                                        При натискането на бутона "Запази всички промени" дадения потребител се съгласява че данните ще бъдат пренанесени
+                                        (всички данни, които са променени ще са поправени, а всички които са нови, ще се добавят).
+                                    </strong>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>

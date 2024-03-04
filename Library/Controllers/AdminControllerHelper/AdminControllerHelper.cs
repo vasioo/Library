@@ -35,7 +35,6 @@ namespace Library.Web.Controllers.AdminControllerHelper
                         .Count()
                         );
             viewModel.MostLeasedBook = await _userLeasedBookService.MostLeasedBook();
-            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres();
 
             return viewModel;
         }

@@ -210,8 +210,21 @@ namespace Library.Web.Controllers
         #region Reports
         public async Task<IActionResult> Report()
         {
-            //implement(could be to user or to admin)
-            return View("~/Views/Librarian/Report.cshtml");
+            var viewModel = await _helper.GetReportPageModel();
+            return View("~/Views/Librarian/Report.cshtml", viewModel);
+        }
+
+        public async Task<JsonResult> LoadBookInformation(DateTime startDate,DateTime endDate, int selectedCountOfItems)
+        {
+            try
+            {
+                var returnData =await _helper.GetBookInformationByTimeAndCount(startDate,endDate, selectedCountOfItems);
+                return Json(new { status = true, Data=returnData });
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Error Conflicted" });
+            }
         }
 
         public async Task<IActionResult> AddAReport(LibrarianReport report)

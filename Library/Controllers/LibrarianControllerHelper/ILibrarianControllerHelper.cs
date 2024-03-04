@@ -15,5 +15,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         IQueryable<BookSubject> GetAllBookSubjects();
         Task<BookChangersViewModel> AddABookHelper();
         Task<BookChangersViewModel> EditABookHelper(Guid id);
+        Task<ReportViewModel> GetReportPageModel();
+        Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems);
     }
 }

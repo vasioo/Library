@@ -1,8 +1,10 @@
-﻿using Library.Models.BaseModels;
+﻿using Library.DataAccess.MainModels;
+using Library.Models.BaseModels;
 using Library.Models.Cloudinary;
 using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Web.Controllers.HomeControllerHelper
@@ -14,13 +16,19 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IBookSubjectService _bookSubjectService;
         private readonly IMembershipService _membershipService;
+        private readonly IUserLeasedBookService _userLeasedBookService;
+        private UserManager<ApplicationUser> _userManager;
 
-        public LibrarianControllerHelper(IBookService bookService, IBookCategoryService bookCategoryService, IBookSubjectService bookSubjectService, IMembershipService membershipService)
+        public LibrarianControllerHelper(IBookService bookService, IBookCategoryService bookCategoryService,
+            IUserLeasedBookService userLeasedBookService, IBookSubjectService bookSubjectService,
+            IMembershipService membershipService, UserManager<ApplicationUser> userManager)
         {
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
             _bookSubjectService = bookSubjectService;
             _membershipService = membershipService;
+            _userLeasedBookService = userLeasedBookService;
+            _userManager = userManager;
         }
         #endregion
 
@@ -240,7 +248,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
 
                 await _bookService.UpdateAsync(bookNew);
-             
+
                 var photo = new Photo();
                 if (imageObj != null && imageObj != "")
                 {
@@ -278,6 +286,34 @@ namespace Library.Web.Controllers.HomeControllerHelper
         public async Task<int> RemoveABook(Guid bookId)
         {
             return await _bookService.RemoveAsync(bookId);
+        }
+        #endregion
+
+        #region ReportsHelper
+        public async Task<ReportViewModel> GetReportPageModel()
+        {
+            var viewModel = new ReportViewModel();
+
+            viewModel.AmountOfUsers = _userManager.Users.Count();
+
+            var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24),DateTime.Now,1);
+
+            foreach (var item in leasedBook)
+            {
+                var mostLeasedBook = new ReportBookDTO
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                };
+                viewModel.MostLeasedBook = mostLeasedBook;
+            }
+            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres(DateTime.Now.AddHours(-24),DateTime.Now);
+            return viewModel;
+        }
+
+        public async Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate,DateTime endDate, int selectedCountOfItems)
+        {
+            return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate,endDate, selectedCountOfItems);
         }
         #endregion
     }
