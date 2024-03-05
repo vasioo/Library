@@ -35,8 +35,10 @@
             <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
             <hr class="py-1" style="color:#00d1d1" />
         </div>
-        <div class="d-flex pt-3">
-            <a class="col btn btn-success" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.3em">Добави книга</a>
+        <div class="d-flex justify-content-around pt-3">
+            <a class="col-5 btn btn-success align-self-center" asp-controller="Librarian" asp-action="AddABook" style="font-size:1.3em">Добави книга</a>
+
+            <a class="col-5 btn btn-warning align-self-center" asp-controller="Librarian" asp-action="AddABookISBN" style="font-size:1.3em">Добави книга по ISBN</a>
         </div>
         @if (Model != null)
         {
@@ -72,7 +74,7 @@
                         @foreach (var book in Model)
                         {
                             <tr>
-                                <td class="fs-5">@book.Name</td>
+                                <td class="fs-5">@book.Title</td>
                                 <td class="fs-5">@book.Author</td>
                                 <td class="fs-5">@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
                                 <td class="d-flex justify-content-around">

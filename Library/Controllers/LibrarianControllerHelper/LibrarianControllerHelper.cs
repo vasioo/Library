@@ -50,7 +50,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 var bookNew = new Book();
 
                 bookNew.Id = book.Id;
-                bookNew.Name = book.Name;
+                bookNew.Title = book.Name;
                 bookNew.Author = book.Author;
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
@@ -217,7 +217,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             var book = await GetBook(id);
             var viewModel = new BookChangersViewModel();
             viewModel.Id = book.Id;
-            viewModel.Name = book.Name;
+            viewModel.Name = book.Title;
             viewModel.Author = book.Author;
             viewModel.DateOfBookPublishment = book.DateOfBookPublishment;
             viewModel.DateOfBookCreation = book.DateOfBookCreation;
@@ -239,7 +239,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 var bookNew = new Book();
 
                 bookNew.Id = book.Id;
-                bookNew.Name = book.Name;
+                bookNew.Title = book.Name;
                 bookNew.Author = book.Author;
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
@@ -287,6 +287,26 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             return await _bookService.RemoveAsync(bookId);
         }
+
+        public async Task SaveBookHelper(BookViewModelDTO viewModelDTO)
+        {
+            var bookEntity = new Book();
+            bookEntity.ISBN = viewModelDTO.ISBN;
+            bookEntity.Title = viewModelDTO.Title;
+            bookEntity.Subtitle = viewModelDTO.Subtitle;
+            bookEntity.Author = viewModelDTO.Authors;
+            bookEntity.DateOfBookPublishment = DateTime.Now;
+            bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
+            bookEntity.Language = viewModelDTO.Language;
+            bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
+
+            await _bookService.AddAsync(bookEntity);
+        }
+
+        public async Task<List<string>> GetAllGenresHelper()
+        {
+            return await _bookCategoryService.IQueryableGetAllAsync().Select(x=>x.CategoryName).ToListAsync();
+        }
         #endregion
 
         #region ReportsHelper
@@ -320,6 +340,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             return await _userLeasedBookService.MostReadGenres(startDate, endDate);
         }
+
         
         #endregion
     }

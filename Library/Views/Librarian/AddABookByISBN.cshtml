@@ -1,0 +1,148 @@
+﻿@model List<string>
+<style>
+    #bookDetailsContainer span {
+        font-weight: 400;
+    }
+
+    .custom-container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .modal-header a {
+        font-size: 2.1em;
+    }
+</style>
+
+<div class="add-a-book-by-isbn">
+    <div class="container">
+        <div class="row custom-container">
+            <div class="row">
+                <div class="col-1"></div>
+                <h1 class="text-center py-2 col-10">Управление на книги</h1>
+                <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+                <hr class="py-1" style="color:#00d1d1" />
+            </div>
+            <div class="form-group pt-4">
+                <input class="form-control fs-5" id="isbnInput" placeholder="ISBN" />
+            </div>
+            <div class="form-group pt-2">
+                <a id="submit-isbn-info" class="btn btn-success col-12 fs-5">Намери книгата</a>
+            </div>
+        </div>
+        <div class="row custom-container mt-5" id="bookDetailsContainer" style="display:none;">
+            <form id="bookForm" method="post" action="/Librarian/SaveBook">
+                <div class="row pb-3">
+                    <div class="text-center display-4 pb-2">Информация за книгата</div>
+                    <div class="text-center h4" id="isbnOfBook">ISBN:1320823-81342</div>
+                    <hr style="color:chocolate" class="py-1" />
+                </div>
+                <div class="row justify-content-between pb-3">
+                    <div class="col-md-6">
+                        <h1 class="text-center">
+                            "<span id="bookTitle"></span>"
+                        </h1>
+                        <h4 class="text-center">
+                            <span id="bookSubtitle"></span>
+                        </h4>
+                        <hr style="color:chocolate" class="py-1" />
+                        <h5>
+                            Други Заглавия:
+                            <span id="otherTitles"></span>
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Автори:
+                            <span id="authors"></span>
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Издатели:
+                            <span id="publishers"></span>
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Дата на издаване:
+                            <span id="publishDate"></span>
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Дадена категория:
+                            <span id="category"></span>
+                            <br />
+                            <br />
+                                <select id="genreDropdown" name="Category" class="form-select">
+                                    <option value="">Изберете категория от нашите доближаваща се най-много до дадената</option>
+                                    @foreach (var genre in Model)
+                                    {
+                                        <option value="@genre">@genre</option>
+                                    }
+                                </select>
+
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Език:
+                            <span id="language"></span>
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Физически вариант:
+                            <span id="physicalFormat"></span>
+                        </h5>
+                        <hr style="color:#00d1d1" class="pt-1" />
+                        <h5>
+                            Линк: <a id="bookUrl" href="#" target="_blank">Натисни</a>
+                        </h5>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <img id="bookCover" class="img-fluid" alt="Book Cover">
+                    </div>
+                </div>
+                <hr class="py-1" style="color:chocolate" />
+                <div class="row justify-content-around py-3">
+                    <div class="col-md-5">
+                        <a class="btn btn-success col-12 fs-5" id="saveFormData">Запамети</a>
+                    </div>
+                    <div class="col-md-5">
+                        <a class="btn btn-danger col-12 fs-5" asp-controller="Librarian" asp-action="">Отказ</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8 text-center" id="infoModalLabel">Допълнителна информация</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+
+                <div class="container">
+                    <div>
+                        <div class="container">
+                            <p style="font-weight: bold; font-size:larger">Предоставената страница дава възможност на персонала да добавя книгите по техния ISBN номер.</p>
+                        </div>
+                        <hr />
+                        <br />
+                        <div class="containter">
+                            <p>*.</p>
+                            <br />
+                            <p>
+                                Ако една книга я няма по ISBN номер, препоръчваме да я добавите от менюто <a asp-controller="Librarian" asp-action="AddABook">тук</a>.
+                            </p>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

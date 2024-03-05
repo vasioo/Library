@@ -46,7 +46,7 @@ namespace Library.Services.Services
        
         public async Task<Book> GetBookByBookName(string name)
         {
-            return _dataContext.Books.Where(x => x.Name == name).FirstOrDefault();
+            return _dataContext.Books.Where(x => x.Title == name).FirstOrDefault();
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿var addABook = (function () {
     function init($container) {
+
         $('#addBookButton').click(function () {
             var bookData = {
                 Name: $('#Name').val(),
@@ -36,6 +37,7 @@
                     console.log('AJAX request failed:', error);
                 });
         });
+
         $('.image-upload').change(function (event) {
             const $input = $(this),
                 $uploadedImage = $input.parent().find('.uploaded-image'),
@@ -52,6 +54,7 @@
                 }
             });
         });
+
     }
     return {
         init

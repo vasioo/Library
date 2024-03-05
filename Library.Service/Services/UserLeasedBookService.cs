@@ -88,7 +88,7 @@ namespace Library.Services.Services
                 var bookEntity = _dataContext.Books.Where(x => x.Id == item).FirstOrDefault();
                 var rbEntity = new ReportBookDTO();
                 rbEntity.Id = bookEntity.Id;
-                rbEntity.Name = bookEntity.Name;
+                rbEntity.Name = bookEntity.Title;
                 items.Add(rbEntity);
             }
             return items;

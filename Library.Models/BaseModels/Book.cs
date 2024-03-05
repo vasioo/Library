@@ -6,7 +6,8 @@ namespace Library.Models.BaseModels
     public class Book : IEntity
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Subtitle{ get; set; } = "";
         public string Author { get; set; } = "";
         [DataType(DataType.Date)]
         public DateTime DateOfBookCreation { get; set; }
@@ -15,6 +16,8 @@ namespace Library.Models.BaseModels
         public BookCategory? Genre { get; set; }
         public string Description { get; set; } = "";
         public Membership NeededMembership { get; set; } = new Membership();
+        public string Language { get; set; } = "";
+        public string ISBN { get; set; } = "";
         public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
     }
 }

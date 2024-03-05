@@ -229,14 +229,14 @@ namespace Library.Web.Controllers.HomeControllerHelper
             else
             {
                 var books = _bookService.IQueryableGetAllAsync()
-                    .Where(x=>x.Name.Contains(inputValue))
+                    .Where(x=>x.Title.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
                 var bookDTOs = books.Select(book => new BookDTO
                 {
                     Id = book.Id,
-                    Name = book.Name,
+                    Name = book.Title,
                     Author = book.Author,
                     DateOfBookCreation = book.DateOfBookCreation,
                     Description = book.Description,

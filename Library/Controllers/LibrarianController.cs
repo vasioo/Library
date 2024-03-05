@@ -7,12 +7,15 @@ using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Library.Web.Controllers
 {
     public class LibrarianController : Controller
     {
         #region FieldsAndConstructor
+        private static readonly HttpClient client = new HttpClient();
         private readonly ILibrarianControllerHelper _helper;
         UserManager<ApplicationUser> _userManager;
 
@@ -41,7 +44,7 @@ namespace Library.Web.Controllers
             var books = _helper.GetAllBooks();
             if (!String.IsNullOrEmpty(searchString))
             {
-                books = books.Where(book => book.Author.Contains(searchString) || book.Name.Contains(searchString)
+                books = books.Where(book => book.Author.Contains(searchString) || book.Title.Contains(searchString)
                 || book.DateOfBookCreation.ToString().Contains(searchString));
             }
             int pageSize = 30;
@@ -54,6 +57,12 @@ namespace Library.Web.Controllers
             var viewModel = await _helper.AddABookHelper();
 
             return View("~/Views/Librarian/AddABook.cshtml", viewModel);
+        }
+
+        public async Task<IActionResult> AddABookISBN()
+        {
+            List<string> genreItems = await _helper.GetAllGenresHelper();
+            return View("~/Views/Librarian/AddABookByISBN.cshtml", genreItems);
         }
 
         public async Task<IActionResult> ManageBookCategories()
@@ -86,6 +95,35 @@ namespace Library.Web.Controllers
                 return Json(new { status = true, Message = "Error Conflicted" });
             }
             return Json(new { status = true, Message = "The item was added successfully" });
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> FindBookByISBN(string isbn)
+        {
+            try
+            {
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"https://openlibrary.org/isbn/{isbn}");
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+
+                if (responseBody != null)
+                {
+                    return Json(new { status = true, Message = responseBody });
+                }
+                else
+                {
+                    return Json(new { status = false, Message = "Книгата не може да бъде намерена." });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                return Json(new { status = false, Message = "Книгата не може да бъде намерена." });
+            }
         }
 
         [HttpPost]
@@ -140,6 +178,20 @@ namespace Library.Web.Controllers
                 return Json(new { status = true, Message = "Error Conflicted" });
             }
             return Json(new { status = true, Message = "The item was removed successfully" });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveBook(BookViewModelDTO viewModelDTO)
+        {
+            try
+            {
+                await _helper.SaveBookHelper(viewModelDTO);
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка с добавянето на книгата." });
+            }
+            return Json(new { status = true, Message = "Книгата беше добавена успешно." });
         }
 
         #endregion
@@ -215,12 +267,12 @@ namespace Library.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> LoadBookInformation(DateTime startDate,DateTime endDate, int selectedCountOfItems)
+        public async Task<JsonResult> LoadBookInformation(DateTime startDate, DateTime endDate, int selectedCountOfItems)
         {
             try
             {
-                var returnData =await _helper.GetBookInformationByTimeAndCount(startDate,endDate, selectedCountOfItems);
-                return Json(new { status = true, Data=returnData });
+                var returnData = await _helper.GetBookInformationByTimeAndCount(startDate, endDate, selectedCountOfItems);
+                return Json(new { status = true, Data = returnData });
             }
             catch (Exception)
             {
