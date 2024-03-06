@@ -1,8 +1,19 @@
 ﻿@using Library.Models.ViewModels;
 @model LeasedTrackerViewModel
+@{
+    Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
+}
 <style>
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: white;
+    }
+
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: lightgrey;
+    }
+
     .category-catalog {
-        font-size: 1.4em;
+        font-size: 2.4em;
         color: black;
         position: relative;
         padding: 10px 0;
@@ -33,71 +44,106 @@
         border: none !important;
         outline: none !important;
     }
+
+    .table tr, th, td, thead, tbody {
+        border: 1px solid black !important
+    }
+
+    .modal-header a {
+        font-size: 2.1em;
+    }
 </style>
 <div class="leased-tracker-page">
-    <div class="row pt-3">
-        <div class="col col-lg-1 category-main-div-for-catalog text-center">
-            <a class="btn @(Model.Category  != "Active" && Model.Category  != "Expired" ? "active" : "") category-catalog" href="@Url.Action("Search", "Home", new { Category  = ""})">Чакащи</a>
+    <div class="row pt-3 pb-5 mb-2">
+        <div class="col-1"></div>
+        <h1 class="text-center py-2 col-10 display-4">Управление на категории</h1>
+        <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+        <hr class="py-1" style="color:#00d1d1" />
+    </div>
+    <div class="row justify-content-around">
+        <div class="col col-lg-2 category-main-div-for-catalog text-center">
+            <a class="btn @(Model.Category  != "Active" && Model.Category  != "Expired" ? "active" : "") category-catalog" href="@Url.Action("LeasedTracker", "Librarian", new { Category  = ""})">Чакащи</a>
         </div>
-        <div class="col col-lg-1 category-main-div-for-catalog text-center">
-            <a class="btn @(Model.Category  == "Active" ? "active" : "") category-catalog" href="@Url.Action("Search", "Home", new { Category  = "Active"})">Активни</a>
+        <div class="col col-lg-2 category-main-div-for-catalog text-center">
+            <a class="btn @(Model.Category  == "Active" ? "active" : "") category-catalog" href="@Url.Action("LeasedTracker", "Librarian", new { Category  = "Active"})">Активни</a>
         </div>
-        <div class="col col-lg-1 category-main-div-for-catalog text-center">
-            <a class="btn @(Model.Category  == "Expired" ? "active" : "") category-catalog" href="@Url.Action("Search", "Home", new { Category  = "Expired"})">Отминали</a>
+        <div class="col col-lg-2 category-main-div-for-catalog text-center">
+            <a class="btn @(Model.Category  == "Expired" ? "active" : "") category-catalog" href="@Url.Action("LeasedTracker", "Librarian", new { Category  = "Expired"})">Отминали</a>
         </div>
     </div>
-    <div class="container">
+    <hr style="color:#00d1d1" class="py-1" />
 
-        <table class="table table-striped" border="1">
-            <thead>
-                <tr class="header-row">
-                    <th class="fs-4 text-center">Имейл на потребител</th>
-                    <th class="fs-4 text-center">Заглавие на книга</th>
-                    @if (Model.Category == "Expired")
-                    {
-                        <th class="fs-4 text-center">Дата на изтичане</th>
-                    }
-                    @if (Model.Category == "Active")
-                    {
-                        <th class="fs-4 text-center">Час на изтичане</th>
-                    }
-                    <th class="fs-4 text-center">Операции</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var usLeased in Model.LeasedBooks)
-                {
-                    <tr>
-                        <td class="fs-5">@usLeased.User.Email</td>
-                        <td class="fs-5">@usLeased.Book.Title</td>
-                        @if (Model.Category == "Expired")
-                        {
-                            <td class="fs-4 text-center">@usLeased.DateOfBorrowing</td>
-                        }
-                        @if (Model.Category == "Active")
-                        {
-                            <td class="fs-4 text-center">@usLeased.DateOfBorrowing.Hour : @usLeased.DateOfBorrowing.Minute</td>
-                        }
-                        <td class="d-flex justify-content-around">
+    <div class="container">
+        @if (Model != null)
+        {
+            if (Model.LeasedBooks.Count() > 0)
+            {
+                <table class="table table-striped" border="1">
+                    <thead>
+                        <tr class="header-row">
+                            <th class="fs-4 text-center">Имейл на потребител</th>
+                            <th class="fs-4 text-center">Заглавие на книга</th>
                             @if (Model.Category == "Expired")
                             {
-                                <a id="deleteBtn" href="@Url.Action("DeleteUserLeasedEntity", "Librarian", new { userLeasedId = usLeased.Id })" class="btn btn-warning fs-5 col-5">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                                <th class="fs-4 text-center">Дата на изтичане</th>
                             }
-                            else if (Model.Category == "Active")
+                            @if (Model.Category == "Active")
                             {
-                                <a id="stopLeasingBtn" href="@Url.Action("StopLeasing", "Librarian", new { userLeasedId=usLeased.Id })" class="btn btn-warning fs-5 col-5">Спри</a>
+                                <th class="fs-4 text-center">Час на изтичане</th>
                             }
-                            else
-                            {
-                                <a id ="leaseBookBtn" href="@Url.Action("LeaseBookOrNot", "Librarian", new {userLeasedId=usLeased.Id, lease=true })" class="btn btn-warning fs-5 col-5">Отдай</a>
-                                <a id="rejectLeaseBtn" href="@Url.Action("LeaseBookOrNot", "Librarian", new {userLeasedId=usLeased.Id, lease=false })" class="btn btn-warning fs-5 col-5">Откажи</a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                            <th class="fs-4 text-center">Операции</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var usLeased in Model.LeasedBooks)
+                        {
+                            <tr>
+                                <td class="fs-5">@usLeased.User.Email</td>
+                                <td class="fs-5">@usLeased.Book.Title</td>
+                                @if (Model.Category == "Expired")
+                                {
+                                    <td class="fs-4 text-center">@usLeased.DateOfBorrowing</td>
+                                }
+                                @if (Model.Category == "Active")
+                                {
+                                    <td class="fs-4 text-center">@usLeased.DateOfBorrowing.Hour : @usLeased.DateOfBorrowing.Minute</td>
+                                }
+                                <td class="d-flex justify-content-around operations-container" data-userLeasedId="@usLeased.Id">
+                                    @if (Model.Category == "Expired")
+                                    {
+                                        <a id="deleteBtn" class="btn btn-danger col-12 fs-5 col-5" submit-btn>
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    }
+                                    else if (Model.Category == "Active")
+                                    {
+                                        <a id="stopLeasingBtn" class="btn btn-danger col-12 fs-5 col-5">Спри</a>
+                                    }
+                                    else
+                                    {
+                                        <a id="leaseBookBtn" class="btn btn-warning col-12 fs-5 col-5">Отдай</a>
+                                        <a id="rejectLeaseBtn" class="btn btn-danger col-12 fs-5 col-5">Откажи</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="row align-items-center justify-content-center py-3">
+                    <h1 class="text-danger text-center">Няма данни за дадената категория</h1>
+                </div>
+            }
+          
+        }
+        else
+        {
+            <div class="row align-items-center justify-content-center py-3">
+                <h1 class="text-danger text-center">Няма данни за дадената категория</h1>
+            </div>
+        }
+       
     </div>
 </div>

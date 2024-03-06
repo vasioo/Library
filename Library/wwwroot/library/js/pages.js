@@ -160,50 +160,59 @@ var addABookByISBN = (function () {
 
         });
 
-            $('#saveFormData').click(function (e) {
-                e.preventDefault(); 
+        $('#saveFormData').click(function (e) {
+            e.preventDefault();
 
-                
-                var errors = [];
 
-                $('#bookForm input[type="text"]').each(function () {
-                    var inputValue = $(this).val();
-                    var inputName = $(this).attr('name');
-                    if (!inputValue || inputValue.trim() === '') {
-                        errors.push(`Моля попълнете полето "${inputName}".`);
-                        $(this).css('outline', '1px solid red'); 
-                    }
-                });
+            var errors = [];
 
-                if ($('#genreDropdown').val() === '') {
-                    errors.push('Моля изберете жанр от падащия списък.');
-                    $('#genreDropdown').css('outline', '1px solid red'); 
+            $('#bookForm input[type="text"]').each(function () {
+                var inputValue = $(this).val();
+                var inputName = $(this).attr('name');
+                if (!inputValue || inputValue.trim() === '') {
+                    errors.push(`Моля попълнете полето "${inputName}".`);
+                    $(this).css('outline', '1px solid red');
                 }
-
-                if (errors.length > 0) {
-                    var errorMessage = errors.join('\n');
-                    Swal.fire("Грешка", errorMessage, "error");
-                    return;
-                }
-
-                $.ajax({
-                    url: $('#bookForm').attr('action'),
-                    method: 'POST',
-                    data: $('#bookForm').serialize(),
-                    success: function (response) {
-                        if (response.status) {
-                            Swal.fire("Успех", response.message, "success");
-                        } else {
-                            Swal.fire("Грешка", response.message, "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
-                    }
-                });
             });
 
-         
+            $('#bookForm input[type="number"]').each(function () {
+                var inputValue = $(this).val();
+                var inputName = $(this).attr('name');
+                if (!inputValue || inputValue.trim() === ''||inputValue<0) {
+                    errors.push(`Полето "${inputName} трябва да е положително и налично".`);
+                    $(this).css('outline', '1px solid red');
+                }
+            });
+
+            if ($('#genreDropdown').val() === '') {
+                errors.push('Моля изберете жанр от падащия списък.');
+                $('#genreDropdown').css('outline', '1px solid red');
+            }
+
+            if (errors.length > 0) {
+                var errorMessage = errors.join('\n');
+                Swal.fire("Грешка", errorMessage, "error");
+                return;
+            }
+
+            $.ajax({
+                url: $('#bookForm').attr('action'),
+                method: 'POST',
+                data: $('#bookForm').serialize(),
+                success: function (response) {
+                    if (response.status) {
+                        Swal.fire("Успех", response.message, "success");
+                    } else {
+                        Swal.fire("Грешка", response.message, "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
+                }
+            });
+        });
+
+
     }
     return {
         init
@@ -244,7 +253,7 @@ var bookPage = (function () {
     function init($container) {
         let $borrowBookBtn = $container.find('.borrow-book-btn'),
             $UnathBorrowBookBtn = $container.find('.unauth-borrow-book-btn'),
-            $unborrowBookBtn = $container.find('.unborrow-book-btn');
+            $readBookBtn = $container.find('.read-book-btn');
 
         $borrowBookBtn.click(function () {
             var book = $(this).attr('id');
@@ -252,7 +261,7 @@ var bookPage = (function () {
             $.post('/Home/BorrowBook', { bookId: book }, function (response) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'The book has been borrowed!',
+                    title: 'Заявката беше подадена!',
                     showClass: {
                         popup: 'animate__animated animate__fadeInDown'
                     },
@@ -265,17 +274,17 @@ var bookPage = (function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Something went wrong!',
+                    text: 'Възникна грешка!',
                 })
                 alert('AJAX request failed: ' + error);
             });
 
         });
-        $unborrowBookBtn.click(function () {
+        $readBookBtn.click(function () {
             var book = $(this).attr('id');
             $.ajax({
                 type: 'POST',
-                url: '/Home/UnborrowBook',
+                url: '/Home/ReadBook',
                 data: { bookId: book },
                 dataType: 'json',
                 success: function (response) {
@@ -320,7 +329,6 @@ var bookPage = (function () {
                 }
             });
         });
-
         $UnathBorrowBookBtn.click(function () {
             Swal.fire({
                 icon: "error",
@@ -336,55 +344,59 @@ var bookPage = (function () {
 })();
 var borrowBook = (function () {
     function init($container) {
-        let $unborrowBookBtn = $container.find('.unborrow-book-btn');
+        //let $unborrowBookBtn = $container.find('.unborrow-book-btn');
 
-        $unborrowBookBtn.click(function () {
-            var book = $(this).attr('id');
-            $.ajax({
-                type: 'POST',
-                url: '/Home/UnborrowBook',
-                data: { bookId: book },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.status === true) {
-                        // Handle success
-                        Swal.fire({
-                            icon: 'success',
-                            title: response.message,
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
-                        });
-                        setTimeout(function () {
-                            location.reload()
-                        }, 1000);
-                    } else {
-                        // Handle failure
-                        Swal.fire({
-                            icon: 'error',
-                            title: response.message,
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
-                        });
-                    }
-                },
-                error: function (error) {
-                    // Handle AJAX request failure
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                    });
-                    console.error('AJAX request failed:', error);
-                }
-            });
+        //$unborrowBookBtn.click(function () {
+        //    var book = $(this).attr('id');
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Home/UnborrowBook',
+        //        data: { bookId: book },
+        //        dataType: 'json',
+        //        success: function (response) {
+        //            if (response.status === true) {
+        //                // Handle success
+        //                Swal.fire({
+        //                    icon: 'success',
+        //                    title: response.message,
+        //                    showClass: {
+        //                        popup: 'animate__animated animate__fadeInDown'
+        //                    },
+        //                    hideClass: {
+        //                        popup: 'animate__animated animate__fadeOutUp'
+        //                    }
+        //                });
+        //                setTimeout(function () {
+        //                    location.reload()
+        //                }, 1000);
+        //            } else {
+        //                // Handle failure
+        //                Swal.fire({
+        //                    icon: 'error',
+        //                    title: response.message,
+        //                    showClass: {
+        //                        popup: 'animate__animated animate__fadeInDown'
+        //                    },
+        //                    hideClass: {
+        //                        popup: 'animate__animated animate__fadeOutUp'
+        //                    }
+        //                });
+        //            }
+        //        },
+        //        error: function (error) {
+        //            // Handle AJAX request failure
+        //            Swal.fire({
+        //                icon: 'error',
+        //                title: 'Oops...',
+        //                text: 'Something went wrong!',
+        //            });
+        //            console.error('AJAX request failed:', error);
+        //        }
+        //    });
+        //});
+
+        $(document).on('click', '.read-book-btn', function () {
+
         });
     }
     return {
@@ -483,6 +495,76 @@ var editABook = (function () {
 })();
 var editStaffInformation = (function () {
     function init($container) {
+    }
+    return {
+        init
+    };
+})();
+var leasedTracker = (function () {
+    function init($container) {
+        $('#deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/DeleteUserLeasedEntity",
+                data: { userLeasedId: userLeasedId },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        $('#stopLeasingBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/StopLeasing",
+                data: { userLeasedId: userLeasedId },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        $('#leaseBookBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/LeaseBookOrNot",
+                data: { userLeasedId: userLeasedId, lease: true },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        $('#rejectLeaseBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/LeaseBookOrNot",
+                data: { userLeasedId: userLeasedId, lease: false },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }); 
     }
     return {
         init

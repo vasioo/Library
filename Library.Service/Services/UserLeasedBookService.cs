@@ -96,12 +96,12 @@ namespace Library.Services.Services
 
         public IQueryable<UserLeasedBookMappingTable> GetActiveLeasedBooks()
         {
-            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing <= x.DateOfBorrowing.AddHours(1));
+            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) >= DateTime.Now && x.Approved);
         }
 
         public IQueryable<UserLeasedBookMappingTable> GetExpiredLeasedBooks()
         {
-            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing > x.DateOfBorrowing.AddHours(1));
+            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) < DateTime.Now && x.Approved);
         }
 
         public async Task RemoveAnHourToExistingEntity(Guid id)
@@ -109,6 +109,9 @@ namespace Library.Services.Services
             var entity = await _dataContext.UserLeasedBooks.Where(x => x.Id == id).FirstOrDefaultAsync();
 
             entity.DateOfBorrowing = DateTime.Now.AddHours(-1);
+
+            _dataContext.Update(entity);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

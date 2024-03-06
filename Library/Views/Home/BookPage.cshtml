@@ -112,16 +112,16 @@
                     {
                         @if (!Model.HasUserBorrowedIt)
                         {
-                            <a class="btn btn-success borrow-book-btn" id="@book.Id">Вземи книгата назаем</a>
+                            <a class="btn btn-success borrow-book-btn" id="@book.Id">Заяви книгата</a>
                         }
                         else
                         {
-                            <a class="btn btn-danger unborrow-book-btn" id="@book.Id">Върни книгата</a>
+                            <a class="btn btn-danger read-book-btn" id="@book.Id">Чети книгата</a>
                         }
                     }
                     else
                     {
-                        <a class="btn btn-success unauth-borrow-book-btn" id="@book.Id">Вземи книгата назаем</a>
+                        <a class="btn btn-success unauth-borrow-book-btn" id="@book.Id">Заяви книгата</a>
                     }
                 </div>
                 <div class="row pt-3">

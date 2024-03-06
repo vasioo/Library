@@ -1,13 +1,11 @@
 ﻿var leasedTracker = (function () {
     function init($container) {
-        $('#deleteBtn, #stopLeasingBtn, #leaseBookBtn, #rejectLeaseBtn').on('click', function (e) {
+        $('#deleteBtn').on('click', function (e) {
             e.preventDefault();
-            var url = $(this).attr('href');
-            var userLeasedId = $(this).data('userLeasedId');
-
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
             $.ajax({
-                type: 'GET',
-                url: url,
+                type: 'POST',
+                url: "/Librarian/DeleteUserLeasedEntity",
                 data: { userLeasedId: userLeasedId },
                 success: function (response) {
                     location.reload();
@@ -17,6 +15,54 @@
                 }
             });
         });
+
+        $('#stopLeasingBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/StopLeasing",
+                data: { userLeasedId: userLeasedId },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        $('#leaseBookBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/LeaseBookOrNot",
+                data: { userLeasedId: userLeasedId, lease: true },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        $('#rejectLeaseBtn').on('click', function (e) {
+            e.preventDefault();
+            var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
+            $.ajax({
+                type: 'POST',
+                url: "/Librarian/LeaseBookOrNot",
+                data: { userLeasedId: userLeasedId, lease: false },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }); 
     }
     return {
         init

@@ -2,7 +2,7 @@
     function init($container) {
         let $borrowBookBtn = $container.find('.borrow-book-btn'),
             $UnathBorrowBookBtn = $container.find('.unauth-borrow-book-btn'),
-            $unborrowBookBtn = $container.find('.unborrow-book-btn');
+            $readBookBtn = $container.find('.read-book-btn');
 
         $borrowBookBtn.click(function () {
             var book = $(this).attr('id');
@@ -10,7 +10,7 @@
             $.post('/Home/BorrowBook', { bookId: book }, function (response) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'The book has been borrowed!',
+                    title: 'Заявката беше подадена!',
                     showClass: {
                         popup: 'animate__animated animate__fadeInDown'
                     },
@@ -23,17 +23,17 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Something went wrong!',
+                    text: 'Възникна грешка!',
                 })
                 alert('AJAX request failed: ' + error);
             });
 
         });
-        $unborrowBookBtn.click(function () {
+        $readBookBtn.click(function () {
             var book = $(this).attr('id');
             $.ajax({
                 type: 'POST',
-                url: '/Home/UnborrowBook',
+                url: '/Home/ReadBook',
                 data: { bookId: book },
                 dataType: 'json',
                 success: function (response) {
@@ -78,7 +78,6 @@
                 }
             });
         });
-
         $UnathBorrowBookBtn.click(function () {
             Swal.fire({
                 icon: "error",
