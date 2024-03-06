@@ -2,10 +2,12 @@
 using Library.Models.BaseModels;
 using Library.Models.Cloudinary;
 using Library.Models.DTO;
+using Library.Models.UserModels.Interfaces;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Library.Web.Controllers.HomeControllerHelper
 {
@@ -17,10 +19,12 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IBookSubjectService _bookSubjectService;
         private readonly IMembershipService _membershipService;
         private readonly IUserLeasedBookService _userLeasedBookService;
+        private readonly IEmailSenderService _emailSenderService;
+
         private UserManager<ApplicationUser> _userManager;
 
         public LibrarianControllerHelper(IBookService bookService, IBookCategoryService bookCategoryService,
-            IUserLeasedBookService userLeasedBookService, IBookSubjectService bookSubjectService,
+            IUserLeasedBookService userLeasedBookService, IBookSubjectService bookSubjectService, IEmailSenderService emailSenderService,
             IMembershipService membershipService, UserManager<ApplicationUser> userManager)
         {
             _bookService = bookService;
@@ -29,6 +33,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _membershipService = membershipService;
             _userLeasedBookService = userLeasedBookService;
             _userManager = userManager;
+            _emailSenderService = emailSenderService;
         }
         #endregion
 
@@ -54,6 +59,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 bookNew.Author = book.Author;
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
+                bookNew.AmountOfBooks = book.AmountOfBooks;
                 bookNew.Description = book.Description;
                 bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
 
@@ -223,6 +229,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.DateOfBookCreation = book.DateOfBookCreation;
             viewModel.Genre = book.Genre.CategoryName;
             viewModel.Description = book.Description;
+            viewModel.AmountOfBooks = book.AmountOfBooks;
             viewModel.NeededMembership = book.NeededMembership.MembershipName;
             viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
             viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
@@ -244,6 +251,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
                 bookNew.Description = book.Description;
+                bookNew.AmountOfBooks = book.AmountOfBooks;
                 bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
 
 
@@ -298,6 +306,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             bookEntity.DateOfBookPublishment = DateTime.Now;
             bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
             bookEntity.Language = viewModelDTO.Language;
+            bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
             bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
 
             await _bookService.AddAsync(bookEntity);
@@ -305,8 +314,27 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
         public async Task<List<string>> GetAllGenresHelper()
         {
-            return await _bookCategoryService.IQueryableGetAllAsync().Select(x=>x.CategoryName).ToListAsync();
+            return await _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName).ToListAsync();
         }
+        public async Task<LeasedTrackerViewModel> GetLeasedTrackerData(string Category)
+        {
+            var viewModel = new LeasedTrackerViewModel();
+            if (Category == "Active")
+            {
+                viewModel.LeasedBooks = _userLeasedBookService.GetActiveLeasedBooks();
+            }
+            else if (Category == "Expired")
+            {
+                viewModel.LeasedBooks = _userLeasedBookService.GetExpiredLeasedBooks();
+            }
+            else
+            {
+                viewModel.LeasedBooks = _userLeasedBookService.IQueryableGetAllAsync().Where(x => x.Approved == false);
+            }
+            viewModel.Category = Category;
+            return viewModel;
+        }
+
         #endregion
 
         #region ReportsHelper
@@ -316,7 +344,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             viewModel.AmountOfUsers = _userManager.Users.Count();
 
-            var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24),DateTime.Now,1);
+            var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24), DateTime.Now, 1);
 
             foreach (var item in leasedBook)
             {
@@ -327,13 +355,13 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 };
                 viewModel.MostLeasedBook = mostLeasedBook;
             }
-            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres(DateTime.Now.AddHours(-24),DateTime.Now);
+            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres(DateTime.Now.AddHours(-24), DateTime.Now);
             return viewModel;
         }
 
-        public async Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate,DateTime endDate, int selectedCountOfItems)
+        public async Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems)
         {
-            return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate,endDate, selectedCountOfItems);
+            return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate, endDate, selectedCountOfItems);
         }
 
         public async Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate)
@@ -341,7 +369,197 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return await _userLeasedBookService.MostReadGenres(startDate, endDate);
         }
 
-        
+        #endregion
+
+        #region LeasingBooksHelper
+        public async Task<bool> LeaseBookOrNotHelper(Guid userLeasedId, bool lease)
+        {
+            try
+            {
+                if (lease)
+                {
+                    var entity = _userLeasedBookService.IQueryableGetAllAsync().Where(x => x.Id == userLeasedId).FirstOrDefault();
+                    if (entity != null)
+                    {
+                        var user = entity.User;
+                        var emailBody = $@"
+                         <html>
+                           <body>
+                               <div style='text-align: center;'>
+                                   <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/litify-logo_fwtfvq' alt='Website Logo' style='height: 20em;' />
+                               </div>
+                               <div style='text-align: center; font-size: 22px; font-weight: bold; margin-top: 20px; text-decoration:none; color: black;'>
+                                   {user.UserName},<br/> Вашата поръчка беше приета!
+                               </div>
+                               <br/>
+                               <hr/>
+                               <br/>
+                               <div style='background:#ffffff;background-color:#ffffff;margin:0px auto;font-family:Arial,sans-serif;max-width:864px'>
+                                   <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#ffffff;background-color:#ffffff;width:100%;font-family:Arial,sans-serif' width='100%' bgcolor='#ffffff'>
+                                       <tbody>
+                                           <tr style='font-family:Arial,sans-serif'>
+                                               <td style='direction:ltr;font-size:0px;padding:32px 8px 16px 8px;text-align:center;font-family:Arial,sans-serif' align='center'>
+                                                   <div class='m_-6124457663806841501mj-column-per-100' style='font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;font-family:Arial,sans-serif'>
+                                                       <table border='0' cellpadding='0' cellspacing='0' role='presentation' width='100%' style='font-family:Arial,sans-serif'>
+                                                           <tbody>
+                                                               <tr style='font-family:Arial,sans-serif'>
+                                                                   <td style='vertical-align:top;padding:0;font-family:Arial,sans-serif' valign='top'>
+                                                                       <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='font-family:Arial,sans-serif' width='100%'>
+                                                                           <tbody>
+                                                                               <tr style='font-family:Arial,sans-serif'>
+                                                                                   <td align='none' style='font-size:0px;padding:0px 0px 24px 0px;word-break:break-word;font-family:Arial,sans-serif'>
+                                                                                       <div style='font-size:16px;font-weight:900;line-height:18px;text-align:none;color:#000000;font-family:Arial,sans-serif'>
+                                                                                           Книги:
+                                                                                       </div>
+                                                                                   </td>
+                                                                               </tr>
+                                                                                <hr/>
+                                                                                <tr style='width:100%;white-space:nowrap;font-family:Arial,sans-serif'>
+                                                                                    <td style='border-top:1px solid #ededed;font-size:12px;line-height:20px;width:200px;max-width:250px;font-family:Arial,sans-serif' width='200'></td>
+                                                                                </tr>
+                                                                                <tr style='font-family:Arial,sans-serif'>
+                                                                                    <td align='none' style='font-size:0px;padding:12px 0;word-break:break-word;font-family:Arial,sans-serif'>
+                                                                                        <div style='font-size:13px;line-height:1;text-align:none;color:#000000;font-family:Arial,sans-serif'>
+                                                                                            <table style='width:100%;font-family:Arial,sans-serif' width='100%'>
+                                                                                                <tbody>
+                                                                                                    <tr style='font-family:Arial,sans-serif'>
+                                                                                                        <td rowspan='6' style='height:13em;min-width:8.6em;padding-right:24px;font-family:Arial,sans-serif' height='13em'>
+                                                                                                            <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='border-collapse:collapse;border-spacing:0px;font-family:Arial,sans-serif'>
+                                                                                                                <tbody>
+                                                                                                                    <tr style='font-family:Arial,sans-serif'>
+                                                                                                                        <td style='width:8.6em;font-family:Arial,sans-serif' width='72'>
+                                                                                                                            <a href='' style='text-decoration:underline;height:13em;min-width:72px;font-family:Arial,sans-serif;color:black' target='_blank' data-saferedirecturl=''>
+                                                                                                                                <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{entity.Id}.png' style='border:0;display:block;outline:none;text-decoration:none;height:13em;width:100%' width='8.6em' class='CToWUd' data-bit='iit'>
+                                                                                                                            </a>
+                                                                                                                        </td>
+                                                                                                                    </tr>
+                                                                                                                </tbody>
+                                                                                                            </table>
+                                                                                                        </td>
+                                                                                                        <td style='font-size:18px;font-weight:bold;line-height:20px;width:37em;max-width:37em;font-family:Arial,sans-serif' width='37em'>
+                                                                                                              {entity.Book.Title}
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    <tr style='white-space:nowrap;font-family:Arial,sans-serif'>
+                                                                                                        <td style='height:8px;font-family:Arial,sans-serif' height='8'></td>
+                                                                                                    </tr>
+                                                                                                    <tr style='white-space:nowrap;font-family:Arial,sans-serif'>
+                                                                                                        <td style='font-size:15px;line-height:20px;width:37em;max-width:37em;font-family:Arial,sans-serif' width='37em'>
+                                                                                                            {entity.Book.Author}
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    <tr style='white-space:nowrap;font-family:Arial,sans-serif'>
+                                                                                                        <td style='font-size:15px;line-height:20px;width:37em;max-width:37em;font-family:Arial,sans-serif' width='37em'>
+                                                                                                            {entity.Book.DateOfBookCreation.Year} г.
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style='width:100%;white-space:nowrap;font-family:Arial,sans-serif'>
+                                                                                    <td style='border-bottom:1px solid #ededed;font-size:12px;line-height:20px;width:200px;max-width:250px;font-family:Arial,sans-serif' width='200'></td>
+                                                                                </tr>
+                                                                           </tbody>
+                                                                       </table>
+                                                                   </td>
+                                                               </tr>
+                                                           </tbody>
+                                                       </table>
+                                                   </div>
+                                                   <div style='background:#ffffff;background-color:#ffffff;margin:0px auto;font-family:Arial,sans-serif;max-width:864px'>
+                                                       <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#ffffff;background-color:#ffffff;width:100%;font-family:Arial,sans-serif' width='100%' bgcolor='#ffffff'>
+                                                           <tbody>
+                                                               <tr style='font-family:Arial,sans-serif'>
+                                                                   <td style='direction:ltr;font-size:0px;padding:20px 8px 22px 8px;text-align:right;font-family:Arial,sans-serif' align='right'>
+                                                                       <div class='m_-6124457663806841501mj-column-per-100' style='font-size:0px;text-align:right;direction:ltr;display:inline-block;vertical-align:top;width:100%;font-family:Arial,sans-serif'>
+                                                                           <table border='0' cellpadding='0' cellspacing='0' role='presentation' width='100%' style='font-family:Arial,sans-serif'>
+                                                                               <tbody>
+                                                                                   <tr style='font-family:Arial,sans-serif'>
+                                                                                       <td style='vertical-align:top;padding:0;font-family:Arial,sans-serif' valign='top'>
+                                                                                           <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='font-family:Arial,sans-serif' width='100%'>
+                                                                                               <tbody>
+                                                                                                   <tr style='font-family:Arial,sans-serif'>
+                                                                                                       <td align='none' style='font-size:0px;padding:0;word-break:break-word;font-family:Arial,sans-serif'>
+                                                                                                           <table cellpadding='0' cellspacing='0' width='100%' border='0' style='color:#000000;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;font-family:Arial,sans-serif'>
+                                                                                                               <tbody>
+                                                                                                                   <tr style='font-family:Arial,sans-serif'>
+                                                                                                                       <td style='text-align: left;font-size:15px;line-height:20px;width: 100%;font-family:Arial,sans-serif' width='100%'>
+                                                                                                                           *вашата книга е добавена като готова за четене, отидете в страницата 'Взети назаем (първия бутон до логото, в приложението)'
+                                                                                                                       </td>
+                                                                                                                   </tr>
+                                                                                                               </tbody>
+                                                                                                           </table>
+                                                                                                       </td>
+                                                                                                   </tr>
+                                                                                               </tbody>
+                                                                                           </table>
+                                                                                       </td>
+                                                                                   </tr>
+                                                                               </tbody>
+                                                                           </table>
+                                                                       </div>
+                                                                   </td>
+                                                               </tr>
+                                                           </tbody>
+                                                       </table>
+                                                   </div>
+                                               </td>
+                                           </tr>
+                                       </tbody>
+                                   </table>
+                               </div>
+                            </body>
+                        </html>";
+
+                        var subjectText = "Потвърждение на отдаване!";
+
+                        _emailSenderService.SendEmail(entity.User!.Email!, emailBody, subjectText);
+                        entity.Approved = true;
+                        await _userLeasedBookService.UpdateAsync(entity);
+                    }
+                }
+                else
+                {
+                    await _userLeasedBookService.RemoveAnHourToExistingEntity(userLeasedId);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            return true;
+        }
+
+        public async Task<bool> StopLeasingHelper(Guid userLeasedId)
+        {
+            try
+            {
+                await _userLeasedBookService.RemoveAnHourToExistingEntity(userLeasedId);
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            return true;
+        }
+
+        public async Task<bool> DeleteLeasedEntityHelper(Guid id)
+        {
+            try
+            {
+                await _userLeasedBookService.RemoveAsync(id);
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            return true;
+        }
         #endregion
     }
 }

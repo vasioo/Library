@@ -18,6 +18,7 @@ namespace Library.Models.BaseModels
         public Membership NeededMembership { get; set; } = new Membership();
         public string Language { get; set; } = "";
         public string ISBN { get; set; } = "";
+        public int AmountOfBooks { get; set; }
         public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
     }
 }

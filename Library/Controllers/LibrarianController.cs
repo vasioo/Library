@@ -1,4 +1,5 @@
-﻿using Library.DataAccess.MainModels;
+﻿using Humanizer.Localisation;
+using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.Pagination;
@@ -192,6 +193,75 @@ namespace Library.Web.Controllers
                 return Json(new { status = false, Message = "Възникна грешка с добавянето на книгата." });
             }
             return Json(new { status = true, Message = "Книгата беше добавена успешно." });
+        }
+
+        public async Task<IActionResult> LeasedTracker(string Category)
+        {
+            var viewModel = await _helper.GetLeasedTrackerData(Category);
+            return View("~/Views/Librarian/LeasedTracker.cshtml", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> LeaseBookOrNot(Guid userLeasedId, bool lease)
+        {
+            try
+            {
+                var res = await _helper.LeaseBookOrNotHelper(userLeasedId, lease);
+                if (res)
+                {
+                    return Json(new { status = true, Message = "Промените бяха направени." });
+                }
+                else
+                {
+                    return Json(new { status = false, Message = "Възникна грешка." });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> StopLeasing(Guid userLeasedId)
+        {
+            try
+            {
+                var res = await _helper.StopLeasingHelper(userLeasedId);
+                if (res)
+                {
+                    return Json(new { status = true, Message = "Промените бяха направени." });
+                }
+                else
+                {
+                    return Json(new { status = false, Message = "Възникна грешка." });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteUserLeasedEntity(Guid userLeasedId)
+        {
+            try
+            {
+                var res = await _helper.DeleteLeasedEntityHelper(userLeasedId);
+                if (res)
+                {
+                    return Json(new { status = true, Message = "Промените бяха направени." });
+                }
+                else
+                {
+                    return Json(new { status = false, Message = "Възникна грешка." });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка." });
+            }
         }
 
         #endregion

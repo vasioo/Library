@@ -1,4 +1,5 @@
-﻿using Library.Models.UserModels.Interfaces;
+﻿using Library.DataAccess.MainModels;
+using Library.Models.UserModels.Interfaces;
 
 namespace Library.Models.BaseModels
 {
@@ -6,10 +7,12 @@ namespace Library.Models.BaseModels
     {
         public Guid Id { get; set; }
 
-        public string UserId { get; set; } = "";
+        public ApplicationUser User { get; set; } = new ApplicationUser();
 
         public Book Book { get; set; } = new Book();
 
         public DateTime DateOfBorrowing { get; set; } = DateTime.Now;
+
+        public bool Approved { get; set; } = false;
     }
 }

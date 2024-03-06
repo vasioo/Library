@@ -1,0 +1,103 @@
+﻿@using Library.Models.ViewModels;
+@model LeasedTrackerViewModel
+<style>
+    .category-catalog {
+        font-size: 1.4em;
+        color: black;
+        position: relative;
+        padding: 10px 0;
+        margin: 0;
+        font-weight: 500;
+    }
+
+        .category-catalog:hover {
+            text-decoration: underline;
+            text-decoration-color: #00D1D1;
+        }
+
+        .category-catalog.active {
+            text-decoration: underline;
+            color: #00D1D1;
+        }
+
+    .category-main-div-for-catalog {
+        padding: 0;
+        margin: 0;
+    }
+
+    .btn,
+    .btn:active,
+    .btn:focus,
+    .btn:hover {
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
+    }
+</style>
+<div class="leased-tracker-page">
+    <div class="row pt-3">
+        <div class="col col-lg-1 category-main-div-for-catalog text-center">
+            <a class="btn @(Model.Category  != "Active" && Model.Category  != "Expired" ? "active" : "") category-catalog" href="@Url.Action("Search", "Home", new { Category  = ""})">Чакащи</a>
+        </div>
+        <div class="col col-lg-1 category-main-div-for-catalog text-center">
+            <a class="btn @(Model.Category  == "Active" ? "active" : "") category-catalog" href="@Url.Action("Search", "Home", new { Category  = "Active"})">Активни</a>
+        </div>
+        <div class="col col-lg-1 category-main-div-for-catalog text-center">
+            <a class="btn @(Model.Category  == "Expired" ? "active" : "") category-catalog" href="@Url.Action("Search", "Home", new { Category  = "Expired"})">Отминали</a>
+        </div>
+    </div>
+    <div class="container">
+
+        <table class="table table-striped" border="1">
+            <thead>
+                <tr class="header-row">
+                    <th class="fs-4 text-center">Имейл на потребител</th>
+                    <th class="fs-4 text-center">Заглавие на книга</th>
+                    @if (Model.Category == "Expired")
+                    {
+                        <th class="fs-4 text-center">Дата на изтичане</th>
+                    }
+                    @if (Model.Category == "Active")
+                    {
+                        <th class="fs-4 text-center">Час на изтичане</th>
+                    }
+                    <th class="fs-4 text-center">Операции</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usLeased in Model.LeasedBooks)
+                {
+                    <tr>
+                        <td class="fs-5">@usLeased.User.Email</td>
+                        <td class="fs-5">@usLeased.Book.Title</td>
+                        @if (Model.Category == "Expired")
+                        {
+                            <td class="fs-4 text-center">@usLeased.DateOfBorrowing</td>
+                        }
+                        @if (Model.Category == "Active")
+                        {
+                            <td class="fs-4 text-center">@usLeased.DateOfBorrowing.Hour : @usLeased.DateOfBorrowing.Minute</td>
+                        }
+                        <td class="d-flex justify-content-around">
+                            @if (Model.Category == "Expired")
+                            {
+                                <a id="deleteBtn" href="@Url.Action("DeleteUserLeasedEntity", "Librarian", new { userLeasedId = usLeased.Id })" class="btn btn-warning fs-5 col-5">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            }
+                            else if (Model.Category == "Active")
+                            {
+                                <a id="stopLeasingBtn" href="@Url.Action("StopLeasing", "Librarian", new { userLeasedId=usLeased.Id })" class="btn btn-warning fs-5 col-5">Спри</a>
+                            }
+                            else
+                            {
+                                <a id ="leaseBookBtn" href="@Url.Action("LeaseBookOrNot", "Librarian", new {userLeasedId=usLeased.Id, lease=true })" class="btn btn-warning fs-5 col-5">Отдай</a>
+                                <a id="rejectLeaseBtn" href="@Url.Action("LeaseBookOrNot", "Librarian", new {userLeasedId=usLeased.Id, lease=false })" class="btn btn-warning fs-5 col-5">Откажи</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

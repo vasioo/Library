@@ -209,36 +209,4 @@
     changeWord();
     setInterval(changeWord, 4000);
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const typewriterElement = document.querySelector('.typewriter');
-        const h2Element = typewriterElement.querySelector('.h2');
-        const h5Elements = typewriterElement.querySelectorAll('.h5');
-
-        function typeWriter(element, speed) {
-            const text = element.textContent.trim();
-            element.textContent = '';
-            let i = 0;
-            const timer = setInterval(function () {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(timer);
-                }
-            }, speed);
-        }
-
-        typeWriter(h2Element, 100);
-        let delay = h2Element.textContent.length * 100;
-
-        h5Elements.forEach((h5Element, index) => {
-            setTimeout(function () {
-                typeWriter(h5Element, 100);
-            }, delay * (index + 1)); // Incrementing delay for each subsequent h5 element
-        });
-    });
-
-
-
-
 </script>

@@ -122,7 +122,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
                     userLeasedBook.Book = book;
                     userLeasedBook.Book.Id = bookId;
-                    userLeasedBook.UserId = userId;
+                    userLeasedBook.User.Id = userId;
                     userLeasedBook.DateOfBorrowing = DateTime.Now;
                     if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId,userId)!=null)
                     {
@@ -169,7 +169,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             if (user != null)
             {
                 var allLeasedBooks = _userLeasedBookService.IQueryableGetAllAsync();
-                viewModel.BorrowedBooks = allLeasedBooks.Where(us => us.UserId == user.Id).Select(x => x.Book);
+                viewModel.BorrowedBooks = allLeasedBooks.Where(us => us.User.Id == user.Id);
             }
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user!, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");

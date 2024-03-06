@@ -20,5 +20,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
         Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate);
         Task SaveBookHelper(BookViewModelDTO viewModelDTO); 
         Task<List<string>> GetAllGenresHelper();
+        Task<LeasedTrackerViewModel> GetLeasedTrackerData(string Category);
+        Task<bool> LeaseBookOrNotHelper(Guid userLeasedId, bool lease);
+        Task<bool> StopLeasingHelper(Guid userLeasedId);
+        Task<bool> DeleteLeasedEntityHelper(Guid id);
     }
 }

@@ -40,6 +40,8 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<Membership>, BaseService<Membership>>();
             service.AddScoped<IMembershipService, MembershipService>();
 
+            service.AddScoped<IEmailSenderService, EmailSenderService>();
+
             service.AddScoped<UserManager<ApplicationUser>>();
 
         }

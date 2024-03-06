@@ -72,6 +72,10 @@
                         </div>
                     }
                     <div class="form-group">
+                        <label asp-for="AmountOfBooks">Брой книги</label>
+                        <input asp-for="AmountOfBooks" class="form-control" type="number" value="@Model.AmountOfBooks" placeholder="Въведете броя на наличните книги..." />
+                    </div>
+                    <div class="form-group">
                         <label asp-for="Description">Описание</label>
                         <textarea asp-for="Description" class="form-control" placeholder="Въведете описание на книгата..." value="@Model.Description"></textarea>
                     </div>

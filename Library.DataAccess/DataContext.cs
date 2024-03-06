@@ -39,6 +39,7 @@ namespace Library.DataAccess
             modelBuilder.Entity<Book>().Navigation(e => e.NeededMembership).AutoInclude();
             modelBuilder.Entity<BookSubject>().Navigation(e => e.BookCategories).AutoInclude();
             modelBuilder.Entity<UserLeasedBookMappingTable>().Navigation(e => e.Book).AutoInclude();
+            modelBuilder.Entity<UserLeasedBookMappingTable>().Navigation(e => e.User).AutoInclude();
             modelBuilder.Entity<FavouriteBooks>()
                 .HasKey(fb => new { fb.UserId, fb.BookId });
             modelBuilder.Entity<FavouriteBooks>()

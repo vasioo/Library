@@ -1,33 +1,66 @@
 ﻿@using Library.Models.BaseModels;
-@model Book
+@model UserLeasedBookMappingTable
 
 @{
-    var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.Id}.png";
+    var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.Book.Id}.png";
 }
 
-<div class="card mb-4 position-relative book-s-p">
-    <a href="@Url.Action("BookPage", "Home", new { bookId = Model.Id })">
-        <img src="@imageUrl" class="card-img-top shower-book">
-    </a>
-    <div class="card-body">
-        <h3 class="card-title text-center">
-            <i style="font-family:serif; color:black;">"</i>
-            @Model.Title
-            <i style="font-family:serif;color:black;">"</i>
-        </h3>
-        <hr />
-        <div class="row justify-content-around pt-2">
-            <a class="col-9" href="@Url.Action("Search", "Home", new { searchCategory = "Authors",inputValue=Model.Author })">
-                <h5 class="card-text">@Model.Author </h5>
-            </a>
-            <h5 class="col-3">@Model.DateOfBookCreation.Year г.</h5>
+@if (Model.Approved)
+{
+    <div class="card mb-4 position-relative book-s-p">
+        <a href="@Url.Action("BookPage", "Home", new { bookId = Model.Id })">
+            <img src="@imageUrl" class="card-img-top shower-book">
+        </a>
+        <div class="card-body">
+            <h3 class="card-title text-center">
+                <i style="font-family:serif; color:black;">"</i>
+                @Model.Book.Title
+                <i style="font-family:serif;color:black;">"</i>
+            </h3>
+            <hr />
+            <div class="row justify-content-around pt-2">
+                <a class="col-9" href="@Url.Action("Search", "Home", new { searchCategory = "Authors",inputValue=Model.Book.Author })">
+                    <h5 class="card-text">@Model.Book.Author </h5>
+                </a>
+                <h5 class="col-3">@Model.Book.DateOfBookCreation.Year г.</h5>
+            </div>
         </div>
+        <div class="d-flex">
+            <a id="@Model.Id" class="btn btn-danger read-book-btn col fs-5">Чети книгата</a>
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=Model.Book.Id })" class="btn btn-warning position-absolute top-0 end-0 m-2">Edit</a>
+        }
     </div>
-    <div class="d-flex">
-        <a id="@Model.Id" class="btn btn-danger unborrow-book-btn col fs-5">Върни книгата</a>
+}
+else
+{
+    <div class="card mb-4 position-relative book-s-p" style="opacity: 0.5; pointer-events: none;">
+        <a href="@Url.Action("BookPage", "Home", new { bookId = Model.Id })">
+            <img src="@imageUrl" class="card-img-top shower-book">
+        </a>
+        <div class="card-body">
+            <h3 class="card-title text-center">
+                <i style="font-family:serif; color:black;">"</i>
+                @Model.Book.Title
+                <i style="font-family:serif;color:black;">"</i>
+            </h3>
+            <hr />
+            <div class="row justify-content-around pt-2">
+                <a class="col-9" href="@Url.Action("Search", "Home", new { searchCategory = "Authors",inputValue=Model.Book.Author })">
+                    <h5 class="card-text">@Model.Book.Author </h5>
+                </a>
+                <h5 class="col-3">@Model.Book.DateOfBookCreation.Year г.</h5>
+            </div>
+        </div>
+        <div class="d-flex">
+            <a id="@Model.Id" class="btn btn-danger read-book-btn col fs-5" disabled>Чети книгата</a>
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=Model.Book.Id })" class="btn btn-warning position-absolute top-0 end-0 m-2" disabled>Edit</a>
+        }
     </div>
-    @if (User.IsInRole("Admin"))
-    {
-        <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=Model.Id })" class="btn btn-warning position-absolute top-0 end-0 m-2" onclick="editBook(@Model.Id)">Edit</a>
-    }
-</div>
+}
+

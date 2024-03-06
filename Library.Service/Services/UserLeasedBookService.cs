@@ -64,7 +64,7 @@ namespace Library.Services.Services
 
         public async Task<UserLeasedBookMappingTable?> GetBorrowedBookByUserIdAndBookId(Guid bookId, string userId)
         {
-            var model = await _dataContext.UserLeasedBooks.Where(x => x.UserId == userId && x.Book.Id == bookId).FirstOrDefaultAsync();
+            var model = await _dataContext.UserLeasedBooks.Where(x => x.User.Id == userId && x.Book.Id == bookId).FirstOrDefaultAsync();
             if (model != null)
             {
                 return model;
@@ -92,6 +92,23 @@ namespace Library.Services.Services
                 items.Add(rbEntity);
             }
             return items;
+        }
+
+        public IQueryable<UserLeasedBookMappingTable> GetActiveLeasedBooks()
+        {
+            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing <= x.DateOfBorrowing.AddHours(1));
+        }
+
+        public IQueryable<UserLeasedBookMappingTable> GetExpiredLeasedBooks()
+        {
+            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing > x.DateOfBorrowing.AddHours(1));
+        }
+
+        public async Task RemoveAnHourToExistingEntity(Guid id)
+        {
+            var entity = await _dataContext.UserLeasedBooks.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+            entity.DateOfBorrowing = DateTime.Now.AddHours(-1);
         }
     }
 }

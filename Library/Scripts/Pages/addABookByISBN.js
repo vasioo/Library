@@ -98,50 +98,59 @@
 
         });
 
-            $('#saveFormData').click(function (e) {
-                e.preventDefault(); 
+        $('#saveFormData').click(function (e) {
+            e.preventDefault();
 
-                
-                var errors = [];
 
-                $('#bookForm input[type="text"]').each(function () {
-                    var inputValue = $(this).val();
-                    var inputName = $(this).attr('name');
-                    if (!inputValue || inputValue.trim() === '') {
-                        errors.push(`Моля попълнете полето "${inputName}".`);
-                        $(this).css('outline', '1px solid red'); 
-                    }
-                });
+            var errors = [];
 
-                if ($('#genreDropdown').val() === '') {
-                    errors.push('Моля изберете жанр от падащия списък.');
-                    $('#genreDropdown').css('outline', '1px solid red'); 
+            $('#bookForm input[type="text"]').each(function () {
+                var inputValue = $(this).val();
+                var inputName = $(this).attr('name');
+                if (!inputValue || inputValue.trim() === '') {
+                    errors.push(`Моля попълнете полето "${inputName}".`);
+                    $(this).css('outline', '1px solid red');
                 }
-
-                if (errors.length > 0) {
-                    var errorMessage = errors.join('\n');
-                    Swal.fire("Грешка", errorMessage, "error");
-                    return;
-                }
-
-                $.ajax({
-                    url: $('#bookForm').attr('action'),
-                    method: 'POST',
-                    data: $('#bookForm').serialize(),
-                    success: function (response) {
-                        if (response.status) {
-                            Swal.fire("Успех", response.message, "success");
-                        } else {
-                            Swal.fire("Грешка", response.message, "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
-                    }
-                });
             });
 
-         
+            $('#bookForm input[type="number"]').each(function () {
+                var inputValue = $(this).val();
+                var inputName = $(this).attr('name');
+                if (!inputValue || inputValue.trim() === ''||inputValue<0) {
+                    errors.push(`Полето "${inputName} трябва да е положително и налично".`);
+                    $(this).css('outline', '1px solid red');
+                }
+            });
+
+            if ($('#genreDropdown').val() === '') {
+                errors.push('Моля изберете жанр от падащия списък.');
+                $('#genreDropdown').css('outline', '1px solid red');
+            }
+
+            if (errors.length > 0) {
+                var errorMessage = errors.join('\n');
+                Swal.fire("Грешка", errorMessage, "error");
+                return;
+            }
+
+            $.ajax({
+                url: $('#bookForm').attr('action'),
+                method: 'POST',
+                data: $('#bookForm').serialize(),
+                success: function (response) {
+                    if (response.status) {
+                        Swal.fire("Успех", response.message, "success");
+                    } else {
+                        Swal.fire("Грешка", response.message, "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
+                }
+            });
+        });
+
+
     }
     return {
         init
