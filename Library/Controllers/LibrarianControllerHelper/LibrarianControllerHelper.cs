@@ -301,7 +301,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
             var bookEntity = new Book();
             bookEntity.ISBN = viewModelDTO.ISBN;
             bookEntity.Title = viewModelDTO.Title;
-            bookEntity.Subtitle = viewModelDTO.Subtitle;
             bookEntity.Author = viewModelDTO.Authors;
             bookEntity.DateOfBookPublishment = DateTime.Now;
             bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
@@ -381,8 +380,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
                     var entity = _userLeasedBookService.IQueryableGetAllAsync().Where(x => x.Id == userLeasedId).FirstOrDefault();
                     if (entity != null)
                     {
-                        var user = entity.User;
-                        var emailBody = $@"
+                        if (entity.Book.AmountOfBooks > 0)
+                        {
+                            var user = entity.User;
+                            var emailBody = $@"
                          <html>
                            <body>
                                <div style='text-align: center;'>
@@ -429,7 +430,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                                                                                                                     <tr style='font-family:Arial,sans-serif'>
                                                                                                                         <td style='width:8.6em;font-family:Arial,sans-serif' width='72'>
                                                                                                                             <a href='' style='text-decoration:underline;height:13em;min-width:72px;font-family:Arial,sans-serif;color:black' target='_blank' data-saferedirecturl=''>
-                                                                                                                                <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{entity.Id}.png' style='border:0;display:block;outline:none;text-decoration:none;height:13em;width:100%' width='8.6em' class='CToWUd' data-bit='iit'>
+                                                                                                                                <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{entity.Book.Id}.png' style='border:0;display:block;outline:none;text-decoration:none;height:13em;width:100%' width='8.6em' class='CToWUd' data-bit='iit'>
                                                                                                                             </a>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -486,9 +487,15 @@ namespace Library.Web.Controllers.HomeControllerHelper
                                                                                                                <tbody>
                                                                                                                    <tr style='font-family:Arial,sans-serif'>
                                                                                                                        <td style='text-align: left;font-size:15px;line-height:20px;width: 100%;font-family:Arial,sans-serif' width='100%'>
-                                                                                                                           *вашата книга е добавена като готова за четене, отидете в страницата 'Взети назаем (първия бутон до логото, в приложението)'
+                                                                                                                           *Вашата книга е добавена като готова за четене, отидете в страницата 'Взети назаем (първия бутон до логото, в приложението)' и натиснете 'Чети книга'.
                                                                                                                        </td>
+                                                                                                                    
                                                                                                                    </tr>
+                                                                                                                    <tr style='font-family:Arial,sans-serif'>
+                                                                                                                       <td style='text-align: left;font-size:15px;line-height:20px;width: 100%;font-family:Arial,sans-serif' width='100%'>
+                                                                                                                           При натискането на бутона ще имате определено време за четене (зависещо от Вашия ранг в приложението).
+                                                                                                                       </td>
+                                                                                                                    </tr>
                                                                                                                </tbody>
                                                                                                            </table>
                                                                                                        </td>
@@ -513,11 +520,14 @@ namespace Library.Web.Controllers.HomeControllerHelper
                             </body>
                         </html>";
 
-                        var subjectText = "Потвърждение на отдаване!";
+                            var subjectText = "Потвърждение на отдаване!";
 
-                        _emailSenderService.SendEmail(entity.User!.Email!, emailBody, subjectText);
-                        entity.Approved = true;
-                        await _userLeasedBookService.UpdateAsync(entity);
+                            _emailSenderService.SendEmail(entity.User!.Email!, emailBody, subjectText);
+
+                            entity.Approved = true;
+                            entity.Book.AmountOfBooks--;
+                            await _userLeasedBookService.UpdateAsync(entity);
+                        }
                     }
                 }
                 else

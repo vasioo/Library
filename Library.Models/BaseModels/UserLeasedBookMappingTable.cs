@@ -14,5 +14,7 @@ namespace Library.Models.BaseModels
         public DateTime DateOfBorrowing { get; set; } = DateTime.Now;
 
         public bool Approved { get; set; } = false;
+
+        public bool IsRead { get; set; } = false;
     }
 }

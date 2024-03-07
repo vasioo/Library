@@ -116,7 +116,22 @@
                         }
                         else
                         {
-                            <a class="btn btn-danger read-book-btn" id="@book.Id">Чети книгата</a>
+                            if (!Model.IsDisabled)
+                            {
+                                @if (Model.Book.ISBN != null)
+                                {
+                                    if (Model.Book.ISBN != "")
+                                    {
+                                        <div class="d-flex">
+                                            <a id="@Model.Book.Id" class="btn btn-danger read-book-btn col fs-5" data-id="@Model.Book.ISBN">Чети книгата</a>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <a class="btn btn-secondary disabled" disabled >Вашият период на четене изтече</a>
+                            }
                         }
                     }
                     else
@@ -130,7 +145,6 @@
                     </div>
                     <div class="d-flex p-3 description-content">
                         @book.Description
-
                     </div>
                 </div>
             </div>

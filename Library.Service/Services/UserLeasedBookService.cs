@@ -42,7 +42,6 @@ namespace Library.Services.Services
             return mostReadGenres;
         }
 
-
         public async Task<Book> MostLeasedBook()
         {
             var mostLeasedBookId = await _dataContext.UserLeasedBooks
@@ -96,12 +95,12 @@ namespace Library.Services.Services
 
         public IQueryable<UserLeasedBookMappingTable> GetActiveLeasedBooks()
         {
-            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) >= DateTime.Now && x.Approved);
+            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) >= DateTime.Now && x.Approved && x.IsRead);
         }
 
         public IQueryable<UserLeasedBookMappingTable> GetExpiredLeasedBooks()
         {
-            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) < DateTime.Now && x.Approved);
+            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) < DateTime.Now && x.Approved && x.IsRead);
         }
 
         public async Task RemoveAnHourToExistingEntity(Guid id)
@@ -113,5 +112,23 @@ namespace Library.Services.Services
             _dataContext.Update(entity);
             await _dataContext.SaveChangesAsync();
         }
+
+        public async Task<string> GetLeasedBookStatus(Guid bookId, ApplicationUser user)
+        {
+            var leasedItem = await _dataContext.UserLeasedBooks.Where(x => x.Book.Id == bookId && x.User.Id == user.Id).FirstOrDefaultAsync();
+            if (leasedItem != null)
+            {
+                if (leasedItem.Approved && leasedItem.DateOfBorrowing.AddHours(1) >= DateTime.Now)
+                {
+                    return "Active";
+                }
+                else if (leasedItem.Approved && leasedItem.DateOfBorrowing.AddHours(1) < DateTime.Now)
+                {
+                    return "Expired";
+                }
+            }
+            return "";
+        }
+
     }
 }

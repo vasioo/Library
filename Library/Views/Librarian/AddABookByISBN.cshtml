@@ -1,4 +1,7 @@
 ﻿@model List<string>
+@{
+    Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
+}
 <style>
     #bookDetailsContainer span {
         font-weight: 400;
@@ -13,6 +16,31 @@
 
     .modal-header a {
         font-size: 2.1em;
+    }
+
+    .upload-input {
+        height: 24.4rem !important;
+    }
+
+        .upload-input img {
+            height: 24.4rem !important;
+        }
+
+    #bookForm label {
+        padding: 0.5rem 0px;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .custom-container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .error {
+        outline: red 2px solid;
     }
 </style>
 
@@ -36,74 +64,66 @@
             <form id="bookForm" method="post" action="/Librarian/SaveBook">
                 <div class="row pb-3">
                     <div class="text-center display-4 pb-2">Информация за книгата</div>
-                    <div class="text-center h4" id="isbnOfBook">ISBN:1320823-81342</div>
+                    <div class="text-center h4" id="isbnOfBook" name="ISBN">ISBN:</div>
                     <hr style="color:chocolate" class="py-1" />
                 </div>
-                <div class="row justify-content-between pb-3">
-                    <div class="col-md-6">
-                        <h1 class="text-center">
-                            "<span id="bookTitle"></span>"
-                        </h1>
-                        <h4 class="text-center">
-                            <span id="bookSubtitle"></span>
-                        </h4>
-                        <hr style="color:chocolate" class="py-1" />
-                        <h5>
-                            Други Заглавия:
-                            <span id="otherTitles"></span>
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Автори:
-                            <span id="authors"></span>
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Издатели:
-                            <span id="publishers"></span>
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Дата на издаване:
-                            <span id="publishDate"></span>
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Дадена категория:
-                            <span id="category"></span>
-                            <br />
-                            <br />
-                                <select id="genreDropdown" name="Category" class="form-select">
-                                    <option value="">Изберете категория от нашите доближаваща се най-много до дадената</option>
-                                    @foreach (var genre in Model)
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="bookTitle">Заглавие на книгата</label>
+                            <input id="bookTitle" name="Title" class="form-control" placeholder="Въведете името на книгата..." required />
+                        </div>
+                        <div class="form-group">
+                            <label for="bookAuthor">Автори</label>
+                            <input id="bookAuthor" name="Authors" class="form-control" placeholder="Въведете името на автора..." required />
+                        </div>
+                        <div class="form-group">
+                            <label for="bookCreationDate">Дата на създаване на книгата</label>
+                            <input id="bookCreationDate" name="PublishDate" class="form-control" type="date" required />
+                        </div>
+                        @if (Model != null)
+                        {
+                            <div class="form-group">
+                                <label style="color:red" id="category"></label>
+                                <br>
+                                <label for="bookGenre">Нашият жанр:</label>
+                                <select id="bookGenre" name="Category" class="form-control">
+                                    @foreach (var category in Model)
                                     {
-                                        <option value="@genre">@genre</option>
+                                        <option value="@category">@category</option>
                                     }
                                 </select>
-
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
+                            </div>
+                        }
                         <div class="form-group">
-                            Брой книги
-                            <input class="form-control" name="AmountOfBooks" type="number" placeholder="Въведете броя на наличните книги..." />
+                            <label for="language">Език</label>
+                            <input id="language" name="Language" class="form-control" placeholder="Въведете езика на написване..." required />
                         </div>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Език:
-                            <span id="language"></span>
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Физически вариант:
-                            <span id="physicalFormat"></span>
-                        </h5>
-                        <hr style="color:#00d1d1" class="pt-1" />
-                        <h5>
-                            Линк: <a id="bookUrl" href="#" target="_blank">Натисни</a>
-                        </h5>
+                        <div class="form-group">
+                            <label for="bookAmount">Брой книги</label>
+                            <input id="bookAmount" name="AmountOfBooks" class="form-control" type="number" placeholder="Въведете броя на наличните книги..." required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bookDescription">Описание</label>
+                            <textarea id="bookDescription" name="Description" class="form-control" placeholder="Въведете описание на книгата..." required></textarea>
+                        </div>
                     </div>
-                    <div class="col-md-5 text-end">
-                        <img id="bookCover" class="img-fluid" alt="Book Cover">
+                    <div class="col row justify-content-center align-items-start">
+                        <div class="col-12">
+                            <div class="">
+                                <label class="form-label col-12 text-center h3" for="bookCoverInput">Снимка на корицата</label>
+                                <div class="upload-input">
+                                    <input type="file" id="bookCoverInput" name="bookCoverInput" class="image-upload" accept=".png, .jpg, .jpeg" multiple="multiple" max="1">
+                                    <img id="bookCover" class="uploaded-image" name="ImageURL" />
+                                    <label for="bookCoverInput" class="text-center content">
+                                        <span class="text">
+                                            <span class="mb-15 plus-icon"><i class="fa fa-plus"></i></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr class="py-1" style="color:chocolate" />

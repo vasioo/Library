@@ -9,7 +9,8 @@ var addABook = (function () {
                 Genre:  $('#Genre').val(),
                 Description: $('#Description').val(),
                 AvailableItems: $('#AvailableItems').val(),
-                NeededMembership: $('#NeededMembership').val()
+                NeededMembership: $('#NeededMembership').val(),
+                AmountOfBooks: $('#AmountOfBooks').val()
             };
 
 
@@ -65,19 +66,20 @@ var addABookByISBN = (function () {
 
         function displayBookDetails(book) {
             var isbnData = $('#isbnInput').val();
-            $('#isbnOfBook').text(`ISBN:${isbnData}`);
-            $('#bookTitle').html(`<input type="text" name="Title" value="${book.title}"required>`);
-            $('#bookSubtitle').html(`<input type="text" name="Subtitle" value="${book.subtitle}"required>`);
-            $('#otherTitles').html(book.other_titles.map(title => `<input type="text" name="OtherTitles" value="${title}"required>`).join(', '));
-            $('#authors').html(book.authors.map(author => `<input type="text" name="Authors" value="${author.name}"required>`).join(', '));
-            $('#publishers').html(book.publishers.map(publisher => `<input type="text" name="Publishers" value="${publisher}"required>`).join(', '));
-            $('#publishDate').html(`<input type="date" name="PublishDate" value="${book.publish_date}"required>`);
-            $('#category').text(book.subject);
-            $('#language').html(`<input type="text" name="Language" value="${book.languages[0].name}" required>`);
-            $('#physicalFormat').html(`<input type="text" name="PhysicalFormat" value="${book.physical_format}" required>`);
-            $('#bookUrl').attr('href', book.url);
+            $('#isbnOfBook').text(`ISBN: ${isbnData}`);
+            $('#isbnOfBook').data('id', isbnData);
+            $('#bookTitle').val(book.title);
+            $('#bookAuthor').val(book.publishers[0]);
+            var publishDate = new Date(book.publish_date);
+            var year = publishDate.getFullYear(); 
+            $('#bookCreationDate').val(year + '-01-01');
+            $('#category').text(`Техен жанр: ${book.subjects[0]}`);
+            var languageKey = book.languages[0].key;
+            var languageCode = languageKey.split('/').pop();
+            $('#language').val(languageCode);
             $('#bookCover').attr('src', `https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`);
             $('#bookDetailsContainer').show();
+
         }
 
         function isValidISBN10(isbn) {
@@ -159,59 +161,56 @@ var addABookByISBN = (function () {
             xhr.send();
 
         });
-
+        $('#bookForm input, #bookForm textarea, #bookForm select').on('input', function () {
+            $(this).removeClass('error');
+        });
         $('#saveFormData').click(function (e) {
             e.preventDefault();
 
+            var emptyFields = [];
 
-            var errors = [];
-
-            $('#bookForm input[type="text"]').each(function () {
-                var inputValue = $(this).val();
-                var inputName = $(this).attr('name');
-                if (!inputValue || inputValue.trim() === '') {
-                    errors.push(`Моля попълнете полето "${inputName}".`);
-                    $(this).css('outline', '1px solid red');
+            $('#bookForm textarea, #bookForm select').each(function () {
+                var fieldValue = $(this).val().trim();
+                if (!fieldValue) {
+                    emptyFields.push($(this)); 
+                    $(this).addClass('error'); 
+                } else {
+                    $(this).removeClass('error');
                 }
             });
 
-            $('#bookForm input[type="number"]').each(function () {
-                var inputValue = $(this).val();
-                var inputName = $(this).attr('name');
-                if (!inputValue || inputValue.trim() === ''||inputValue<0) {
-                    errors.push(`Полето "${inputName} трябва да е положително и налично".`);
-                    $(this).css('outline', '1px solid red');
-                }
-            });
-
-            if ($('#genreDropdown').val() === '') {
-                errors.push('Моля изберете жанр от падащия списък.');
-                $('#genreDropdown').css('outline', '1px solid red');
-            }
-
-            if (errors.length > 0) {
-                var errorMessage = errors.join('\n');
-                Swal.fire("Грешка", errorMessage, "error");
+            if (emptyFields.length > 0) {
+                Swal.fire("Грешка", "Моля запълнете всички полета.", "error");
+                emptyFields[0].focus();
                 return;
             }
-
+            var bookData = {
+                ISBN: $('#isbnOfBook').data('id'),
+                Title: $('#bookTitle').val(),
+                Authors: $('#bookAuthor').val(),
+                PublishDate: $('#bookCreationDate').val(),
+                Category: $('#bookGenre').val(),
+                Description: $('#bookDescription').val(),
+                Language: $('#language').val(),
+                AmountOfBooks: $('#bookAmount').val(),
+                ImageURL: $('#bookCover').attr('src') 
+            };
             $.ajax({
                 url: $('#bookForm').attr('action'),
                 method: 'POST',
-                data: $('#bookForm').serialize(),
+                data: bookData,
                 success: function (response) {
                     if (response.status) {
-                        Swal.fire("Успех", response.message, "success");
+                        Swal.fire("Success", response.message, "success");
                     } else {
-                        Swal.fire("Грешка", response.message, "error");
+                        Swal.fire("Error", response.message, "error");
                     }
                 },
                 error: function () {
-                    Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
+                    Swal.fire("Error", "An error occurred while sending the request.", "error");
                 }
             });
         });
-
 
     }
     return {
@@ -281,18 +280,17 @@ var bookPage = (function () {
 
         });
         $readBookBtn.click(function () {
-            var book = $(this).attr('id');
+            var book = $(this).data('id');
             $.ajax({
                 type: 'POST',
                 url: '/Home/ReadBook',
-                data: { bookId: book },
+                data: { isbn: book },
                 dataType: 'json',
                 success: function (response) {
                     if (response.status === true) {
-                        // Handle success
                         Swal.fire({
                             icon: 'success',
-                            title: response.message,
+                            title: "Ще бъдете прехвърлени до 5 сек.",
                             showClass: {
                                 popup: 'animate__animated animate__fadeInDown'
                             },
@@ -301,8 +299,8 @@ var bookPage = (function () {
                             }
                         });
                         setTimeout(function () {
-                            location.reload()
-                        }, 5000);
+                            window.location.href = response.message;
+                        }, 300);
 
                     } else {
                         // Handle failure
@@ -396,8 +394,64 @@ var borrowBook = (function () {
         //});
 
         $(document).on('click', '.read-book-btn', function () {
-
+            var book = $(this).attr('id');
+            $.ajax({
+                type: 'POST',
+                url: '/Home/ReadBook',
+                data: { isbn: book },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === true) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        }).then(function () {
+                            if (response.previewUrl) {
+                                Swal.fire({
+                                    title: 'Redirecting...',
+                                    text: 'You will be redirected shortly',
+                                    timer: 3000,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    timerProgressBar: true,
+                                    onBeforeOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                }).then(() => {
+                                    window.location.href = response.previewUrl;
+                                });
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: response.message,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+                    }
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                    });
+                    console.error('AJAX request failed:', error);
+                }
+            });
         });
+
     }
     return {
         init
@@ -421,7 +475,8 @@ var editABook = (function () {
                 Genre: $('#Genre').val() ,
                 Description: $('#Description').val(),
                 AvailableItems: $('#AvailableItems').val(),
-                NeededMembership: $('#NeededMembership').val()
+                NeededMembership: $('#NeededMembership').val(),
+                AmountOfBooks: $('#AmountOfBooks').val()
             };
 
 

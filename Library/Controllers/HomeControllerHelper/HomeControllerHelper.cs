@@ -4,9 +4,6 @@ using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Drawing.Printing;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Library.Web.Controllers.HomeControllerHelper
 {
@@ -20,6 +17,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IBookSubjectService _bookSubjectService;
 
+
         public HomeControllerHelper(INotificationService notificationService, IBookSubjectService bookSubjectService,
             IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService, IBlogPostService blogPostService)
         {
@@ -29,7 +27,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _userLeasedBookService = userLeasedBookService;
             _bookSubjectService = bookSubjectService;
             _blogPostService = blogPostService;
-
         }
         #endregion
 
@@ -87,6 +84,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #endregion
 
         #region BookPageHelper
+
         public async Task<BookPageViewModel> GetBookPageAttributes(ApplicationUser user, Guid bookId)
         {
             var viewModel = new BookPageViewModel();
@@ -96,7 +94,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             viewModel.User = user;
             viewModel.Book = await _bookService.GetByIdAsync(bookId);
-            if (user!=null)
+            if (user != null)
             {
                 var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
                 if (borrowedBook.Id != Guid.Empty)
@@ -107,24 +105,32 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 {
                     viewModel.HasUserBorrowedIt = false;
                 }
+                var status = await _userLeasedBookService.GetLeasedBookStatus(bookId, user);
+                if (status == "Expired")
+                {
+                    viewModel.IsDisabled = true;
+                }
+                else
+                {
+                    viewModel.IsDisabled = false;
+                }
             }
             return viewModel;
         }
 
-        public async Task<bool> BorrowBookPostHelper(Guid bookId, string userId)
+        public async Task<bool> BorrowBookPostHelper(Guid bookId, ApplicationUser user)
         {
             try
             {
                 var book = await _bookService.GetByIdAsync(bookId);
-                if (book != null && !string.IsNullOrEmpty(userId))
+                if (book != null && !string.IsNullOrEmpty(user.Id))
                 {
                     var userLeasedBook = new UserLeasedBookMappingTable();
 
                     userLeasedBook.Book = book;
-                    userLeasedBook.Book.Id = bookId;
-                    userLeasedBook.User.Id = userId;
+                    userLeasedBook.User = user;
                     userLeasedBook.DateOfBorrowing = DateTime.Now;
-                    if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId,userId)!=null)
+                    if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id) != null)
                     {
                         await _userLeasedBookService.AddAsync(userLeasedBook);
                         return true;
@@ -138,14 +144,15 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 throw;
             }
         }
+
         public async Task<bool> UnborrowBookPostHelper(Guid bookId, string userId)
         {
             try
             {
-                if (bookId!=Guid.Empty && !string.IsNullOrEmpty(userId))
+                if (bookId != Guid.Empty && !string.IsNullOrEmpty(userId))
                 {
                     var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, userId);
-                    if (borrowedBook!.Id!=Guid.Empty)
+                    if (borrowedBook!.Id != Guid.Empty)
                     {
                         await _userLeasedBookService.RemoveAsync(borrowedBook.Id);
                         return true;
@@ -160,9 +167,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 throw;
             }
         }
+
         #endregion
 
         #region BorrowedHelper
+
         public BorrowedViewModel GetBorrowedPageAttributes(ApplicationUser user)
         {
             var viewModel = new BorrowedViewModel();
@@ -176,14 +185,15 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             return viewModel;
         }
+
         #endregion
 
         #region SearchPageHelper
 
-        public async Task<SearchViewModel> SearchViewModelHelper(string searchCategory,string inputValue, int page = 1)
+        public async Task<SearchViewModel> SearchViewModelHelper(string searchCategory, string inputValue, int page = 1)
         {
             var viewModel = new SearchViewModel();
-            if (searchCategory==null)
+            if (searchCategory == null)
             {
                 searchCategory = "";
             }
@@ -194,8 +204,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
             if (searchCategory == "Authors")
             {
                 var authors = _blogPostService.IQueryableGetAllAsync()
-                    .Where(x=>x.IsForAuthor&&x.Title.Contains(inputValue)||x.Content.Contains(inputValue))
-                    .Skip((page-1)*20).Take(20);
+                    .Where(x => x.IsForAuthor && x.Title.Contains(inputValue) || x.Content.Contains(inputValue))
+                    .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_blogPostService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
                 var authorDTO = authors.Select(blogPost => new BlogPost
@@ -212,7 +222,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             else if (searchCategory == "Subjects")
             {
                 var subjects = _bookSubjectService.IQueryableGetAllAsync()
-                    .Where(x=>x.SubjectName.Contains(inputValue))
+                    .Where(x => x.SubjectName.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookSubjectService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
@@ -229,7 +239,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             else
             {
                 var books = _bookService.IQueryableGetAllAsync()
-                    .Where(x=>x.Title.Contains(inputValue))
+                    .Where(x => x.Title.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
@@ -251,6 +261,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.inputValue = inputValue;
             return viewModel;
         }
+
         #endregion
     }
 }

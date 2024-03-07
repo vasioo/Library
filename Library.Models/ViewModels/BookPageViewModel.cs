@@ -13,5 +13,6 @@ namespace Library.Models.ViewModels
         public IQueryable<Book> BestSellers { get; set; } = Enumerable.Empty<Book>().AsQueryable();
 
         public bool HasUserBorrowedIt { get; set; }
+        public bool IsDisabled { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Library.Models.BaseModels;
+﻿using Library.DataAccess.MainModels;
+using Library.Models.BaseModels;
 using Library.Models.DTO;
 
 namespace Library.Services.Interfaces
@@ -12,5 +13,6 @@ namespace Library.Services.Interfaces
         IQueryable<UserLeasedBookMappingTable> GetActiveLeasedBooks();
         IQueryable<UserLeasedBookMappingTable> GetExpiredLeasedBooks();
         Task RemoveAnHourToExistingEntity(Guid id);
+        Task<string> GetLeasedBookStatus(Guid bookId,ApplicationUser user);
     }
 }

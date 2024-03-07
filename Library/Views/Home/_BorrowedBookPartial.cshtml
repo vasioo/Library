@@ -8,7 +8,7 @@
 @if (Model.Approved)
 {
     <div class="card mb-4 position-relative book-s-p">
-        <a href="@Url.Action("BookPage", "Home", new { bookId = Model.Id })">
+        <a href="@Url.Action("BookPage", "Home", new { bookId = Model.Book.Id })">
             <img src="@imageUrl" class="card-img-top shower-book">
         </a>
         <div class="card-body">
@@ -25,9 +25,16 @@
                 <h5 class="col-3">@Model.Book.DateOfBookCreation.Year г.</h5>
             </div>
         </div>
-        <div class="d-flex">
-            <a id="@Model.Id" class="btn btn-danger read-book-btn col fs-5">Чети книгата</a>
-        </div>
+        @if (Model.Book.ISBN != null)
+        {
+            if (Model.Book.ISBN != "")
+            {
+                <div class="d-flex">
+                    <a id="@Model.Id" class="btn btn-danger read-book-btn col fs-5" data-id="@Model.Book.ISBN">Чети книгата</a>
+                </div>
+            }
+        }
+     
         @if (User.IsInRole("Admin"))
         {
             <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=Model.Book.Id })" class="btn btn-warning position-absolute top-0 end-0 m-2">Edit</a>

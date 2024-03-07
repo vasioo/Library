@@ -106,23 +106,23 @@
                                 }
                                 @if (Model.Category == "Active")
                                 {
-                                    <td class="fs-4 text-center">@usLeased.DateOfBorrowing.Hour : @usLeased.DateOfBorrowing.Minute</td>
+                                    <td class="fs-4 text-center">@usLeased.DateOfBorrowing</td>
                                 }
                                 <td class="d-flex justify-content-around operations-container" data-userLeasedId="@usLeased.Id">
                                     @if (Model.Category == "Expired")
                                     {
-                                        <a id="deleteBtn" class="btn btn-danger col-12 fs-5 col-5" submit-btn>
+                                        <a id="deleteBtn" class="btn btn-danger col fs-5">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     }
                                     else if (Model.Category == "Active")
                                     {
-                                        <a id="stopLeasingBtn" class="btn btn-danger col-12 fs-5 col-5">Спри</a>
+                                        <a id="stopLeasingBtn" class="btn btn-danger col fs-5">Спри</a>
                                     }
                                     else
                                     {
-                                        <a id="leaseBookBtn" class="btn btn-warning col-12 fs-5 col-5">Отдай</a>
-                                        <a id="rejectLeaseBtn" class="btn btn-danger col-12 fs-5 col-5">Откажи</a>
+                                        <a id="leaseBookBtn" class="btn btn-warning col fs-5 ">Отдай</a>
+                                        <a id="rejectLeaseBtn" class="btn btn-danger col fs-5 ">Откажи</a>
                                     }
                                 </td>
                             </tr>
@@ -136,7 +136,7 @@
                     <h1 class="text-danger text-center">Няма данни за дадената категория</h1>
                 </div>
             }
-          
+
         }
         else
         {
@@ -144,6 +144,6 @@
                 <h1 class="text-danger text-center">Няма данни за дадената категория</h1>
             </div>
         }
-       
+
     </div>
 </div>

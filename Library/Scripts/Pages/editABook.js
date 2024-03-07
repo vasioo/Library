@@ -9,7 +9,8 @@
                 Genre: $('#Genre').val() ,
                 Description: $('#Description').val(),
                 AvailableItems: $('#AvailableItems').val(),
-                NeededMembership: $('#NeededMembership').val()
+                NeededMembership: $('#NeededMembership').val(),
+                AmountOfBooks: $('#AmountOfBooks').val()
             };
 
 

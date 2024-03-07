@@ -4,6 +4,7 @@ using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Library.Controllers
@@ -12,6 +13,7 @@ namespace Library.Controllers
     {
         #region Fields&Constructor
         private readonly IHomeControllerHelper _helper;
+        private const string OpenLibraryApiBaseUrl = "https://openlibrary.org/api/books";
         UserManager<ApplicationUser> _userManager;
 
         public HomeController(IHomeControllerHelper helper, UserManager<ApplicationUser> userManager)
@@ -81,7 +83,7 @@ namespace Library.Controllers
                 var user = await _userManager.FindByNameAsync(username);
                 if (user != null)
                 {
-                    if (!await _helper.BorrowBookPostHelper(bookId, user!.Id))
+                    if (!await _helper.BorrowBookPostHelper(bookId, user!))
                     {
                         return Json(new { status = false, Message = "The book could't be borrowed!" });
                     }
@@ -122,6 +124,60 @@ namespace Library.Controllers
             return Json(new { status = true, Message = "The book was removed from borrowed successfully" });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ReadBook(string isbn)
+        {
+            string apiUrl = $"{OpenLibraryApiBaseUrl}?bibkeys=ISBN:{isbn}&format=json&jscmd=viewapi";
+            try
+            {
+                if (isbn != null && isbn != "")
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string jsonResponse = await response.Content.ReadAsStringAsync();
+                            var jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+
+                            if (jsonObject.ContainsKey($"ISBN:{isbn}"))
+                            {
+                                var bookData = jsonObject[$"ISBN:{isbn}"];
+
+                                if (bookData.preview_url != null)
+                                {
+                                    return Json(new
+                                    {
+                                        status = true,
+                                        Message = bookData.preview_url.ToString()
+                                    });
+                                }
+                                else
+                                {
+                                    return Json(new
+                                    {
+                                        status = false,
+                                        Message = "Няма такава книга в базата данни на openlibrary.com!"
+                                    });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { status = false, Message = "Няма такава книга в базата данни на openlibrary.com!" });
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка" });
+            }
+            return Json(new { status = false, Message = "Тази книга няма ISBN номер!" });
+
+        }
+
         #endregion
 
         #region Borrowed
@@ -156,8 +212,8 @@ namespace Library.Controllers
         #region Search
 
         public async Task<IActionResult> Search(string searchCategory, string inputValue, int page = 1)
-            {
-            var viewModel = await _helper.SearchViewModelHelper(searchCategory, inputValue,page);
+        {
+            var viewModel = await _helper.SearchViewModelHelper(searchCategory, inputValue, page);
             return View($"~/Views/Home/Search.cshtml", viewModel);
         }
 

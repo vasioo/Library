@@ -30,18 +30,17 @@
 
         });
         $readBookBtn.click(function () {
-            var book = $(this).attr('id');
+            var book = $(this).data('id');
             $.ajax({
                 type: 'POST',
                 url: '/Home/ReadBook',
-                data: { bookId: book },
+                data: { isbn: book },
                 dataType: 'json',
                 success: function (response) {
                     if (response.status === true) {
-                        // Handle success
                         Swal.fire({
                             icon: 'success',
-                            title: response.message,
+                            title: "Ще бъдете прехвърлени до 5 сек.",
                             showClass: {
                                 popup: 'animate__animated animate__fadeInDown'
                             },
@@ -50,8 +49,8 @@
                             }
                         });
                         setTimeout(function () {
-                            location.reload()
-                        }, 5000);
+                            window.location.href = response.message;
+                        }, 300);
 
                     } else {
                         // Handle failure
