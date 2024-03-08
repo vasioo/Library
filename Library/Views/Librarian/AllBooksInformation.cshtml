@@ -40,27 +40,27 @@
 
             <a class="col-5 btn btn-warning align-self-center" asp-controller="Librarian" asp-action="AddABookISBN" style="font-size:1.3em">Добави книга по ISBN</a>
         </div>
+
+        <div id="book-filtering" class="d-flex py-5 justify-content-center">
+            <form asp-action="AllBooksInformation" method="get" class="row col-6">
+                <div class="form-actions no-color">
+                    <div class="pr-2 h3 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 700">
+                        Търси книга :
+                    </div>
+                    <div class="row m-0 pb-2">
+                        <input type="text" name="SearchString" class="form-control fs-5" value="@ViewData["CurrentFilter"]" />
+                    </div>
+                    <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
+                        <input type="submit" value="Търси..." class="btn btn-dark col-5 fs-5" />
+                        <a class="btn btn-danger col-5 fs-5" asp-action="AllBooksInformation">Изчисти</a>
+                    </div>
+                </div>
+            </form>
+        </div>
         @if (Model != null)
         {
             @if (Model.Count > 0)
             {
-                <div id="book-filtering" class="d-flex py-5 justify-content-center">
-                    <form asp-action="AllBooksInformation" method="get" class="row col-6">
-                        <div class="form-actions no-color">
-                            <div class="pr-2 h3 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 700">
-                                Търси книга :
-                            </div>
-                            <div class="row m-0 pb-2">
-                                <input type="text" name="SearchString" class="form-control fs-5" value="@ViewData["CurrentFilter"]" />
-                            </div>
-                            <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
-                                <input type="submit" value="Търси..." class="btn btn-dark col-5 fs-5" />
-                                <a class="btn btn-danger col-5 fs-5" asp-action="AllBooksInformation">Изчисти</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
                 <table class="table table-striped" border="1">
                     <thead>
                         <tr class="header-row">
@@ -111,6 +111,7 @@
         {
             <h2 class="row justify-content-center py-5" style="color:red">Няма налични книги в базата данни</h2>
         }
+
     </div>
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

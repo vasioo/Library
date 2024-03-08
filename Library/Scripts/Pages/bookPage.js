@@ -29,6 +29,7 @@
             });
 
         });
+
         $readBookBtn.click(function () {
             var book = $(this).data('id');
             $.ajax({
@@ -77,6 +78,7 @@
                 }
             });
         });
+
         $UnathBorrowBookBtn.click(function () {
             Swal.fire({
                 icon: "error",
@@ -84,6 +86,45 @@
                 text: "A non authenticated user cannot borrow a book!",
                 footer: '<a href="/Identity/Account/Register">Create an account</a>'
             });
+        });
+
+        function sendRatingData(stars, bookId) {
+            $.ajax({
+                url: '/Home/RateBook',
+                type: 'POST',
+                data: {
+                    stars: stars,
+                    bookId: bookId
+                },
+                success: function (response) {
+                    if (response.success) {
+                        swal({
+                            title: 'Успех!',
+                            text: response.message,
+                            icon: 'success'
+                        });
+                    } else {
+                        swal({
+                            title: 'Грешка!',
+                            text: response.message,
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    swal({
+                        title: 'Грешка!',
+                        text: 'Възникна грешка докато се публикуваха данните: ' + error,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+        $('.rate input[type="radio"]').change(function () {
+            var stars = $(this).val(); 
+            var bookId = $(this).closest('.rate').data('book-id');
+
+            sendRatingData(stars, bookId);
         });
     }
     return {

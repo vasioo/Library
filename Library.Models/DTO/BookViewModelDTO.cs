@@ -1,4 +1,6 @@
-﻿namespace Library.Models.DTO
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Library.Models.DTO
 {
     public class BookViewModelDTO
     {
@@ -12,5 +14,4 @@
         public string ImageURL { get; set; } = "";
         public int AmountOfBooks { get; set; }
     }
-
 }

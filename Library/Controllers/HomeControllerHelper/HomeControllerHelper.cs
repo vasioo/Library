@@ -16,10 +16,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IBookSubjectService _bookSubjectService;
+        private readonly IStarRatingService _starRatingService;
 
 
         public HomeControllerHelper(INotificationService notificationService, IBookSubjectService bookSubjectService,
-            IBookService bookService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService, IBlogPostService blogPostService)
+            IBookService bookService, IStarRatingService starRatingService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService, IBlogPostService blogPostService)
         {
             _notificationService = notificationService;
             _bookService = bookService;
@@ -27,6 +28,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _userLeasedBookService = userLeasedBookService;
             _bookSubjectService = bookSubjectService;
             _blogPostService = blogPostService;
+            _starRatingService = starRatingService;
         }
         #endregion
 
@@ -100,6 +102,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 if (borrowedBook.Id != Guid.Empty)
                 {
                     viewModel.HasUserBorrowedIt = true;
+                    if (!borrowedBook.Approved&&!borrowedBook.IsRead)
+                    {
+                        viewModel.IsWaiting = true;
+                    }
                 }
                 else
                 {
@@ -260,6 +266,24 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.searchCategory = searchCategory;
             viewModel.inputValue = inputValue;
             return viewModel;
+        }
+
+        public async Task<bool> RateBookHelper(int stars, Guid bookId,ApplicationUser user)
+        {
+            try
+            {
+                var entity = new StarRating();
+                entity.StarCount = stars;
+                entity.User = user;
+                entity.Book = await _bookService.GetByIdAsync(bookId);
+                await _starRatingService.AddAsync(entity);
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            return true;
         }
 
         #endregion

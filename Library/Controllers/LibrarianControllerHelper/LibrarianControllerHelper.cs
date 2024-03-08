@@ -1,4 +1,6 @@
-﻿using Library.DataAccess.MainModels;
+﻿using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
+using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Models.Cloudinary;
 using Library.Models.DTO;
@@ -306,9 +308,21 @@ namespace Library.Web.Controllers.HomeControllerHelper
             bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
             bookEntity.Language = viewModelDTO.Language;
             bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
+            bookEntity.NeededMembership = _membershipService.IQueryableGetAllAsync().OrderBy(x => x.StartingNeededAmountOfPoints).FirstOrDefault();
             bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
 
-            await _bookService.AddAsync(bookEntity);
+            var neededId = await _bookService.AddAsync(bookEntity);
+
+            var photo = new Photo();
+            if (viewModelDTO.ImageURL != null && viewModelDTO.ImageURL != "")
+            {
+                photo.Image = viewModelDTO.ImageURL; 
+                photo.ImageName = $"image-for-book-{neededId}";
+                photo.PublicId = $"image-for-book-{neededId}";
+            }
+
+            await _bookService.SaveImage(photo);
+
         }
 
         public async Task<List<string>> GetAllGenresHelper()
@@ -342,6 +356,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
             var viewModel = new ReportViewModel();
 
             viewModel.AmountOfUsers = _userManager.Users.Count();
+            viewModel.AmountOfBooks = await _bookService.IQueryableGetAllAsync().CountAsync();
+            viewModel.AmountOfCategories = await _bookCategoryService.IQueryableGetAllAsync().CountAsync();
+            viewModel.AmountOfSubjects = await _bookSubjectService.IQueryableGetAllAsync().CountAsync();
+            viewModel.AmountOfLeased = await _userLeasedBookService.IQueryableGetAllAsync().Where(x=>!x.IsRead&&x.Approved).CountAsync();
 
             var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24), DateTime.Now, 1);
 

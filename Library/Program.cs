@@ -171,6 +171,9 @@ namespace Modum.Web
             app.MapControllerRoute(
                     name: "index",
                     pattern: "{controller=Home}/{action=MainPage}/{id?}");
+            app.MapControllerRoute(
+              name: "librarian",
+              pattern: "{area:exists}/{controller=Librarian}/{action=AllBooksInformation}/{id?}");
 
             app.MapRazorPages();
 

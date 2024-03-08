@@ -24,6 +24,7 @@ namespace Library.Services.Services
             ConfigureCloudinary();
             _context = context;
         }
+
         public async Task ConfigureCloudinary()
         {
             _cloudinarySettings = Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>() ?? new CloudinarySettings();
@@ -33,6 +34,7 @@ namespace Library.Services.Services
                 _cloudinarySettings.ApiSecret);
             _cloudinary = new Cloudinary(account);
         }
+
         public async Task<Guid> AddAsync(T entity)
         {
             _context.Set<T>().Add(entity);

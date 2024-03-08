@@ -43,7 +43,7 @@
                                 fragment.appendChild(link);
                             });
                         } else {
-                            var message = document.createElement('h1');
+                            var message = document.createElement('h2');
                             message.textContent = 'Няма записи в базата между тези дати!';
                             message.style.textAlign = 'center';
                             message.style.color = 'red';

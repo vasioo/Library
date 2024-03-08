@@ -1,5 +1,4 @@
-﻿using Humanizer.Localisation;
-using Library.DataAccess.MainModels;
+﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.Pagination;
@@ -8,8 +7,6 @@ using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using System.Net;
 
 namespace Library.Web.Controllers
 {

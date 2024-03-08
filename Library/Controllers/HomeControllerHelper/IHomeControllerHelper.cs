@@ -15,5 +15,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
         Task<bool> BorrowBookPostHelper(Guid bookId, ApplicationUser userId);
         Task<bool> UnborrowBookPostHelper(Guid bookId, string userId);
         Task<SearchViewModel> SearchViewModelHelper(string searchCategory, string inputValue,int page);
+        Task<bool> RateBookHelper(int stars, Guid bookId, ApplicationUser user);
     }
 }

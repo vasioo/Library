@@ -14,5 +14,6 @@ namespace Library.Models.ViewModels
 
         public bool HasUserBorrowedIt { get; set; }
         public bool IsDisabled { get; set; }
+        public bool IsWaiting { get; set; } = false;
     }
 }

@@ -25,16 +25,6 @@
                 <h5 class="col-3">@Model.Book.DateOfBookCreation.Year г.</h5>
             </div>
         </div>
-        @if (Model.Book.ISBN != null)
-        {
-            if (Model.Book.ISBN != "")
-            {
-                <div class="d-flex">
-                    <a id="@Model.Id" class="btn btn-danger read-book-btn col fs-5" data-id="@Model.Book.ISBN">Чети книгата</a>
-                </div>
-            }
-        }
-     
         @if (User.IsInRole("Admin"))
         {
             <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=Model.Book.Id })" class="btn btn-warning position-absolute top-0 end-0 m-2">Edit</a>
@@ -60,9 +50,6 @@ else
                 </a>
                 <h5 class="col-3">@Model.Book.DateOfBookCreation.Year г.</h5>
             </div>
-        </div>
-        <div class="d-flex">
-            <a id="@Model.Id" class="btn btn-danger read-book-btn col fs-5" disabled>Чети книгата</a>
         </div>
         @if (User.IsInRole("Admin"))
         {

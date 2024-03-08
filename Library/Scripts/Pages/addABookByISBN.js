@@ -130,7 +130,7 @@
                 Description: $('#bookDescription').val(),
                 Language: $('#language').val(),
                 AmountOfBooks: $('#bookAmount').val(),
-                ImageURL: $('#bookCover').attr('src') 
+                ImageURL: $('.uploaded-image').attr('src') 
             };
             $.ajax({
                 url: $('#bookForm').attr('action'),

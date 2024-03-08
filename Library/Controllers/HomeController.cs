@@ -1,6 +1,5 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models;
-using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -178,6 +177,28 @@ namespace Library.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<JsonResult> RateBook(int stars,Guid bookId)
+        {
+            try
+            {
+                var username = HttpContext.User?.Identity?.Name ?? "";
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    return Json(new { status = false, Message = "Трябва да сте вписан в приложението като потребител." });
+                }
+                if (!await _helper.RateBookHelper(stars, bookId, user))
+                {
+                    throw new Exception(); 
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка." });
+            }
+            return Json(new { status = true, Message = "Вашият рейтинг беше записан успешно. Благодарим за отзивчивостта Ви!" });
+        }
         #endregion
 
         #region Borrowed
@@ -217,6 +238,13 @@ namespace Library.Controllers
             return View($"~/Views/Home/Search.cshtml", viewModel);
         }
 
+        #endregion
+
+        #region UserFeedback
+        public IActionResult UserFeedback()
+        {
+            return View("~/Views/Home/UserFeedback.cshtml");
+        }
         #endregion
     }
 }
