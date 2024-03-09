@@ -7,5 +7,6 @@ namespace Library.Services.Interfaces
         Membership GetMembershipByName(string name);
         Membership GetPreviousMembersip(Guid id);
         Membership GetNextMembersip(Guid id);
-            }
+        Membership GetMembershipByPoints(int points);
+    }
 }

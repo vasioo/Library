@@ -4,12 +4,15 @@ using Library.Models.DTO;
 using Library.Models.Pagination;
 using Library.Models.ViewModels;
 using Library.Web.Controllers.HomeControllerHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Library.Web.Controllers
 {
+    [Authorize(Roles = "Librarian,Admin,SuperAdmin")]
     public class LibrarianController : Controller
     {
         #region FieldsAndConstructor
@@ -25,7 +28,6 @@ namespace Library.Web.Controllers
         #endregion
 
         #region Books
-        //[Authorize(Roles = "Worker,Admin,SuperAdmin")]
 
         #region BookViews
         public async Task<IActionResult> AllBooksInformation(int? page, string searchString, string currentFilter)
@@ -365,6 +367,80 @@ namespace Library.Web.Controllers
         {
             //implement
             return View(Report());
+        }
+        #endregion
+
+        #region Documents
+        public IActionResult AddDocument()
+        {
+            return View("~/Views/Librarian/AddDocument.cshtml");
+        }
+        [HttpPost]
+        public async Task<JsonResult> AddDocument(Document doc, string docImage)
+        {
+            try
+            {
+                var blog = new Document();
+                blog.Title = doc.Title;
+                blog.DateOfCreation = DateTime.Now;
+                blog.Content = doc.Content;
+
+                await _helper.SaveDocInformation(blog, docImage);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, Message = "Възникна грешка." });
+            }
+            return Json(new { status = true, Message = "Документът беше запазен." });
+        }
+
+        public async Task<IActionResult> EditDocument(Guid id)
+        {
+            var doc = await _helper.EditDocHelper(id);
+
+            if (doc != null)
+            {
+                return View("~/Views/Librarian/EditDocument.cshtml", doc);
+            }
+            return View(AddDocument());
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditDocumentPost(Document doc, IFormFile blogImage)
+        {
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await blogImage.CopyToAsync(memoryStream);
+                    var base64String = Convert.ToBase64String(memoryStream.ToArray());
+
+                    var dataUrl = $"data:{blogImage.ContentType};base64,{base64String}";
+                    await _helper.EditDocPostHelper(doc, dataUrl);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, Message = "Възникна грешка." });
+
+            }
+            return Json(new { status = true, Message = "Документът беше запазен." });
+
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteDocumentPost(Guid id)
+        {
+            try
+            {
+                await _helper.DeleteDocPost(id);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false });
+            }
+            return Json(new { status = true });
         }
         #endregion
     }

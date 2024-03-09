@@ -1,6 +1,9 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models;
+using Library.Models.DTO;
+using Library.Models.UserModels.Interfaces;
 using Library.Web.Controllers.HomeControllerHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -28,9 +31,12 @@ namespace Library.Controllers
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
-
             var viewModel = _helper.GetMainPageAttributes(user!);
 
+            if (user != null)
+            {
+                viewModel.ProgressBarSettings = _helper.ProgressBarInformationFiller(user!);
+            }
             return View("~/Views/Home/MainPage.cshtml", viewModel);
         }
 
@@ -43,13 +49,17 @@ namespace Library.Controllers
             var user = await _userManager.FindByNameAsync(username);
 
             var viewModel = _helper.GetBookCollectionAttributes(user!);
+            if (user != null)
+            {
+                viewModel.ProgressBarSettings = _helper.ProgressBarInformationFiller(user!);
+            }
 
             return View("~/Views/Home/BookCollectionShower.cshtml", viewModel);
         }
         #endregion
 
         #region BookShower
-
+        [Authorize]
         public async Task<IActionResult> BookShower(string category)
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
@@ -57,23 +67,33 @@ namespace Library.Controllers
 
             var viewModel = _helper.GetBooksAttributes(user!, category);
 
+            if (user != null)
+            {
+                viewModel.ProgressBarSettings = _helper.ProgressBarInformationFiller(user!);
+            }
+
             return View("~/Views/Home/BookShower.cshtml", viewModel);
         }
         #endregion
 
         #region BookPage
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> BookPage(Guid bookId)
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
 
-            var bookPageViewModel = await _helper.GetBookPageAttributes(user!, bookId);
-
-            return View("~/Views/Home/BookPage.cshtml", bookPageViewModel);
+            var viewModel = await _helper.GetBookPageAttributes(user!, bookId);
+            if (user != null)
+            {
+                viewModel.ProgressBarSettings = _helper.ProgressBarInformationFiller(user!);
+            }
+            return View("~/Views/Home/BookPage.cshtml", viewModel);
         }
 
         [HttpPost]
+        [Authorize]
+
         public async Task<JsonResult> BorrowBook(Guid bookId)
         {
             try
@@ -100,6 +120,8 @@ namespace Library.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+
         public async Task<JsonResult> UnborrowBook(Guid bookId)
         {
             try
@@ -124,6 +146,8 @@ namespace Library.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+
         public async Task<JsonResult> ReadBook(string isbn)
         {
             string apiUrl = $"{OpenLibraryApiBaseUrl}?bibkeys=ISBN:{isbn}&format=json&jscmd=viewapi";
@@ -178,7 +202,9 @@ namespace Library.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> RateBook(int stars,Guid bookId)
+        [Authorize]
+
+        public async Task<JsonResult> RateBook(int stars, Guid bookId)
         {
             try
             {
@@ -190,7 +216,7 @@ namespace Library.Controllers
                 }
                 if (!await _helper.RateBookHelper(stars, bookId, user))
                 {
-                    throw new Exception(); 
+                    throw new Exception();
                 }
             }
             catch (Exception)
@@ -202,13 +228,18 @@ namespace Library.Controllers
         #endregion
 
         #region Borrowed
+        [Authorize]
+
         public async Task<IActionResult> Borrowed()
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
             var user = await _userManager.FindByNameAsync(username);
 
             var viewModel = _helper.GetBorrowedPageAttributes(user!);
-
+            if (user != null)
+            {
+                viewModel.ProgressBarSettings = _helper.ProgressBarInformationFiller(user!);
+            }
             return View("~/Views/Home/Borrowed.cshtml", viewModel);
         }
         #endregion
@@ -222,29 +253,63 @@ namespace Library.Controllers
         }
         #endregion
 
-        #region Notifications
-        public async Task<IActionResult> Notifications()
-        {
-
-            return View("~/Views/Home/Notifications.cshtml", _helper.GetNotifications());
-        }
-        #endregion
-
         #region Search
 
         public async Task<IActionResult> Search(string searchCategory, string inputValue, int page = 1)
         {
+            var username = HttpContext.User?.Identity?.Name ?? "";
+            var user = await _userManager.FindByNameAsync(username);
             var viewModel = await _helper.SearchViewModelHelper(searchCategory, inputValue, page);
+            if (user != null)
+            {
+                viewModel.ProgressBarSettings = _helper.ProgressBarInformationFiller(user!);
+            }
             return View($"~/Views/Home/Search.cshtml", viewModel);
         }
-
+        
+        public async Task<IActionResult> DocumentPage(Guid id)
+        {
+            var model = await _helper.GetDocumentPageEntity(id);
+            return View("~/Views/Home/DocumentPage.cshtml",model);
+        }
         #endregion
 
         #region UserFeedback
+        [Authorize]
         public IActionResult UserFeedback()
         {
             return View("~/Views/Home/UserFeedback.cshtml");
         }
+        [Authorize]
+        public async Task<JsonResult> SubmitUserFeedback(UserFeedbackDTO userFeedback)
+        {
+            try
+            {
+                var username = HttpContext.User?.Identity?.Name ?? "";
+                var user = await _userManager.FindByNameAsync(username);
+                if (user != null)
+                {
+                    if (user.Email != userFeedback.Email)
+                    {
+                        return Json(new { status = false, Message = "Невъзможно е изпращането, тъй като предоставения имейл е различен от активния в приложението!" });
+                    }
+                    if (!await _helper.SubmitUserFeedbackHelper(userFeedback, user))
+                    {
+                        return Json(new { status = false, Message = "Проблем с изпращането, опитайте отново!" });
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, Message = "Трябва да сте логнати в приложението!" });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, Message = "Възникна грешка" });
+            }
+            return Json(new { status = true, Message = "Имейлът беше изпратен успешно!" });
+        }
         #endregion
+
     }
 }

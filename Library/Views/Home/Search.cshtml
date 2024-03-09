@@ -1,4 +1,6 @@
 ﻿@using Library.Models.ViewModels;
+@using System.Web;
+@using HtmlAgilityPack;
 @model SearchViewModel
 
 <style>
@@ -86,8 +88,48 @@
         background-size: cover;
     }
 
-</style>
+    .doc-item h5, p {
+        text-decoration: none;
+    }
 
+</style>
+@{
+    string TruncateAndAppend(string content, int maxChars)
+    {
+        if (string.IsNullOrEmpty(content))
+        {
+            return string.Empty;
+        }
+
+        var doc = new HtmlDocument();
+        doc.LoadHtml(Html.Raw(content).ToString());
+
+        var paragraphs = doc.DocumentNode.SelectNodes("//p");
+
+        if (paragraphs == null || !paragraphs.Any())
+        {
+            return string.Empty;
+        }
+
+        var textContent = string.Join(" ", paragraphs.Select(p => p.InnerText));
+
+        var sentences = textContent.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+
+        var truncatedSentences = new List<string>();
+
+        foreach (var sentence in sentences)
+        {
+            var random = new Random();
+            var randomLength = random.Next(70, 81);
+            var truncatedSentence = sentence.Length <= randomLength ? sentence : sentence.Substring(0, randomLength) + "...";
+
+            truncatedSentences.Add(truncatedSentence);
+        }
+
+        return string.Join(" ", truncatedSentences);
+    }
+
+}
 <div class=" pt-3 search-page">
     <div class=" container custom-container">
         <div class="row">
@@ -115,7 +157,6 @@
                 <input class="" type="hidden" name="searchCategory" value="@Model.searchCategory" />
             </form>
         </div>
-
         <div id="items-show-container" class="py-3">
             @if (Model.searchCategory != "Authors" && Model.searchCategory != "Subjects")
             {
@@ -144,21 +185,44 @@
 
             @if (Model.searchCategory == "Authors")
             {
+                if (User.IsInRole("Admin") || User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                {
+                    <div class="row">
+                        <a class="col-12 btn btn-success fs-5" href="/Librarian/AddDocument">
+                            Добави Документ
+                        </a>
+                    </div>
+                }
+
                 @foreach (var item in Model.BlogPosts)
                 {
-                    var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{item.Id}.png";
+                    var truncatedContent = TruncateAndAppend(item.Content, 80);
+                    var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/main-image-for-document-{item.Id}.png";
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="blog-card">
-                                <img src="imageUrl" alt="Blog Image">
-                                <div class="card-body">
-                                    <h5 class="card-title">@item.Title</h5>
-                                    <p class="card-date">@item.DateOfCreation</p>
-                                    <p class="card-content">@Truncate(item.Content, 100)</p>
-                                </div>
+                        <div class="col-12">
+                            <div class="blog-card justify-content-between">
+                                <a href="/Home/DocumentPage?id=@item.Id" class="doc-item row align-items-center">
+                                    <div class="col-5">
+                                        <img src="@imageUrl" alt="Blog Image" class="img-fluid">
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@item.Title</h5>
+                                            <p class="card-date">@item.DateOfCreation</p>
+                                            <p class="card-content">@truncatedContent</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <div class="">
+                                        <a href="@Url.Action("EditDocument", "Librarian", new { id=item.Id })" class="btn btn-warning m-2">Редакция</a>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
+
                 }
             }
 
@@ -169,7 +233,7 @@
                     {
                         <li class="pt-1">
                             <div class="row">
-                                <div class="fs-4"><a ><strong>@item.Subject</strong></a></div>
+                                <div class="fs-4"><a><strong>@item.Subject</strong></a></div>
                                 @if (@item.AmountOfBooksWithinThatSubject == 1)
                                 {
                                     <div class="fs-5 count-for-books">  @item.AmountOfBooksWithinThatSubject налична книга</div>

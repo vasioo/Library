@@ -1,0 +1,13 @@
+﻿@using Library.Models.BaseModels;
+@using System.Web;
+@model Document
+<div class="document-page">
+    <div class="container">
+        <div class="row display-4 justify-content-center pt-5">@Model.Title</div>
+        <hr class="py-1" style="color:#00d1d1"/>
+        <br />
+        <div class="row">
+            @Html.Raw(Model.Content);
+        </div>
+    </div>
+</div>

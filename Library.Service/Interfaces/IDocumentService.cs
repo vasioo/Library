@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Library.Services.Interfaces
 {
-    public interface IBlogPostService:IBaseService<BlogPost>
+    public interface IDocumentService:IBaseService<Document>
     {
     }
 }

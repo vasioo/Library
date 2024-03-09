@@ -79,7 +79,7 @@
             var neededAmountOfPoints = parseInt($('#addNeededAmountOfPoints').val());
 
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
-                starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                starterNeededPoints <0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Грешка',

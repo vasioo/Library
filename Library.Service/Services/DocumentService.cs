@@ -5,12 +5,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace Library.Services.Services
 {
-    public class BlogPostService : BaseService<BlogPost>, IBlogPostService
+    public class DocumentService : BaseService<Document>, IDocumentService
     {
         private readonly DataContext _dataContext;
         private readonly IConfiguration _configuration;
 
-        public BlogPostService(DataContext context, IConfiguration configuration) : base(configuration, context)
+        public DocumentService(DataContext context, IConfiguration configuration) : base(configuration, context)
         {
             _dataContext = context;
             _configuration = configuration;

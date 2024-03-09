@@ -1,7 +1,5 @@
 ﻿using Library.DataAccess.MainModels;
-using Library.Models.BaseModels;
 using Library.Models.Pagination;
-using Library.Models.ViewModels;
 using Library.Web.Controllers.AdminControllerHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +8,7 @@ using System.Data.Common;
 
 namespace Library.Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class AdminController : Controller
     {
         #region Constructor
@@ -25,14 +23,12 @@ namespace Library.Web.Controllers
         #endregion
 
         #region StaffManagement
-        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditStaffInformation(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             return View("~/Views/Admin/EditStaffPersonInformation.cshtml", user);
         }
-        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditInfo(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);
@@ -41,7 +37,6 @@ namespace Library.Web.Controllers
         #endregion
 
         #region Statistics
-        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Statistics()
         {
             var viewModel = await _helper.StatisticsHelper();
@@ -78,7 +73,7 @@ namespace Library.Web.Controllers
         #endregion
 
         #region ClientManagement
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> ClientManagement(string searchString, string roleFilter, int? page)
         {
             ViewData["CurrentFilter"] = searchString;

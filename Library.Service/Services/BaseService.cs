@@ -113,7 +113,7 @@ namespace Library.Services.Services
             {
                 _context.Set<T>().Attach(entity);
             }
-            _context.Entry(entity).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync();
         }
@@ -178,11 +178,11 @@ namespace Library.Services.Services
             }
         }
 
-        public async Task<bool> DeleteImage(Photo image)
+        public async Task<bool> DeleteImage(string imageId)
         {
             try
             {
-                await _cloudinary.DeleteResourcesAsync(image.PublicId);
+                await _cloudinary.DeleteResourcesAsync(imageId);
                 return true;
             }
             catch (Exception)

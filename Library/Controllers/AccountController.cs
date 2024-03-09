@@ -4,9 +4,14 @@ using Library.Models.UserModels.Interfaces;
 using Library.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Modum.Web.Areas.Identity.Pages.Account;
 using System.Net.Sockets;
+using System.Text.Encodings.Web;
+using System.Text;
+using Library.Services.Interfaces;
 
 namespace Library.Web.Controllers
 {
@@ -17,16 +22,20 @@ namespace Library.Web.Controllers
         private readonly ILogger<LoginModel> _signInLogger;
         private readonly ILogger<RegisterModel> _signUpLogger;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSenderService _emailSenderService;
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> signInLogger, ILogger<RegisterModel> signUpLogger, UserManager<ApplicationUser> userManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager,
+            ILogger<LoginModel> signInLogger, ILogger<RegisterModel> signUpLogger,
+            UserManager<ApplicationUser> userManager, IEmailSenderService emailSenderService)
         {
             _signInManager = signInManager;
             _signInLogger = signInLogger;
             _signUpLogger = signUpLogger;
             _userManager = userManager;
+            _emailSenderService = emailSenderService;
         }
 
         #endregion
@@ -186,39 +195,51 @@ namespace Library.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Admin");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    return Json(new { success = true, message = "Successfull Account Creation." });
+                    if (result.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        string returnUrl = "";
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                            protocol: Request.Scheme);
+                        var emailBody = $@"
+                         <html>
+                           <body>
+                               <div style='text-align: center;'>
+                                   <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/litify-logo_fwtfvq' alt='Website Logo' style='height: 20em;' />
+                               </div>
+                               <br/>
+                               <hr/>
+                               <br/>
+                               <div style='text-align: center; font-size: 20px;'>
+                                   Потвърдете акаунта си като <br/>
+                                   <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>натиснете тук</a>.
+                               </div>
+                            </body>
+                        </html>";
 
-                    #region Send Email
+                        _emailSenderService.SendEmail(model.RegisterEmail, emailBody, "Потвърдете акаунта си");
 
-                    // _logger.LogInformation("User created a new account with password.");
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return Json(new { success = true, message = "Проверете имейла си за потвърждение!" });
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return Json(new { success = true, message = "Успешно създаване на акаунт." });
+                        }
+                    }
 
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    //var callbackUrl = Url.Page(
-                    //    "/Account/ConfirmEmail",
-                    //    pageHandler: null,
-                    //    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                    //    protocol: Request.Scheme);
-
-                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    //{
-                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    //}
-                    //else
-                    //{
-                    //  await _signInManager.SignInAsync(user, isPersistent: false);
-                    //  return LocalRedirect(returnUrl);
-                    //}
-                    #endregion
                 }
-                return Json(new { success = false, message = "Invalid Account Creation." });
+                return Json(new { success = false, message = "Невалидно създаване на акаунт." });
             }
             catch (Exception)
             {

@@ -22,9 +22,6 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<UserLeasedBookMappingTable>, BaseService<UserLeasedBookMappingTable>>();
             service.AddScoped<IUserLeasedBookService, UserLeasedBookService>();
 
-            service.AddScoped<IBaseService<Notification>, BaseService<Notification>>();
-            service.AddScoped<INotificationService, NotificationService>();
-
             service.AddScoped<IBaseService<Book>, BaseService<Book>>();
             service.AddScoped<IBookService, BookService>();
 
@@ -34,8 +31,8 @@ namespace Library.Web.Extensions
             service.AddScoped<IBaseService<BookSubject>, BaseService<BookSubject>>();
             service.AddScoped<IBookSubjectService, BookSubjectService>();
 
-            service.AddScoped<IBaseService<BlogPost>, BaseService<BlogPost>>();
-            service.AddScoped<IBlogPostService, BlogPostService>();
+            service.AddScoped<IBaseService<Document>, BaseService<Document>>();
+            service.AddScoped<IDocumentService, DocumentService>();
 
             service.AddScoped<IBaseService<Membership>, BaseService<Membership>>();
             service.AddScoped<IMembershipService, MembershipService>();

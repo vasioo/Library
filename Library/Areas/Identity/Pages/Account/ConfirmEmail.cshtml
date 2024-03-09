@@ -1,8 +1,43 @@
 ﻿@page
 @model ConfirmEmailModel
-@{
-    ViewData["Title"] = "Confirm email";
-}
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (@Model.StatusMessage.StartsWith("Error", StringComparison.OrdinalIgnoreCase).ToString().ToLower() === 'true') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Грешка',
+                text: 'Възникна грешка. Моля опитайте отново',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                timerProgressBar: true,
+                timer: 2000
+            }).then(function () {
+                setTimeout(function () {
+                    var currentURL = window.location.href;
+
+                    var baseURL = currentURL.split('/')[0] + '//' + currentURL.split('/')[2];
+
+                    window.location.href = baseURL + '/Account/AuthenticationPage';
+                }, 4000); 
+            });
+        } else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Успех',
+                text: 'Вие успешно потвърдихте акаунта си.',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                timerProgressBar: true,
+                timer: 2000 
+            }).then(function () {
+                var currentURL = window.location.href;
+
+                var baseURL = currentURL.split('/')[0] + '//' + currentURL.split('/')[2];
+
+                window.location.href = baseURL;
+
+            });
+        }
+    });
+</script>

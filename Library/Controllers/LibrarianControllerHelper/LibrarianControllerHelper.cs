@@ -10,6 +10,7 @@ using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using System.Web;
 
 namespace Library.Web.Controllers.HomeControllerHelper
 {
@@ -22,12 +23,13 @@ namespace Library.Web.Controllers.HomeControllerHelper
         private readonly IMembershipService _membershipService;
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IEmailSenderService _emailSenderService;
+        private readonly IDocumentService _documentsService;
 
         private UserManager<ApplicationUser> _userManager;
 
         public LibrarianControllerHelper(IBookService bookService, IBookCategoryService bookCategoryService,
             IUserLeasedBookService userLeasedBookService, IBookSubjectService bookSubjectService, IEmailSenderService emailSenderService,
-            IMembershipService membershipService, UserManager<ApplicationUser> userManager)
+            IMembershipService membershipService, UserManager<ApplicationUser> userManager, IDocumentService documentsService)
         {
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
@@ -36,6 +38,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
             _userLeasedBookService = userLeasedBookService;
             _userManager = userManager;
             _emailSenderService = emailSenderService;
+            _documentsService = documentsService;
+
         }
         #endregion
 
@@ -74,7 +78,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                     photo.ImageName = $"image-for-book-{id}";
                     photo.PublicId = $"image-for-book-{id}";
                 }
-                await _bookService.DeleteImage(photo);
+                await _bookService.DeleteImage($"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/{photo.PublicId}");
                 await _bookService.SaveImage(photo);
                 return true;
             }
@@ -266,7 +270,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                     photo.ImageName = $"image-for-book-{book.Id}";
                     photo.PublicId = $"image-for-book-{book.Id}";
                 }
-                await _bookService.DeleteImage(photo);
+                await _bookService.DeleteImage($"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/{photo.PublicId}");
                 await _bookService.SaveImage(photo);
 
                 return true;
@@ -588,6 +592,89 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
             return true;
         }
+        #endregion
+
+        #region DocumentsHelper
+
+        public async Task<bool> SaveDocInformation(Document doc, string fileName)
+        {
+            try
+            {
+                if (doc.Content==null)
+                {
+                    doc.Content = "";
+
+                }
+                var id = await _documentsService.AddAsync(doc);
+                var photo = new Photo();
+                if (fileName != null && fileName != "")
+                {
+                    photo.Image = fileName;
+                    photo.ImageName = $"main-image-for-document-{id}";
+                    photo.PublicId = $"main-image-for-document-{id}";
+                }
+
+                await _documentsService.SaveImage(photo);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<Document> EditDocHelper(Guid id)
+        {
+            return await _documentsService.GetByIdAsync(id);
+        }
+
+        public async Task<bool> EditDocPostHelper(Document doc, string blogImage)
+        {
+            try
+            {
+                 await _documentsService.UpdateAsync(doc);
+                await _documentsService.DeleteImage(blogImage);
+                var photo = new Photo();
+                if (blogImage != null && blogImage != "")
+                {
+                    photo.Image = blogImage;
+                    photo.ImageName = $"main-image-for-document-{doc.Id}";
+                    photo.PublicId = $"main-image-for-document-{doc.Id}";
+                }
+                await _documentsService.SaveImage(photo);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DocExists(doc.Id))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return true;
+        }
+
+        private bool DocExists(Guid id)
+        {
+            return _documentsService.IQueryableGetAllAsync().Any(x => x.Id == id);
+        }
+
+        public async Task<string> DeleteDocPost(Guid id)
+        {
+            var doc = await _documentsService.GetByIdAsync(id);
+            await _documentsService.DeleteImage($"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/main-image-for-document-{id}.png");
+
+            if (doc != null)
+            {
+                await _documentsService.RemoveAsync(doc.Id);
+                return "";
+            }
+            return "Няма такъв документ.";
+        }
+     
         #endregion
     }
 }

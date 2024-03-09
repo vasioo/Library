@@ -4,6 +4,7 @@ using Library.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240309151748_changingUserprops")]
+    partial class changingUserprops
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,6 +109,59 @@ namespace Library.DataAccess.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f7573d73-f9a4-495d-8425-257eaf275488",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c60e1396-7ea9-4c0b-bb6f-527b4950426c",
+                            Email = "libraryadmin@gmail.com",
+                            EmailConfirmed = false,
+                            FirstName = "Vasil",
+                            LastName = "Orakov",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "LIBRARYADMIN@GMAIL.COM",
+                            PasswordHash = "library123!",
+                            PhoneNumber = "1234567890",
+                            PhoneNumberConfirmed = false,
+                            Points = 0,
+                            Position = "",
+                            Salary = 0m,
+                            SecurityStamp = "3832cf4d-b898-4a39-9cbd-526f544bab16",
+                            StartOfMembership = new DateTime(2024, 3, 9, 17, 17, 47, 984, DateTimeKind.Local).AddTicks(8353),
+                            TwoFactorEnabled = false,
+                            UserName = "library_1_admin"
+                        });
+                });
+
+            modelBuilder.Entity("Library.Models.BaseModels.BlogPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateOfCreation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsForAuthor")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlogPosts");
                 });
 
             modelBuilder.Entity("Library.Models.BaseModels.Book", b =>
@@ -194,28 +250,6 @@ namespace Library.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BookSubjects");
-                });
-
-            modelBuilder.Entity("Library.Models.BaseModels.Document", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateOfCreation")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Library.Models.BaseModels.FavouriteBooks", b =>
@@ -459,6 +493,13 @@ namespace Library.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "f7573d73-f9a4-495d-8425-257eaf275488",
+                            RoleId = "4"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

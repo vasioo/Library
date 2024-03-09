@@ -248,6 +248,42 @@ var addACategory = (function () {
         init
     };
 })();
+var addDocumentPage = (function () {
+    function init($container) {
+        $(document).on('click', '#submit-btn',function () {
+
+            var formDataObject = {
+                Title: $('#title').val(),
+                Content: $('#tiny').val(),
+            };
+            const image = $('.uploaded-image').attr('src');
+            $.post('/Librarian/AddDocument', {
+                doc: formDataObject,
+                docImage: image
+            }, function (response) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Server response',
+                    html: `${response.message}`,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+
+                location.reload();
+            }).fail(function (error) {
+                console.log('AJAX request failed:', error);
+            });
+        });
+
+    }
+    return {
+        init
+    };
+})();
 var bookPage = (function () {
     function init($container) {
         let $borrowBookBtn = $container.find('.borrow-book-btn'),
@@ -583,6 +619,43 @@ var editABook = (function () {
                     location.reload();
                 }
             })
+        });
+    }
+    return {
+        init
+    };
+})();
+var editDocumentPage = (function () {
+    function init($container) {
+        $(document).on('click', '#submit-btn', function () {
+
+            var formDataObject = {
+                Title: $('#title').val(),
+                Content: $('#tiny').val(),
+                DateOfCreation: $('#DateOfCreation').val(),
+                Id:$('#Id').val(),
+            };
+            const image = $('.uploaded-image').attr('src');
+            $.post('/Librarian/EditDocumentPost', {
+                doc: formDataObject,
+                docImage: image
+            }, function (response) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Server response',
+                    html: `${response.message}`,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+
+                location.reload();
+            }).fail(function (error) {
+                console.log('AJAX request failed:', error);
+            });
         });
     }
     return {
@@ -1001,7 +1074,7 @@ var manageMemberships = (function () {
             var neededAmountOfPoints = parseInt($('#addNeededAmountOfPoints').val());
 
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
-                starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                starterNeededPoints <0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Грешка',
@@ -1869,6 +1942,54 @@ var statisticsPage = (function () {
             });
         }
 
+    }
+    return {
+        init
+    };
+})();
+var userFeedback = (function () {
+    function init($container) {
+        $('#contact-form-submition').submit(function (e) {
+            e.preventDefault();
+
+            var formData = {
+                Email: $('#Email').val(),
+                Message: $('#Message').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/Home/SubmitUserFeedback',
+                data: formData,
+                success: function (response) {
+                    if (response.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Успех',
+                            text: response.message,
+                            timer: 3000, 
+                            timerProgressBar: true,
+                            didClose: () => {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Грешка',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Грешка',
+                        text: 'Възникна грешка. Свържете се с отдел ИТ.'
+                    });
+                }
+            });
+        });
     }
     return {
         init

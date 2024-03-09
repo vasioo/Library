@@ -1,5 +1,4 @@
-﻿using Hangfire;
-using Library.DataAccess.MainModels;
+﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.ViewModels;
@@ -10,25 +9,31 @@ namespace Library.Web.Controllers.HomeControllerHelper
     public class HomeControllerHelper : IHomeControllerHelper
     {
         #region Fields&Constructor
-        private readonly INotificationService _notificationService;
         private readonly IBookService _bookService;
-        private readonly IBlogPostService _blogPostService;
+        private readonly IDocumentService _documentsService;
         private readonly IBookCategoryService _bookCategoryService;
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IBookSubjectService _bookSubjectService;
         private readonly IStarRatingService _starRatingService;
+        private readonly IEmailSenderService _emailSenderService;
+        private readonly IMembershipService _membershipService;
 
 
-        public HomeControllerHelper(INotificationService notificationService, IBookSubjectService bookSubjectService,
-            IBookService bookService, IStarRatingService starRatingService, IBookCategoryService bookCategoryService, IUserLeasedBookService userLeasedBookService, IBlogPostService blogPostService)
+        public HomeControllerHelper(IBookSubjectService bookSubjectService,
+            IBookService bookService, IEmailSenderService emailSenderService,
+            IStarRatingService starRatingService, IBookCategoryService bookCategoryService,
+            IUserLeasedBookService userLeasedBookService, IDocumentService documentsService,
+            IMembershipService membershipService)
         {
-            _notificationService = notificationService;
             _bookService = bookService;
             _bookCategoryService = bookCategoryService;
             _userLeasedBookService = userLeasedBookService;
             _bookSubjectService = bookSubjectService;
-            _blogPostService = blogPostService;
+            _documentsService = documentsService;
             _starRatingService = starRatingService;
+            _emailSenderService = emailSenderService;
+            _membershipService = membershipService;
+
         }
         #endregion
 
@@ -66,22 +71,13 @@ namespace Library.Web.Controllers.HomeControllerHelper
         #region MainPageHelper
         public MainPageViewModel GetMainPageAttributes(ApplicationUser user)
         {
-            RecurringJob.AddOrUpdate(() => _notificationService.AddDailyNotification(), "0 14 * * *", TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => _notificationService.AddWeeklyNotification(), "0 17 * * 0", TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => _notificationService.AddDailyNotification(), "0 14 * * *", TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => _notificationService.AddWeeklyNotification(), "0 17 * * 0", TimeZoneInfo.Local);
             var viewModel = new MainPageViewModel();
-
             viewModel.BestSellers = _bookService.GetTop6BooksByCriteria(user, "");
             viewModel.RecommendedBooks = _bookService.GetTop6BooksByCriteria(user, "recommended");
 
             return viewModel;
-        }
-        #endregion
-
-        #region NotificationsHelper
-        public IQueryable<Notification> GetNotifications()
-        {
-            var notifications = _notificationService.IQueryableGetAllAsync();
-            return notifications;
         }
         #endregion
 
@@ -102,7 +98,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 if (borrowedBook.Id != Guid.Empty)
                 {
                     viewModel.HasUserBorrowedIt = true;
-                    if (!borrowedBook.Approved&&!borrowedBook.IsRead)
+                    if (!borrowedBook.Approved && !borrowedBook.IsRead)
                     {
                         viewModel.IsWaiting = true;
                     }
@@ -209,12 +205,12 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
             if (searchCategory == "Authors")
             {
-                var authors = _blogPostService.IQueryableGetAllAsync()
-                    .Where(x => x.IsForAuthor && x.Title.Contains(inputValue) || x.Content.Contains(inputValue))
+                var authors = _documentsService.IQueryableGetAllAsync()
+                    .Where(x => x.Title.Contains(inputValue) || x.Content.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
-                viewModel.TotalPages = (int)Math.Ceiling((double)_blogPostService.IQueryableGetAllAsync().Count() / 20);
+                viewModel.TotalPages = (int)Math.Ceiling((double)_documentsService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
-                var authorDTO = authors.Select(blogPost => new BlogPost
+                var authorDTO = authors.Select(blogPost => new Document
                 {
                     Id = blogPost.Id,
                     Title = blogPost.Title,
@@ -268,7 +264,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return viewModel;
         }
 
-        public async Task<bool> RateBookHelper(int stars, Guid bookId,ApplicationUser user)
+        public async Task<bool> RateBookHelper(int stars, Guid bookId, ApplicationUser user)
         {
             try
             {
@@ -286,6 +282,67 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return true;
         }
 
+        public async Task<Document> GetDocumentPageEntity(Guid id)
+        {
+            return await _documentsService.GetByIdAsync(id);
+        }
+        #endregion
+
+        #region UserFeedbackHelper
+        public async Task<bool> SubmitUserFeedbackHelper(UserFeedbackDTO userFeedback, ApplicationUser user)
+        {
+            try
+            {
+                var emailBody = $@"
+                    <table width='100%' border='0' cellspacing='0'cellpadding='8'>
+                      <tr bgcolor='#f2f2f2'>
+                        <th colspan='2' >Contact Form Submission</th>
+                      </tr>
+                      <tr>
+                        <td width='30%'>Изпратено от:</td>
+                        <td>{user.Email}</td>
+                      </tr>
+                      <tr>
+                        <td width='30%'>Съобщение:</td>
+                        <td>{userFeedback.Message}</td>
+                      </tr>
+                    </table>";
+
+                var subjectText = "Имейл до Наука!";
+
+                _emailSenderService.SendEmail(user!.Email!, emailBody, subjectText);
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            return true;
+        }
+        #endregion
+
+        #region ProgressBarHelper
+        public ProgressBarSettings ProgressBarInformationFiller(ApplicationUser user)
+        {
+            var model = new ProgressBarSettings();
+
+            model.UserAmount = user.Points;
+            var alignedMembership = _membershipService.GetMembershipByPoints(user.Points);
+            if (alignedMembership != null && alignedMembership.Id != Guid.Empty)
+            {
+                model.ProgressStart = alignedMembership.StartingNeededAmountOfPoints;
+                model.ProgressEnd = alignedMembership.EndAmountOfPoints;
+                model.MembershipName = alignedMembership.MembershipName;
+            }
+            else
+            {
+                model.ProgressStart = 0;
+                model.ProgressEnd = 100;
+                model.MembershipName = "Начален";
+            }
+
+            return model;
+        }
         #endregion
     }
 }

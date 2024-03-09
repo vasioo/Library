@@ -49,11 +49,7 @@
                                 <i class="fa-solid fa-book-open-reader fa-2xl"></i>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link nav-item fontawesome-icons" asp-area="" asp-controller="Home" asp-action="Notifications">
-                                <i class="fa-regular fa-bell fa-2xl"></i>
-                            </a>
-                        </li>
+
                         <li class="nav-item">
                             <a asp-controller="Home" asp-action="Search" class="nav-link nav-item fontawesome-icons">
                                 <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
@@ -264,9 +260,6 @@
             <a asp-controller="Home" asp-action="Borrowed" class="menu-item">
                 <i class="fa-solid fa-book-open-reader fa-lg"></i>
             </a>
-            <a asp-controller="Home" asp-action="Notifications" class="menu-item">
-                <i class="fa-regular fa-bell fa-lg"></i>
-            </a>
             <a asp-controller="Home" asp-action="Search" class="menu-item">
                 <i class="fa-solid fa-magnifying-glass fa-lg"></i>
             </a>
@@ -323,7 +316,29 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Library - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @if (Model != null && Model.GetType().GetProperty("ProgressBarSettings") != null && Model.ProgressBarSettings != null)
+            {
+                <div class="row pt-5">
+                    <div class="row justify-content-center align-items-center h1 text-dark">Вашият прогрес</div>
+                    <div class="row justify-content-center align-items-center h3 pt-2">Ранг -> @Model.ProgressBarSettings.MembershipName</div>
+                    <div class="row">
+                        <div class="col-1 text-center text-dark align-self-center h4">
+                            @Model.ProgressBarSettings.ProgressStart
+                        </div>
+                        @{
+                            var progressMaxValue = Model.ProgressBarSettings.ProgressEnd - Model.ProgressBarSettings.ProgressStart;
+                        }
+                        <div class="col-10 align-self-center text-center">
+                            <progress value="@Model.ProgressBarSettings.UserAmount" max="@progressMaxValue" style="--value: @Model.ProgressBarSettings.UserAmount; --max: @progressMaxValue;"></progress>
+                        </div>
+                        <div class="col-1 text-dark text-center align-self-center h4">
+                            @Model.ProgressBarSettings.ProgressEnd
+                        </div>
+                    </div>
+                </div>
+            }
+
+
         </div>
     </footer>
 
@@ -342,11 +357,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
 
+    <script src="https://cdn.tiny.cloud/1/zax6pbh3xd7v8fm39f9ehvlzd88h6i2upqoyom0yb0rzheob/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea#tiny',
+            plugins: [
+                'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'export',
+                'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+                'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | a11ycheck casechange blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify |' +
+                'bullist numlist checklist outdent indent | removeformat | code table help'
+        })
+    </script>
+
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <script type="text/javascript">
         $(function () {
             bookPage.init($('.book-page'));
             borrowBook.init($('.borrowed-page'));
+            userFeedback.init($('.user-feedback-page'));
+            editDocumentPage.init($('.edit-document-page'));
+            addDocumentPage.init($('.add-document-page'));
         });
     </script>
 

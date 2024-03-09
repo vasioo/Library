@@ -7,7 +7,16 @@
 @section Scripts{
     <script src="@Url.Content("~/library/js/customJS/authPage.js")" type="text/javascript" asp-append-version="true"></script>
 }
+@if (User.Identity.IsAuthenticated)
+{
+    <script>
+        var currentURL = window.location.href;
 
+        var baseURL = currentURL.split('/')[0] + '//' + currentURL.split('/')[2];
+
+        window.location.href = baseURL;
+    </script>
+}
 <div class="body-under-container">
     <div class="wrapper">
         <span class="bg-animate"></span>

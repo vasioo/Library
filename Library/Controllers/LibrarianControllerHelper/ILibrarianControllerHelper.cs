@@ -24,5 +24,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
         Task<bool> LeaseBookOrNotHelper(Guid userLeasedId, bool lease);
         Task<bool> StopLeasingHelper(Guid userLeasedId);
         Task<bool> DeleteLeasedEntityHelper(Guid id);
+        Task<bool> SaveDocInformation(Document doc, string fileName);
+        Task<Document> EditDocHelper(Guid id);
+        Task<bool> EditDocPostHelper(Document doc, string blogImage);
+        Task<string> DeleteDocPost(Guid id);
     }
 }

@@ -149,15 +149,13 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
+                        icon: 'info',
+                        title: 'Потвърждение',
                         text: response.message,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        showConfirmButton: false
-                    }).then(function () {
-                        window.location.href = '/';
+                        showConfirmButton: false,
+                        allowOutsideClick: false
                     });
+                    
                 } else {
                     if (response.hasOwnProperty('usernameRelated') && response.usernameRelated === true) {
                         var usernameInput = $('#RegisterUsername');

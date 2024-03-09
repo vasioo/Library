@@ -12,17 +12,16 @@ namespace Library.DataAccess
         public DataContext(DbContextOptions<DataContext> options, bool seedDb = true)
             : base(options)
         {
-            this.seedDb = seedDb;
+            this.seedDb = seedDb; 
         }
 
-        public DbSet<Book> Books{ get; set; }
+        public DbSet<Book> Books { get; set; }
         public DbSet<FavouriteBooks> FavouriteBooks { get; set; }
         public DbSet<UserLeasedBookMappingTable> UserLeasedBooks { get; set; }
         public DbSet<BookCategory> Categories { get; set; }
         public DbSet<LibrarianReport> Reports { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
         public DbSet<BookSubject> BookSubjects { get; set; }
-        public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<Document> Documents { get; set; }
         public DbSet<Membership> Memberships { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,8 +31,9 @@ namespace Library.DataAccess
                 modelBuilder.Entity<IdentityRole>().HasData(
                      new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
                      new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" },
-                     new IdentityRole { Id = "3", Name = "Worker", NormalizedName = "WORKER" }
-                 );
+                     new IdentityRole { Id = "3", Name = "Worker", NormalizedName = "WORKER" },
+                     new IdentityRole { Id = "4", Name = "SuperAdmin", NormalizedName = "SUPERADMIN" }
+                );
             }
             modelBuilder.Entity<Book>().Navigation(e => e.Genre).AutoInclude();
             modelBuilder.Entity<Book>().Navigation(e => e.NeededMembership).AutoInclude();
@@ -52,7 +52,7 @@ namespace Library.DataAccess
                 .WithMany()
                 .HasForeignKey(fb => fb.BookId);
 
-         
+
 
             modelBuilder.Entity<BookCategory>()
             .HasIndex(ci => new { ci.CategoryName })

@@ -40,5 +40,10 @@ namespace Library.Services.Services
 
             return membership;
         }
+
+        public Membership GetMembershipByPoints(int points)
+        {
+            return _context.Memberships.Where(x => x.StartingNeededAmountOfPoints <= points && x.EndAmountOfPoints >= points).FirstOrDefault();
+        }
     }
 }

@@ -29,7 +29,6 @@
         }
     }
 
-
     function resizeImage(image, maxSize, callback) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -58,8 +57,6 @@
 
         callback(resizedDataUrl);
     }
-
-
 
     function getImageSizeInBytes(dataUrl) {
         const base64String = dataUrl.split(',')[1],
@@ -100,3 +97,20 @@
     };
 
 })();
+
+$('.image-upload').change(function (event) {
+    const $input = $(this),
+        $uploadedImage = $input.parent().find('.uploaded-image'),
+        file = event.target.files[0];
+    commonFuncs.validateAndResizeImage(file, function (isValid, imageData) {
+        if (isValid) {
+            $uploadedImage.attr('src', imageData);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Image Validation Failed',
+                text: 'Error details: ' + imageData
+            });
+        }
+    });
+});

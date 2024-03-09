@@ -1,5 +1,6 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
+using Library.Models.DTO;
 
 namespace Library.Models.ViewModels
 {
@@ -15,5 +16,7 @@ namespace Library.Models.ViewModels
         public bool HasUserBorrowedIt { get; set; }
         public bool IsDisabled { get; set; }
         public bool IsWaiting { get; set; } = false;
+
+        public ProgressBarSettings ProgressBarSettings { get; set; } = new ProgressBarSettings();
     }
 }

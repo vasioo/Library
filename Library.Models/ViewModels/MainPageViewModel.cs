@@ -1,9 +1,5 @@
 ﻿using Library.Models.BaseModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Library.Models.DTO;
 
 namespace Library.Models.ViewModels
 {
@@ -11,5 +7,6 @@ namespace Library.Models.ViewModels
     {
         public IQueryable<Book> RecommendedBooks { get; set; } = Enumerable.Empty<Book>().AsQueryable();
         public IQueryable<Book> BestSellers { get; set; } = Enumerable.Empty<Book>().AsQueryable();
+        public ProgressBarSettings ProgressBarSettings { get; set; } = new ProgressBarSettings();
     }
 }

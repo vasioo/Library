@@ -21,6 +21,6 @@ namespace Library.Services.Interfaces
         IQueryable<ApplicationUser> IQueryableGetUsersThatAreWorkers();
         Task<bool> SaveImages(List<Photo> images);
         Task<bool> SaveImage(Photo image);
-        Task<bool> DeleteImage(Photo image);
+        Task<bool> DeleteImage(string imageId);
     }
 }
