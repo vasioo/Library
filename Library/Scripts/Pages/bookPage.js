@@ -38,23 +38,30 @@
                 data: { isbn: book },
                 dataType: 'json',
                 success: function (response) {
-                    if (response.status === true) {
+                    if (response.status) {
                         Swal.fire({
-                            icon: 'success',
-                            title: "Ще бъдете прехвърлени до 5 сек.",
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
+                            title: "Невероятно!",
+                            text: "Вие първи четете тази книга, за което получихте 5 точки!",
+                            icon: "success",
+                            showCancelButton: false,
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "Супер"
+                        }).then((result) => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: "Ще бъдете прехвърлени до 5 секунди да четете.",
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                }
+                            });
+                            setTimeout(function () {
+                                window.location.href = response.message;
+                            }, 300);
                         });
-                        setTimeout(function () {
-                            window.location.href = response.message;
-                        }, 300);
-
                     } else {
-                        // Handle failure
                         Swal.fire({
                             icon: 'error',
                             title: response.message,
@@ -68,11 +75,10 @@
                     }
                 },
                 error: function (error) {
-                    // Handle AJAX request failure
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
+                        title: 'УПС...',
+                        text: 'Възникна грешка!',
                     });
                     console.error('AJAX request failed:', error);
                 }
@@ -97,14 +103,14 @@
                     bookId: bookId
                 },
                 success: function (response) {
-                    if (response.success) {
-                        swal({
+                    if (response.status) {
+                        Swal.fire({
                             title: 'Успех!',
                             text: response.message,
                             icon: 'success'
                         });
                     } else {
-                        swal({
+                        Swal.fire({
                             title: 'Грешка!',
                             text: response.message,
                             icon: 'error'
@@ -112,7 +118,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    swal({
+                    Swal.fire({
                         title: 'Грешка!',
                         text: 'Възникна грешка докато се публикуваха данните: ' + error,
                         icon: 'error'
@@ -121,11 +127,12 @@
             });
         }
         $('.rate input[type="radio"]').change(function () {
-            var stars = $(this).val(); 
+            var stars = $(this).val();
             var bookId = $(this).closest('.rate').data('book-id');
 
             sendRatingData(stars, bookId);
         });
+
     }
     return {
         init

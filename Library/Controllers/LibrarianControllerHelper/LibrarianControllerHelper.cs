@@ -405,6 +405,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
                         if (entity.Book.AmountOfBooks > 0)
                         {
                             var user = entity.User;
+
+                            var membershipCount = _membershipService.IQueryableGetAllAsync()
+                                .Where(x => x.StartingNeededAmountOfPoints <= user.Points).Count();
+
+                            user.Points += membershipCount*5;
                             var emailBody = $@"
                          <html>
                            <body>
@@ -416,6 +421,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
                                </div>
                                <br/>
                                <hr/>
+                              <div style='text-align: center; font-size: 15px; font-weight: bold; margin-top: 20px; text-decoration:none; color: #d4af37;'>
+                                   Вие получихте {membershipCount*5} точки, за тази книга
+                               </div>
                                <br/>
                                <div style='background:#ffffff;background-color:#ffffff;margin:0px auto;font-family:Arial,sans-serif;max-width:864px'>
                                    <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#ffffff;background-color:#ffffff;width:100%;font-family:Arial,sans-serif' width='100%' bgcolor='#ffffff'>
@@ -549,6 +557,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
                             entity.Approved = true;
                             entity.Book.AmountOfBooks--;
                             await _userLeasedBookService.UpdateAsync(entity);
+                            await _userManager.UpdateAsync(user);
+                        }
+                        else
+                        {
+                            return false;
                         }
                     }
                 }

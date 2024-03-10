@@ -23,6 +23,7 @@ namespace Library.DataAccess
         public DbSet<BookSubject> BookSubjects { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<Membership> Memberships { get; set; }
+        public DbSet<StarRating> StarRatings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +41,8 @@ namespace Library.DataAccess
             modelBuilder.Entity<BookSubject>().Navigation(e => e.BookCategories).AutoInclude();
             modelBuilder.Entity<UserLeasedBookMappingTable>().Navigation(e => e.Book).AutoInclude();
             modelBuilder.Entity<UserLeasedBookMappingTable>().Navigation(e => e.User).AutoInclude();
+            modelBuilder.Entity<StarRating>().Navigation(e => e.User).AutoInclude();
+            modelBuilder.Entity<StarRating>().Navigation(e => e.Book).AutoInclude();
             modelBuilder.Entity<FavouriteBooks>()
                 .HasKey(fb => new { fb.UserId, fb.BookId });
             modelBuilder.Entity<FavouriteBooks>()

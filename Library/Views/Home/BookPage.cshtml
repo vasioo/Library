@@ -86,42 +86,29 @@
         padding: 0 10px;
     }
 
-        .rate:not(:checked) > input {
-            position: absolute;
-            top: -9999px;
+        .rate input[type="radio"] {
+            display: none;
         }
 
-        .rate:not(:checked) > label {
+        .rate label {
             float: right;
-            width: 1em;
-            overflow: hidden;
-            white-space: nowrap;
             cursor: pointer;
-            font-size: 30px;
-            color: #ccc;
         }
 
-            .rate:not(:checked) > label:before {
+            .rate label .star-icon::before {
                 content: '★ ';
+                font-size: 30px;
+                color: #ccc;
             }
 
-        .rate > input:checked ~ label {
+        .rate input[type="radio"]:checked + label .star-icon::before {
             color: #ffc700;
         }
 
-        .rate:not(:checked) > label:hover,
-        .rate:not(:checked) > label:hover ~ label {
+        .rate label:hover .star-icon::before,
+        .rate label:hover ~ label .star-icon::before {
             color: #deb217;
         }
-
-        .rate > input:checked + label:hover,
-        .rate > input:checked + label:hover ~ label,
-        .rate > input:checked ~ label:hover,
-        .rate > input:checked ~ label:hover ~ label,
-        .rate > label:hover ~ input:checked ~ label {
-            color: #c59b08;
-        }
-
 </style>
 <div class="book-page ">
     <div class="container">
@@ -149,16 +136,11 @@
                     </div>
                     <div class="col">
                         <div class="rate p-0 m-0" data-book-id="@Model.Book.Id">
-                            <input type="radio" id="star5" name="rate" value="5" />
-                            <label for="star5" title="text">5 stars</label>
-                            <input type="radio" id="star4" name="rate" value="4" />
-                            <label for="star4" title="text">4 stars</label>
-                            <input type="radio" id="star3" name="rate" value="3" />
-                            <label for="star3" title="text">3 stars</label>
-                            <input type="radio" id="star2" name="rate" value="2" />
-                            <label for="star2" title="text">2 stars</label>
-                            <input type="radio" id="star1" name="rate" value="1" />
-                            <label for="star1" title="text">1 star</label>
+                            @for (int i = 5; i >=1; i--)
+                            {
+                                <input type="radio" id="star@(i)" name="rate" value="@i" @(Model.StarRatingAmount >= i ? "checked" : "") />
+                                <label for="star@(i)" title="text"><span class="star-icon"></span></label>
+                            }
                         </div>
                     </div>
                 </div>
@@ -195,7 +177,7 @@
                                         if (Model.IsWaiting)
                                         {
                                             <div class="d-flex">
-                                                <a  class="btn btn-warning col fs-5 disabled" >Изчакайте потвърждение</a>
+                                                <a class="btn btn-warning col fs-5 disabled">Изчакайте потвърждение</a>
                                             </div>
                                         }
                                         else

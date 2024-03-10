@@ -18,5 +18,6 @@ namespace Library.Models.ViewModels
         public bool IsWaiting { get; set; } = false;
 
         public ProgressBarSettings ProgressBarSettings { get; set; } = new ProgressBarSettings();
+        public int StarRatingAmount{ get; set; }
     }
 }

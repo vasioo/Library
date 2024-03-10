@@ -40,7 +40,11 @@
                 url: "/Librarian/LeaseBookOrNot",
                 data: { userLeasedId: userLeasedId, lease: true },
                 success: function (response) {
-                    location.reload();
+                    if (response.status) {
+                        Swal.fire("Успех", response.message, "success");
+                    } else {
+                        Swal.fire("Грешка", response.message, "error");
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);

@@ -19,5 +19,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         Task<bool> SubmitUserFeedbackHelper(UserFeedbackDTO userFeedback, ApplicationUser user);
         ProgressBarSettings ProgressBarInformationFiller(ApplicationUser user);
         Task<Document> GetDocumentPageEntity(Guid id);
+        Task<string> UpdateUsersReadAttribute(ApplicationUser user, string isbn);
+        Task UpdateBookLink(string isbn,string link);
     }
 }

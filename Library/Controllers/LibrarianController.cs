@@ -212,7 +212,7 @@ namespace Library.Web.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, Message = "Възникна грешка." });
+                    return Json(new { status = false, Message = "Всички книги са отдадени." });
                 }
             }
             catch (Exception)

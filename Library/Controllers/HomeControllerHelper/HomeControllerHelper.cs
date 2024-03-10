@@ -3,6 +3,8 @@ using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
+using Library.Services.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Library.Web.Controllers.HomeControllerHelper
 {
@@ -92,6 +94,18 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             viewModel.User = user;
             viewModel.Book = await _bookService.GetByIdAsync(bookId);
+            var starRating = _starRatingService.IQueryableGetAllAsync()
+                .Where(x => x.User == user && x.Book == viewModel.Book)
+                .FirstOrDefault();
+            if (starRating!=null)
+            {
+                viewModel.StarRatingAmount = starRating.StarCount;
+
+            }
+            else
+            {
+                viewModel.StarRatingAmount = 0;
+            }
             if (user != null)
             {
                 var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
@@ -170,6 +184,35 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
         }
 
+        public async Task<string> UpdateUsersReadAttribute(ApplicationUser user, string isbn)
+        {
+            try
+            {
+                var book = _bookService.IQueryableGetAllAsync().Where(x => x.ISBN == isbn).FirstOrDefault();
+                var mappingElement = _userLeasedBookService.IQueryableGetAllAsync().Where(x=>x.Book.Id==book!.Id&&x.User==user).FirstOrDefault();
+                if (!mappingElement!.IsRead)
+                {
+                    mappingElement.IsRead = true;
+                }
+                if (!String.IsNullOrEmpty(book!.BookPreviewLink))
+                {
+                    return book.BookPreviewLink;
+                }
+                return "";
+            }
+            catch (Exception)
+            {
+                return "";
+                throw;
+            }
+        }
+
+        public async Task UpdateBookLink(string isbn,string link)
+        {
+            var book = _bookService.IQueryableGetAllAsync().Where(x => x.ISBN == isbn).FirstOrDefault();
+            book!.BookPreviewLink = link;
+            await _bookService.UpdateAsync(book);
+        }
         #endregion
 
         #region BorrowedHelper
@@ -268,11 +311,20 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             try
             {
-                var entity = new StarRating();
-                entity.StarCount = stars;
-                entity.User = user;
-                entity.Book = await _bookService.GetByIdAsync(bookId);
-                await _starRatingService.AddAsync(entity);
+                var existingItem = _starRatingService.IQueryableGetAllAsync().Where(x=>x.User.Id==user.Id&&x.Book.Id==bookId).FirstOrDefault();
+                if (existingItem!=null)
+                {
+                    existingItem.StarCount = stars;
+                    await _starRatingService.UpdateAsync(existingItem);
+                }
+                else
+                {
+                    var entity = new StarRating();
+                    entity.StarCount = stars;
+                    entity.User = user;
+                    entity.Book = await _bookService.GetByIdAsync(bookId);
+                    await _starRatingService.AddAsync(entity);
+                }
             }
             catch (Exception)
             {

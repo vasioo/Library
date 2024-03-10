@@ -18,6 +18,7 @@ namespace Library.Models.BaseModels
         public string Language { get; set; } = "";
         public string ISBN { get; set; } = "";
         public int AmountOfBooks { get; set; }
+        public string BookPreviewLink { get; set; } = "";
         public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
     }
 }

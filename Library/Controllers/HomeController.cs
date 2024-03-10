@@ -1,7 +1,6 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models;
 using Library.Models.DTO;
-using Library.Models.UserModels.Interfaces;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -93,7 +92,6 @@ namespace Library.Controllers
 
         [HttpPost]
         [Authorize]
-
         public async Task<JsonResult> BorrowBook(Guid bookId)
         {
             try
@@ -121,7 +119,6 @@ namespace Library.Controllers
 
         [HttpPost]
         [Authorize]
-
         public async Task<JsonResult> UnborrowBook(Guid bookId)
         {
             try
@@ -147,7 +144,6 @@ namespace Library.Controllers
 
         [HttpPost]
         [Authorize]
-
         public async Task<JsonResult> ReadBook(string isbn)
         {
             string apiUrl = $"{OpenLibraryApiBaseUrl}?bibkeys=ISBN:{isbn}&format=json&jscmd=viewapi";
@@ -155,40 +151,60 @@ namespace Library.Controllers
             {
                 if (isbn != null && isbn != "")
                 {
-                    using (var httpClient = new HttpClient())
+                    var username = HttpContext.User?.Identity?.Name ?? "";
+                    var user = await _userManager.FindByNameAsync(username);
+                    if (user != null)
                     {
-                        HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
-
-                        if (response.IsSuccessStatusCode)
+                        var isNew = await _helper.UpdateUsersReadAttribute(user, isbn);
+                        if (!String.IsNullOrEmpty(isNew))
                         {
-                            string jsonResponse = await response.Content.ReadAsStringAsync();
-                            var jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-
-                            if (jsonObject.ContainsKey($"ISBN:{isbn}"))
+                            return Json(new
                             {
-                                var bookData = jsonObject[$"ISBN:{isbn}"];
-
-                                if (bookData.preview_url != null)
-                                {
-                                    return Json(new
-                                    {
-                                        status = true,
-                                        Message = bookData.preview_url.ToString()
-                                    });
-                                }
-                                else
-                                {
-                                    return Json(new
-                                    {
-                                        status = false,
-                                        Message = "Няма такава книга в базата данни на openlibrary.com!"
-                                    });
-                                }
-                            }
+                                status = false,
+                                Message = isNew
+                            });
                         }
                         else
                         {
-                            return Json(new { status = false, Message = "Няма такава книга в базата данни на openlibrary.com!" });
+                            using (var httpClient = new HttpClient())
+                            {
+                                HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                                    var jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+
+                                    if (jsonObject.ContainsKey($"ISBN:{isbn}"))
+                                    {
+                                        var bookData = jsonObject[$"ISBN:{isbn}"];
+
+                                        if (bookData.preview_url != null)
+                                        {
+                                            await _helper.UpdateBookLink(isbn, bookData.preview_url.ToString());
+                                            user.Points += 5;
+                                            await _userManager.UpdateAsync(user);
+                                            return Json(new
+                                            {
+                                                status = true,
+                                                Message = bookData.preview_url.ToString(),
+                                            });
+                                        }
+                                        else
+                                        {
+                                            return Json(new
+                                            {
+                                                status = false,
+                                                Message = "Няма такава книга в базата данни на openlibrary.com!"
+                                            });
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    return Json(new { status = false, Message = "Няма такава книга в базата данни на openlibrary.com!" });
+                                }
+                            }
                         }
                     }
                 }
@@ -203,7 +219,6 @@ namespace Library.Controllers
 
         [HttpPost]
         [Authorize]
-
         public async Task<JsonResult> RateBook(int stars, Guid bookId)
         {
             try
@@ -266,11 +281,11 @@ namespace Library.Controllers
             }
             return View($"~/Views/Home/Search.cshtml", viewModel);
         }
-        
+
         public async Task<IActionResult> DocumentPage(Guid id)
         {
             var model = await _helper.GetDocumentPageEntity(id);
-            return View("~/Views/Home/DocumentPage.cshtml",model);
+            return View("~/Views/Home/DocumentPage.cshtml", model);
         }
         #endregion
 
