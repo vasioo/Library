@@ -152,22 +152,27 @@ namespace Library.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login(IdentityModel model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.LoginEmail, model.LoginPassword, true, lockoutOnFailure: false);
+            var user =await _userManager.FindByEmailAsync(model.LoginEmail);
+            if (user==null)
+            {
+                return Json(new { success = false, message = "Невалиден опит. Грешка в данните." });
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, model.LoginPassword, true,false);
             if (result.Succeeded)
             {
-                return Json(new { success = true, message = "User logged in." });
+                return Json(new { success = true, message = "Потребителя влезе в приложението." });
             }
             if (result.RequiresTwoFactor)
             {
-                return Json(new { success = false, message = "2FA Required.", redirectPage = "./LoginWith2fa", rememberMe = true });
+                return Json(new { success = false, message = "Нужна двуфактурна автентикация.", redirectPage = "./LoginWith2fa", rememberMe = true });
             }
             if (result.IsLockedOut)
             {
-                return Json(new { success = false, message = "User account locked out." });
+                return Json(new { success = false, message = "Аккаунта е заключен." });
             }
             else
             {
-                return Json(new { success = false, message = "Invalid Login Attempt." });
+                return Json(new { success = false, message = "Невалиден опит. Грешка в данните." });
             }
         }
 
@@ -193,23 +198,19 @@ namespace Library.Web.Controllers
                 user.Email = model.RegisterEmail;
                 var result = await _userManager.CreateAsync(user, model.RegisterPassword);
 
+
                 if (result.Succeeded)
                 {
-
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        string returnUrl = "";
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-                        var emailBody = $@"
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    string returnUrl = "";
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        protocol: Request.Scheme);
+                    var emailBody = $@"
                          <html>
                            <body>
                                <div style='text-align: center;'>
@@ -225,17 +226,16 @@ namespace Library.Web.Controllers
                             </body>
                         </html>";
 
-                        _emailSenderService.SendEmail(model.RegisterEmail, emailBody, "Потвърдете акаунта си");
+                    _emailSenderService.SendEmail(model.RegisterEmail, emailBody, "Потвърдете акаунта си");
 
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            return Json(new { success = true, message = "Проверете имейла си за потвърждение!" });
-                        }
-                        else
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return Json(new { success = true, message = "Успешно създаване на акаунт." });
-                        }
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return Json(new { success = true, message = "Проверете имейла си за потвърждение!" });
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return Json(new { success = true, message = "Успешно създаване на акаунт." });
                     }
 
                 }

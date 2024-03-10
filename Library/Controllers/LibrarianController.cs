@@ -406,18 +406,11 @@ namespace Library.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> EditDocumentPost(Document doc, IFormFile blogImage)
+        public async Task<JsonResult> EditDocumentPost(Document doc, string docImage)
         {
             try
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await blogImage.CopyToAsync(memoryStream);
-                    var base64String = Convert.ToBase64String(memoryStream.ToArray());
-
-                    var dataUrl = $"data:{blogImage.ContentType};base64,{base64String}";
-                    await _helper.EditDocPostHelper(doc, dataUrl);
-                }
+                await _helper.EditDocPostHelper(doc, docImage);
 
             }
             catch (Exception ex)
