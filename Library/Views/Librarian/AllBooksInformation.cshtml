@@ -30,9 +30,9 @@
 <div class="all-books">
     <div class="pt-3">
         <div class="row">
-            <div class="col-1"></div>
-            <h1 class="text-center py-2 col-10">Управление на книги</h1>
-            <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+            <div class="col-2 col-md-1"></div>
+            <div class="text-center py-2 display-4 col-8 col-md-10">Управление на книги</div>
+            <a class="col-2 col-md-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
             <hr class="py-1" style="color:#00d1d1" />
         </div>
         <div class="d-flex justify-content-around pt-3">
@@ -42,7 +42,7 @@
         </div>
 
         <div id="book-filtering" class="d-flex py-5 justify-content-center">
-            <form asp-action="AllBooksInformation" method="get" class="row col-6">
+            <form asp-action="AllBooksInformation" method="get" class="row col-12 col-md-10 col-lg-6">
                 <div class="form-actions no-color">
                     <div class="pr-2 h3 p-0 m-0 row align-items-center justify-content-center pb-2" style="font-weight: 700">
                         Търси книга :
@@ -77,28 +77,58 @@
                                 <td class="fs-5">@book.Title</td>
                                 <td class="fs-5">@book.Author</td>
                                 <td class="fs-5">@book.DateOfBookCreation.ToString("yyyy-MM-dd")</td>
-                                <td class="d-flex justify-content-around">
-                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning fs-5 col-5" onclick="editBook(@book.Id)">Редактирай</a>
-                                    <a class="remove-book btn btn-danger col-5 fs-5" id="@book.Id">Изтрий</a>
+                                <td class="col text-center align-self-center">
+                                    <a href="@Url.Action("EditBookInformation", "Librarian", new { bookId=book.Id })" class="btn btn-warning fs-5 col-12 col-md-5 " onclick="editBook(@book.Id)">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+                                    <a class="remove-book btn btn-danger col-12 col-md-5 pt-2 fs-5" id="@book.Id">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
 
-                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                <div class="row justify-content-between">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <div class="col">
+                            <a asp-action="AllBooksInformation"
+                               asp-route-pageNumber="@(Model.PageIndex - 1)"
+                               class="btn text-start fs-5 btn-primary ">
+                                Предишна стр.
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col">
+                            <a class="btn text-start fs-5 btn-secondary disabled">
+                                Предишна стр.
+                            </a>
+                        </div>
+                    }
+                    @if (Model.HasNextPage)
+                    {
+                        <div class="col text-end">
+                            <a asp-action="AllBooksInformation"
+                               asp-route-pageNumber="@(Model.PageIndex + 1)"
+                               class="btn text-end fs-5 btn-primary">
+                                Следваща стр.
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col text-end">
+                            <a class="btn text-end fs-5 btn-secondary disabled">
+                                Следваща стр.
+                            </a>
+                        </div>
+                    }
 
-                <a asp-action="ManageUsers"
-                   asp-route-pageNumber="@(Model.PageIndex - 1)"
-                   class="btn btn-default @prevDisabled">
-                    Previous
-                </a>
-                <a asp-action="ManageUsers"
-                   asp-route-pageNumber="@(Model.PageIndex + 1)"
-                   class="btn btn-default @nextDisabled">
-                    Next
-                </a>
+                </div>
             }
             else
             {

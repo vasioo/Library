@@ -3,8 +3,17 @@
     z-index: 1;
     cursor: pointer;
     height: 100vh;
-    width:8vw;
-    position:fixed;
+    width: 8vw;
+    position: absolute;
+    left: 90%;
+    box-sizing: border-box;
+    font-size: 20px;
+    text-align: left;
+}
+@media (max-width: 540px) {
+    #book-main-page-libarary-img {
+        left: 80%;
+    }
 }
 
 .menu-item, .menu-open-button {
@@ -70,13 +79,6 @@ main.menu-opened {
     filter:blur(1px);
 }
 
-.menu {
-    position: absolute;
-    left: 90%;
-    box-sizing: border-box;
-    font-size: 20px;
-    text-align: left;
-}
 
 .menu-item:hover {
     background: white;

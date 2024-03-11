@@ -16,6 +16,7 @@ namespace Library.Models.ViewModels
         public bool HasUserBorrowedIt { get; set; }
         public bool IsDisabled { get; set; }
         public bool IsWaiting { get; set; } = false;
+        public bool UserIsAuthorized { get; set; } = false;
 
         public ProgressBarSettings ProgressBarSettings { get; set; } = new ProgressBarSettings();
         public int StarRatingAmount{ get; set; }

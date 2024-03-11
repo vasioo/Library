@@ -126,13 +126,13 @@
                 }
             });
         }
+
         $('.rate input[type="radio"]').change(function () {
             var stars = $(this).val();
             var bookId = $(this).closest('.rate').data('book-id');
 
             sendRatingData(stars, bookId);
         });
-
     }
     return {
         init

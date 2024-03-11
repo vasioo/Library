@@ -20,3 +20,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+.swal2-container{
+    z-index:2000;
+}
+.mobile-view-svg{
+    width:1px;
+    height:1px;
+}

@@ -101,7 +101,7 @@
                 color: #ccc;
             }
 
-        .rate input[type="radio"]:checked + label .star-icon::before {
+        .rate input[type="radio"]:checked ~ label .star-icon::before {
             color: #ffc700;
         }
 
@@ -136,9 +136,9 @@
                     </div>
                     <div class="col">
                         <div class="rate p-0 m-0" data-book-id="@Model.Book.Id">
-                            @for (int i = 5; i >=1; i--)
+                            @for (int i = 5; i >= 1; i--)
                             {
-                                <input type="radio" id="star@(i)" name="rate" value="@i" @(Model.StarRatingAmount >= i ? "checked" : "") />
+                                <input type="radio" id="star@(i)" name="rate" value="@i" @(Model.StarRatingAmount == i ? "checked" : "") />
                                 <label for="star@(i)" title="text"><span class="star-icon"></span></label>
                             }
                         </div>
@@ -161,18 +161,17 @@
                 <div class="row btns-for-borrowing">
                     @if (User!.Identity!.IsAuthenticated)
                     {
-                        @if (!Model.HasUserBorrowedIt)
+                        if (Model.UserIsAuthorized)
                         {
-                            <a class="btn btn-success borrow-book-btn" id="@book.Id">Заяви книгата</a>
-                        }
-                        else
-                        {
-                            if (!Model.IsDisabled)
+                            @if (!Model.HasUserBorrowedIt)
                             {
-                                @if (Model.Book.ISBN != null)
+                                <a class="btn btn-success borrow-book-btn" id="@book.Id">Заяви книгата</a>
+                            }
+                            else
+                            {
+                                if (!Model.IsDisabled)
                                 {
-
-                                    if (Model.Book.ISBN != "")
+                                    @if (String.IsNullOrEmpty(Model.Book.ISBN))
                                     {
                                         if (Model.IsWaiting)
                                         {
@@ -188,11 +187,15 @@
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    <a class="btn btn-secondary disabled" disabled>Вашият период на четене изтече</a>
+                                }
                             }
-                            else
-                            {
-                                <a class="btn btn-secondary disabled" disabled>Вашият период на четене изтече</a>
-                            }
+                        }
+                        else
+                        {
+                            <a class="btn btn-secondary disabled">Нямате нужното ниво да четете книгата</a>
                         }
                     }
                     else

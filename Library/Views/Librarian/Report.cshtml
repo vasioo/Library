@@ -23,9 +23,9 @@
 @model ReportViewModel
 <div class="report-page-librarian">
     <div class="row py-4">
-        <div class="col-1"></div>
-        <h1 class="text-center py-2 col-10">Отчети на приложението</h1>
-        <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+        <div class="col-2 col-md-1"></div>
+        <div class="text-center py-2 display-4 col-8 col-md-10">Отчети на приложението</div>
+        <a class="col-2 col-md-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
         <hr class="py-1" style="color:#00d1d1" />
     </div>
     <div class="container">
@@ -52,72 +52,73 @@
         <hr />
         <div class="row justify-content-center">
             <div class="text-center pb-3 h2" style="font-weight:700">Най-отдаваната книга&nbsp:&nbsp</div>
-            @if (Model.MostLeasedBook != null)
-            {
-                if (Model.MostLeasedBook.Id != Guid.Empty)
-                {
-                    var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.MostLeasedBook.Id}.png";
-                    <div class="form-group row justify-content-center">
-
-                        <div class="col-5 py-3 fs-5">
-                            <select class="form-control fs-5" id="bookSelect">
-                                <option value="Today">Днес</option>
-                                <option value="Yesterday">Вчера</option>
-                                <option value="Week">Тази седмица</option>
-                                <option value="Month">Този месец</option>
-                                <option value="Year">Тази година</option>
-                                <option value="Personalized">Персонализирано(натисни)</option>
-                            </select>
-                            <select class="form-control fs-5" id="amountOfBookItems">
-                                <option value="1">1</option>
-                                <option value="3">3</option>
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
-                            </select>
-                            <div id="book-personalized-row" style="display:none !important">
-                                <div class="d-flex justify-content-around">
-                                    <div class="d-flex flex-column">
-                                        <label>От:</label>
-                                        <input type="datetime-local" class="form-control" id="from-date-book" />
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <label>До:</label>
-                                        <input type="datetime-local" class="form-control" id="to-date-book" />
-                                    </div>
-                                    <div class="col align-self-end text-end">
-                                        <a class="btn btn-success col-12" id="personalized-book-time-btn">Търси</a>
-                                    </div>
-                                </div>
+            <div class="form-group row justify-content-center">
+                <div class="col-12 col-md-7 col-lg-6 py-3 fs-5">
+                    <select class="form-control fs-5" id="bookSelect">
+                        <option value="Today">Днес</option>
+                        <option value="Yesterday">Вчера</option>
+                        <option value="Week">Тази седмица</option>
+                        <option value="Month">Този месец</option>
+                        <option value="Year">Тази година</option>
+                        <option value="Personalized">Персонализирано(натисни)</option>
+                    </select>
+                    <select class="form-control fs-5" id="amountOfBookItems">
+                        <option value="1">1</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                    <div id="book-personalized-row" style="display:none !important">
+                        <div class="d-flex justify-content-around">
+                            <div class="d-flex flex-column">
+                                <label>От:</label>
+                                <input type="datetime-local" class="form-control" id="from-date-book" />
+                            </div>
+                            <div class="d-flex flex-column">
+                                <label>До:</label>
+                                <input type="datetime-local" class="form-control" id="to-date-book" />
+                            </div>
+                            <div class="col align-self-end text-end">
+                                <a class="btn btn-success col-12" id="personalized-book-time-btn">Търси</a>
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex flex-column align-items-center" id="bookContainer">
+                </div>
+            </div>
+            <div class="d-flex flex-column align-items-center" id="bookContainer">
+                @if (Model.MostLeasedBook != null)
+                {
+                    if (Model.MostLeasedBook.Id != Guid.Empty)
+                    {
+                        var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.MostLeasedBook.Id}.png";
+
                         <a href="/Home/BookPage?bookId=@Model.MostLeasedBook.Id">
-                            <div class="d-flex justify-content-center align-items-center mb-2" style="height:30rem;width:30rem;border: 1px solid #ccc;">
-                                <img src="@imageUrl" style="max-width: 100%; max-height: 100%;">
+                            <div class="d-flex justify-content-center align-items-center mb-2" style="border: 1px solid #ccc; overflow: hidden;">
+                                <img src="@imageUrl" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                             </div>
                             <div class="h3 text-center py-3 text-dark">" @Model.MostLeasedBook.Name "</div>
                         </a>
-                    </div>
+
+                    }
+                    else
+                    {
+                        <div id="no-book-items-in-db" class="text-center text-center h2" style="color:red;">Няма данни в базата между тези дни!</div>
+                    }
                 }
                 else
                 {
                     <div id="no-book-items-in-db" class="text-center text-center h2" style="color:red;">Няма данни в базата между тези дни!</div>
                 }
-            }
-            else
-            {
-                <div id="no-book-items-in-db" class="text-center text-center h2" style="color:red;">Няма данни в базата между тези дни!</div>
-            }
+            </div>
+
         </div>
         <hr />
-
 
         <div class="row justify-content-center">
             <div class="h2 text-center pb-3" style="font-weight:700">Най-четени кагетории&nbsp;:&nbsp;</div>
             <div class="form-group row justify-content-center">
-                <div class="col-5 py-3 fs-5">
+                <div class="col-12 col-md-7 col-lg-6 py-3 fs-5">
                     <select class="form-control fs-5" id="genreSelect">
                         <option value="Today">Днес</option>
                         <option value="Yesterday">Вчера</option>
@@ -147,7 +148,6 @@
             <canvas id="genreChart" width="400" height="200"></canvas>
             <div id="no-chart-items-in-db" class="text-center text-center h2" style="color:red; display:none;">Няма данни в базата между тези дни!</div>
         </div>
-
         <div class="row"></div>
     </div>
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">

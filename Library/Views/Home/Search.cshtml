@@ -14,13 +14,13 @@
     }
 
         .searcher-catalog:hover {
-            text-decoration: underline;
-            text-decoration-color: #00D1D1;
+            text-decoration: underline !important;
+            text-decoration-color: #00D1D1 !important;
         }
 
         .searcher-catalog.active {
-            text-decoration: underline;
-            color: #00D1D1;
+            text-decoration: underline !important;
+            color: #00D1D1 !important;
         }
 
     .searcher-main-div-for-catalog {
@@ -92,6 +92,19 @@
         text-decoration: none;
     }
 
+    a {
+        text-decoration: none !important;
+        color: black !important;
+    }
+
+    .my-card {
+        padding: 1.5rem;
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .my-card:hover {
+            transform: scale(1.03);
+        }
 </style>
 @{
     string TruncateAndAppend(string content, int maxChars)
@@ -137,10 +150,10 @@
         </div>
         <div class="row pt-3">
             <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
-                <a class="btn @(Model.searchCategory != "Authors" && Model.searchCategory != "Subjects" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "", inputValue = Model.inputValue })">Книги</a>
+                <a class="btn @(Model.searchCategory != "Documents" && Model.searchCategory != "Subjects" ? "active" : "") searcher-catalog"     href="@Url.Action("Search", "Home", new { searchCategory = "", inputValue = Model.inputValue })">Книги</a>
             </div>
             <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
-                <a class="btn @(Model.searchCategory == "Authors" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Authors", inputValue = Model.inputValue })">Автори</a>
+                <a class="btn @(Model.searchCategory == "Documents" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Documents", inputValue = Model.inputValue })">Автори</a>
             </div>
             <div class="col col-lg-1 searcher-main-div-for-catalog text-center">
                 <a class="btn @(Model.searchCategory == "Subjects" ? "active" : "") searcher-catalog" href="@Url.Action("Search", "Home", new { searchCategory = "Subjects", inputValue = Model.inputValue })">Жанр</a>
@@ -158,7 +171,7 @@
             </form>
         </div>
         <div id="items-show-container" class="py-3">
-            @if (Model.searchCategory != "Authors" && Model.searchCategory != "Subjects")
+            @if (Model.searchCategory != "Documents" && Model.searchCategory != "Subjects")
             {
                 @foreach (var item in Model.Books)
                 {
@@ -183,12 +196,12 @@
                 }
             }
 
-            @if (Model.searchCategory == "Authors")
+            @if (Model.searchCategory == "Documents")
             {
                 if (User.IsInRole("Admin") || User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
                 {
                     <div class="row">
-                        <a class="col-12 btn btn-success fs-5" href="/Librarian/AddDocument">
+                        <a class="col-12 btn btn-success text-white fs-5" href="/Librarian/AddDocument">
                             Добави Документ
                         </a>
                     </div>
@@ -200,12 +213,12 @@
                     var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/main-image-for-document-{item.Id}.png";
                     <div class="row">
                         <div class="col-12">
-                            <div class="blog-card justify-content-between">
-                                <a href="/Home/DocumentPage?id=@item.Id" class="doc-item row align-items-center">
-                                    <div class="col-5">
+                            <div class="blog-card justify-content-between my-card">
+                                <a href="/Home/DocumentPage?id=@item.Id" class="doc-item col-11 row align-items-center">
+                                    <div class="col-3 text-center">
                                         <img src="@imageUrl" alt="Blog Image" class="img-fluid">
                                     </div>
-                                    <div class="col-7">
+                                    <div class="col-9">
                                         <div class="card-body">
                                             <h5 class="card-title">@item.Title</h5>
                                             <p class="card-date">@item.DateOfCreation</p>
@@ -222,7 +235,6 @@
                             </div>
                         </div>
                     </div>
-
                 }
             }
 
@@ -255,7 +267,7 @@
                     @for (int i = 1; i <= Model.TotalPages; i++)
                     {
                         <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                            <a class="page-link" href="@Url.Action("Search", "Home", new { searchCategory = Model.searchCategory, inputValue = Model.inputValue, page = i })">@i</a>
+                            <a class="page-link text-white" href="@Url.Action("Search", "Home", new { searchCategory = Model.searchCategory, inputValue = Model.inputValue, page = i })">@i</a>
                         </li>
                     }
                 </ul>

@@ -27,11 +27,10 @@
                 <a class="navbar-brand p-0 m-0 pb-1" asp-area="" asp-controller="Home" asp-action="MainPage">
                     <img src="~/images/litify-logo.png" style="width:65px" />
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="p-3 navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav align-items-center flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark h3" asp-area="" asp-controller="Librarian" asp-action="AllBooksInformation">Книги</a>
@@ -45,10 +44,17 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark h3" asp-area="" asp-controller="Librarian" asp-action="Report">Отчети</a>
                         </li>
+                        <li class="col text-end">
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Statistics">    
+                                <i class="fa-solid fa-lock fa-lg"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
+
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">

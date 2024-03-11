@@ -50,6 +50,7 @@ namespace Library.Web.Controllers.AdminControllerHelper
 
             return viewModel;
         }
+
         public async Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems)
         {
             return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate, endDate, selectedCountOfItems);

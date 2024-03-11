@@ -49,9 +49,9 @@
                             message.style.color = 'red';
                             fragment.appendChild(message);
                         }
-                        var container = document.getElementById('bookContainer');
-                        container.innerHTML = '';
-                        container.appendChild(fragment);
+                        var container = $('#bookContainer');
+                        container.empty();
+                        container.append(fragment);
                     } else {
                         console.error(response.Message);
                     }
@@ -180,7 +180,7 @@
             return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
         }
 
-        var isChartLoading = false; // Flag to indicate whether a chart is currently being loaded
+        var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
             if ($(this).val() === 'Personalized') {
@@ -266,9 +266,8 @@
             var startDateEntity = $('#from-date-genre').val();
             var endDateEntity = $('#to-date-genre').val();
 
-            // Check if a chart is currently being loaded
             if (!isChartLoading) {
-                isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                isChartLoading = true; 
 
                 $.ajax({
                     type: 'POST',
@@ -297,11 +296,11 @@
                             console.error(response.Message);
                         }
 
-                        isChartLoading = false; // Reset the flag after chart loading is complete
+                        isChartLoading = false; 
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
-                        isChartLoading = false; // Reset the flag in case of an error
+                        isChartLoading = false; 
                     }
                 });
             }

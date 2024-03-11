@@ -15,7 +15,7 @@
         #brw-coll:hover {
             box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
             background: chocolate;
-            color:#fff;
+            color: #fff;
         }
 
     .text p {
@@ -26,7 +26,6 @@
 
     .word {
         position: absolute;
-        width: 20rem;
         opacity: 0;
     }
 
@@ -65,14 +64,53 @@
         color: #666;
     }
 
+    #book-main-page-libarary-img {
+        width: 25rem;
+    }
+
+    @@media (max-width: 826px) {
+        #book-main-page-libarary-img {
+            width: 22rem;
+        }
+    }
+
+    @@media (max-width: 640px) {
+        #book-main-page-libarary-img {
+            width: 20rem;
+        }
+    }
+
+    @@media (max-width: 584px) {
+        #book-main-page-libarary-img {
+            width: 20rem;
+        }
+    }
+    #row-configurator-for-structuring-second-container{
+        display:none;
+    }
+
+    @@media (max-width: 992px) {
+        #row-configurator-for-structuring-second-container {
+            display: block;
+        }
+    }
+
+    #second-page-books-img{
+        width:17rem;
+    }
+    @@media(min-width:992px){
+        #second-page-books-img{
+            width:20rem;
+        }
+    }
 </style>
 <div class="main-page">
     <div id="container-1" class="container">
         <div class="row d-flex align-items-center">
-            <div class="col-6">
-                <div class="row">
+            <div class="col-12 col-sm-6 ">
+                <div class="row pt-5 mt-5">
                     <div class="typewriter">
-                        <div class="h2">Аудиокниги, Е-Книги и други четива от любимата Ви библиотека.</div>
+                        <div class="h2">Документи, Е-Книги и други четива от любимата Ви библиотека.</div>
                         <div class="h5">
                             Всичко от което се нуждаете са време и внимание.
                         </div>
@@ -82,20 +120,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <img src="~/images/main-page-main-photo.png" class="" style="width:400px;" />
+            <div class="col-12 col-sm-6 text-center">
+                <img src="~/images/main-page-main-photo.png" class="" id="book-main-page-libarary-img" />
             </div>
         </div>
     </div>
     <div id="container-2">
         <div class="container">
             <div class="row d-flex align-items-center mt-5">
-                <div class="col">
+                <div class="col-12 col-sm-6">
                     <div class="row">
                         <div class="text-container">
                             <div class="text">
                                 <p class="h1">
                                     <span class="static-word">Книгите са &#32;</span>
+                                    <br id="row-configurator-for-structuring-second-container"/>
                                     <span class="word" style="color: #FF5733;">знание.</span>
                                     <span class="word" style="color: #FFC300;">изобретение.</span>
                                     <span class="word" style="color: #C70039;">въображение.</span>
@@ -104,7 +143,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="pt-4">
+                        <div class="pt-4 mt-5 mt-lg-0">
                             <div class="col-12">
                                 <a class="btn" asp-controller="Home" asp-action="BookCollectionShower" id="brw-coll">
                                     <div class="h3">
@@ -115,9 +154,8 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col">
-                    <img src="~/images/main-page-secondary-photo.png" class="" style="width:300px;" />
+                <div class="col-12 col-sm-6 text-end text-lg-center">
+                    <img src="~/images/main-page-secondary-photo.png" id="second-page-books-img" />
                 </div>
             </div>
         </div>
@@ -126,7 +164,7 @@
     {
         <div id="container-3" class="container pt-5">
             <div class="row">
-                <div class="row scroller-title h3 justify-content-center">Препоръчани книги</div>
+                <div class="row scroller-title h1 justify-content-center">Препоръчани книги</div>
                 <hr />
                 @foreach (var book in Model.RecommendedBooks)
                 {
@@ -141,7 +179,7 @@
     {
         <div id="container-4" class="container pt-5">
             <div class="row">
-                <div class="row scroller-title h3 justify-content-center">Най-търсени</div>
+                <div class="row scroller-title h1 justify-content-center">Най-търсени</div>
                 <hr />
                 @foreach (var book in Model.BestSellers)
                 {

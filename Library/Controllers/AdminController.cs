@@ -1,4 +1,5 @@
 ﻿using Library.DataAccess.MainModels;
+using Library.Models.DTO;
 using Library.Models.Pagination;
 using Library.Web.Controllers.AdminControllerHelper;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +33,7 @@ namespace Library.Web.Controllers
         public async Task<IActionResult> EditInfo(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);
-            return View(ClientManagement("","All", 1));
+            return View(ClientManagement("", "All", 1));
         }
         #endregion
 
@@ -77,7 +78,7 @@ namespace Library.Web.Controllers
         public async Task<IActionResult> ClientManagement(string searchString, string roleFilter, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
-            ViewData["RoleFilter"] = roleFilter ?? "All"; 
+            ViewData["RoleFilter"] = roleFilter ?? "All";
 
             var users = _userManager.Users;
 
@@ -109,6 +110,24 @@ namespace Library.Web.Controllers
             return View("~/Views/Admin/ClientManagement.cshtml", paginatedList);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditInfo(EditInfoDTO userInfo)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(userInfo.Id);
+                if (user != null)
+                {
+                    user.Salary = userInfo.Salary;
+                    user.Position = userInfo.Position;
+                    await _userManager.UpdateAsync(user);
+                    return Json(new { status = true, message = "Данните бяха записани успешно!" });
+
+                }
+            }
+            return Json(new { status = false, errors = "Възникна грешка" });
+        }
         #endregion
 
         #region BookCategories
@@ -187,7 +206,7 @@ namespace Library.Web.Controllers
             }
         }
 
-        public async Task<JsonResult> DeleteMembership(Guid id,bool upper)
+        public async Task<JsonResult> DeleteMembership(Guid id, bool upper)
         {
             try
             {
@@ -195,7 +214,7 @@ namespace Library.Web.Controllers
                 {
                     return Json(new { status = false, Message = "Невалидни параметри." });
                 }
-                await _helper.DeleteMembershipHelper(id,upper);
+                await _helper.DeleteMembershipHelper(id, upper);
                 return Json(new { status = true, Message = "Вашето членство беше изтрито." });
             }
             catch (DbException ex)

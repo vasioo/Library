@@ -312,6 +312,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
             bookEntity.Language = viewModelDTO.Language;
             bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
+            bookEntity.Description = viewModelDTO.Description;
             bookEntity.NeededMembership = _membershipService.IQueryableGetAllAsync().OrderBy(x => x.StartingNeededAmountOfPoints).FirstOrDefault();
             bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
 

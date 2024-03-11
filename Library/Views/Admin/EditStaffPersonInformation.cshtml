@@ -30,21 +30,21 @@
         margin-bottom: 20px;
     }
 </style>
-<div class="edit-staff-information"></div>
-<div class="custom-container">
-    <div class="row justify-content-center mb-4">
-        <h1 class="py-2 text-center">Потребителска информация</h1>
-        <hr style="width:95%;color:#00d1d1;" class="py-1"/>
-    </div>
-    <div class="row justify-content-around">
-        <div class="col-md-3 img-container">
-            @{
-                var profileImage = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/library-profile-image-for-{Model.Id}";
-            }
-            <img src="@profileImage" alt="User Image" class="img-thumbnail" id="userImage" onerror="replaceImage()" />
+<div class="edit-staff-information">
+    <div class="custom-container">
+        <div class="row justify-content-center mb-4">
+            <h1 class="py-2 text-center">Потребителска информация</h1>
+            <hr style="width:95%;color:#00d1d1;" class="py-1" />
         </div>
-        <div class="col-md-8">
-            <form method="post" asp-page-handler="EditInfo">
+        <div class="row justify-content-around">
+            <div class="col-md-3 img-container">
+                @{
+                    var profileImage = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/library-profile-image-for-{Model.Id}";
+                }
+                <img src="@profileImage" alt="User Image" class="img-thumbnail" id="userImage" onerror="replaceImage()" />
+            </div>
+            <div class="col-md-8">
+                <input type="hidden" name="Id" id="Id" value="@Model.Id" />
                 <div class="row justify-content-between">
                     <div class="form-group col-6">
                         <label for="FirstName" class="fs-5"><strong>Име:</strong><br />&#x2022; @Model.FirstName</label>
@@ -64,20 +64,24 @@
 
                 <div class="form-group">
                     <label for="Position" class="fs-5"><strong>Позиция:</strong></label>
-                    <input type="text" class="form-control fs-5" id="Position" name="Position" value="@Model.Position" />
+                    <select class="form-select fs-5" id="Position" name="Position">
+                        <option value="Администратор">Администратор</option>
+                        <option value="Библиотекар">Библиотекар</option>
+                        <option value="Потребител">Потребител</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
                     <label for="Salary" class="fs-5"><strong>Годишна заплата:</strong></label>
                     <input type="number" class="form-control fs-5" id="Salary" name="Salary" value="@Model.Salary" placeholder="0" />
                 </div>
-
-                <button type="submit" class="btn btn-success col-12 fs-5">Запази промените</button>
-            </form>
+                <button id="submitButton" class="btn btn-success col-12 fs-5">Запази промените</button>
+            </div>
         </div>
     </div>
 </div>
 <script>
     function replaceImage() {
-        document.getElementById('userImage').src = '/images/anonymous-user.jpg';
+        document.getElementById('userImage').src = '';
     }
 </script>

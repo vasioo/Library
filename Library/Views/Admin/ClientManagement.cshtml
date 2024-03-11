@@ -43,10 +43,10 @@
                         Намери по име :
                     </div>
                     <div class=" row m-0 pb-3">
-                        <input type="text" name="SearchString"class="form-control" value="@ViewData["CurrentFilter"]" />
+                        <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" />
                     </div>
                     <div class="ml-2 p-0 m-0 row align-items-center justify-content-around">
-                        <input type="submit" value="Търси" class="btn  fs-5 btn-dark col-5" />
+                        <input type="submit" value="Търси" class="btn fs-5 btn-dark col-5" />
                         <a class="btn btn-danger col-5 fs-5" asp-action="ClientManagement">Изчисти</a>
                     </div>
                 </div>
@@ -85,36 +85,58 @@
                         <tr>
                             <td class="fs-5">@worker.Email</td>
                             <td class="fs-5">@worker.UserName</td>
-                            <td class="">
-                                <div class="d-flex justify-content-around">
-                                    <a href="@Url.Action("EditStaffInformation", "Admin", new { userId = worker.Id })" class="btn col-5 fs-5 btn-warning">
-                                        Редактирай
-                                    </a>
-                                    <a class="btn btn-danger fs-5 col-5">
-                                        Блокирай
-                                    </a>
-                                </div>
+                            <td class="col text-center align-self-center">
+                                <a href="@Url.Action("EditStaffInformation", "Admin", new { userId = worker.Id })" class="btn col-12 col-md-5 fs-5 btn-warning">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                                <a class="btn btn-danger fs-5 col-12 col-md-5 pt-2">
+                                    <i class="fa-solid fa-ban"></i>
+                                </a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
-        @{
-            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-        }
+        <div class="row justify-content-between">
+            @if (Model.HasPreviousPage)
+            {
+                <div class="col">
+                    <a asp-action="ManageUsers"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       class="btn text-start fs-5 btn-primary ">
+                        Предишна стр.
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="col">
+                    <a class="btn text-start fs-5 btn-secondary disabled">
+                        Предишна стр.
+                    </a>
+                </div>
+            }
+            @if (Model.HasNextPage)
+            {
+                <div class="col text-end">
+                    <a asp-action="ManageUsers"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       class="btn text-end fs-5 btn-primary">
+                        Следваща стр.
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="col text-end">
+                    <a class="btn text-end fs-5 btn-secondary disabled">
+                        Следваща стр.
+                    </a>
+                </div>
+            }
 
-        <a asp-action="ManageUsers"
-           asp-route-pageNumber="@(Model.PageIndex - 1)"
-           class="btn btn-default @prevDisabled">
-            Previous
-        </a>
-        <a asp-action="ManageUsers"
-           asp-route-pageNumber="@(Model.PageIndex + 1)"
-           class="btn btn-default @nextDisabled">
-            Next
-        </a>
+        </div>
     </div>
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -156,7 +178,7 @@
         var radioButtons = document.querySelectorAll('input[type=radio][name=roleFilter]');
         radioButtons.forEach(function (radioButton) {
             radioButton.addEventListener('change', function () {
-                document.getElementById('clientManagementForm').submit(); 
+                document.getElementById('clientManagementForm').submit();
             });
         });
 

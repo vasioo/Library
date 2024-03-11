@@ -21,15 +21,21 @@
         font-weight: 500;
     }
 
-        .category-catalog:hover {
-            text-decoration: underline;
-            text-decoration-color: #00D1D1;
+    @@media (max-width: 1000px) {
+        .category-catalog {
+            font-size: 1.8rem;
         }
+    }
 
-        .category-catalog.active {
-            text-decoration: underline;
-            color: #00D1D1;
-        }
+    .category-catalog:hover {
+        text-decoration: underline;
+        text-decoration-color: #00D1D1;
+    }
+
+    .category-catalog.active {
+        text-decoration: underline;
+        color: #00D1D1;
+    }
 
     .category-main-div-for-catalog {
         padding: 0;
@@ -55,9 +61,9 @@
 </style>
 <div class="leased-tracker-page">
     <div class="row pt-3 pb-5 mb-2">
-        <div class="col-1"></div>
-        <div class="text-center py-2 col-10 display-4">Управление на категории</div>
-        <a class="col-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
+        <div class="col-2 col-md-1"></div>
+        <div class="text-center py-2 col-8 col-md-10 display-4">Управление на категории</div>
+        <a class="col-2 col-md-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
         <hr class="py-1" style="color:#00d1d1" />
     </div>
     <div class="row justify-content-around">
@@ -108,7 +114,7 @@
                                 {
                                     <td class="fs-4 text-center">@usLeased.DateOfBorrowing</td>
                                 }
-                                <td class="d-flex justify-content-around operations-container" data-userLeasedId="@usLeased.Id">
+                                <td class="text-center operations-container" data-userLeasedId="@usLeased.Id">
                                     @if (Model.Category == "Expired")
                                     {
                                         <a id="deleteBtn" class="btn btn-danger col fs-5">

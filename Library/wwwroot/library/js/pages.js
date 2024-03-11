@@ -423,28 +423,12 @@ var bookPage = (function () {
                 }
             });
         }
+
         $('.rate input[type="radio"]').change(function () {
             var stars = $(this).val();
             var bookId = $(this).closest('.rate').data('book-id');
 
             sendRatingData(stars, bookId);
-        });
-
-        var inputs = document.querySelectorAll('.rate input[type="radio"]');
-
-        inputs.forEach(function (input) {
-            input.addEventListener("change", function () {
-                var rating = parseInt(this.value);
-
-                var starIcons = document.querySelectorAll('.rate label .star-icon');
-                starIcons.forEach(function (starIcon, index) {
-                    if (index < rating) {
-                        starIcon.style.color = '#ffc700';
-                    } else {
-                        starIcon.style.color = '#ccc';
-                    }
-                });
-            });
         });
     }
     return {
@@ -759,6 +743,41 @@ var editDocumentPage = (function () {
 })();
 var editStaffInformation = (function () {
     function init($container) {
+        $('#Position').change(function () {
+            if ($(this).val() === 'Потребител') {
+                $('#Salary').prop('disabled', true).val('');
+            } else {
+                $('#Salary').prop('disabled', false);
+            }
+        });
+        $('#submitButton').click(function () {
+            var formData = {
+                Id: $('#Id').val(),
+                Salary: $('#Salary').val(),
+                Position: $('#Position').val(),
+
+            };
+            $.post({
+                url: '/Admin/EditInfo',
+                data: formData,
+                beforeSend: function (xhr) {
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+                    xhr.setRequestHeader("RequestVerificationToken", token);
+                },
+                success: function (response) {
+                    if (response.status) {
+                        Swal.fire("Успех", response.message, "success");
+                    } else {
+                        Swal.fire("Грешка", response.errors, "error");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire("Грешка", xhr.responseText, "error");
+                }
+            });
+
+        });
+
     }
     return {
         init
@@ -1330,9 +1349,9 @@ var reportPageLibrarian = (function () {
                             message.style.color = 'red';
                             fragment.appendChild(message);
                         }
-                        var container = document.getElementById('bookContainer');
-                        container.innerHTML = '';
-                        container.appendChild(fragment);
+                        var container = $('#bookContainer');
+                        container.empty();
+                        container.append(fragment);
                     } else {
                         console.error(response.Message);
                     }
@@ -1461,7 +1480,7 @@ var reportPageLibrarian = (function () {
             return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
         }
 
-        var isChartLoading = false; // Flag to indicate whether a chart is currently being loaded
+        var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
             if ($(this).val() === 'Personalized') {
@@ -1547,9 +1566,8 @@ var reportPageLibrarian = (function () {
             var startDateEntity = $('#from-date-genre').val();
             var endDateEntity = $('#to-date-genre').val();
 
-            // Check if a chart is currently being loaded
             if (!isChartLoading) {
-                isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                isChartLoading = true; 
 
                 $.ajax({
                     type: 'POST',
@@ -1578,11 +1596,11 @@ var reportPageLibrarian = (function () {
                             console.error(response.Message);
                         }
 
-                        isChartLoading = false; // Reset the flag after chart loading is complete
+                        isChartLoading = false; 
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
-                        isChartLoading = false; // Reset the flag in case of an error
+                        isChartLoading = false; 
                     }
                 });
             }

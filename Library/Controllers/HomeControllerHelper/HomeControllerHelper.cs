@@ -94,6 +94,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             viewModel.User = user;
             viewModel.Book = await _bookService.GetByIdAsync(bookId);
+            viewModel.UserIsAuthorized = user.Points > _membershipService.GetMembershipByName(viewModel.Book.NeededMembership.MembershipName)
+                .StartingNeededAmountOfPoints;
             var starRating = _starRatingService.IQueryableGetAllAsync()
                 .Where(x => x.User == user && x.Book == viewModel.Book)
                 .FirstOrDefault();
@@ -238,22 +240,25 @@ namespace Library.Web.Controllers.HomeControllerHelper
         public async Task<SearchViewModel> SearchViewModelHelper(string searchCategory, string inputValue, int page = 1)
         {
             var viewModel = new SearchViewModel();
+
             if (searchCategory == null)
             {
                 searchCategory = "";
             }
+
             if (inputValue == null)
             {
                 inputValue = "";
             }
-            if (searchCategory == "Authors")
+
+            if (searchCategory == "Documents")
             {
-                var authors = _documentsService.IQueryableGetAllAsync()
+                var documents = _documentsService.IQueryableGetAllAsync()
                     .Where(x => x.Title.Contains(inputValue) || x.Content.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_documentsService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
-                var authorDTO = authors.Select(blogPost => new Document
+                var authorDTO = documents.Select(blogPost => new Document
                 {
                     Id = blogPost.Id,
                     Title = blogPost.Title,
@@ -284,7 +289,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             else
             {
                 var books = _bookService.IQueryableGetAllAsync()
-                    .Where(x => x.Title.Contains(inputValue))
+                    .Where(x => x.Title.Contains(inputValue)||x.Author.Contains(inputValue)||x.ISBN.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
