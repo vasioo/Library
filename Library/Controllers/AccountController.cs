@@ -1,17 +1,14 @@
 ﻿using Library.DataAccess.MainModels;
 using Library.Models.UserModels;
-using Library.Models.UserModels.Interfaces;
+using Library.Services.Interfaces;
 using Library.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Modum.Web.Areas.Identity.Pages.Account;
-using System.Net.Sockets;
-using System.Text.Encodings.Web;
 using System.Text;
-using Library.Services.Interfaces;
+using System.Text.Encodings.Web;
 
 namespace Library.Web.Controllers
 {
@@ -185,12 +182,12 @@ namespace Library.Web.Controllers
                 var existingEmailUser = await _userManager.FindByEmailAsync(model.RegisterEmail);
                 if (existingEmailUser != null)
                 {
-                    return Json(new { success = false, message = "Email already exists." });
+                    return Json(new { success = false, message = "Имейлът има вече аккаунт." });
                 }
                 var existingUsernameUser = await _userManager.FindByNameAsync(model.RegisterUsername);
                 if (existingUsernameUser != null)
                 {
-                    return Json(new { success = false, message = "Username already exists.", usernameRelated = true });
+                    return Json(new { success = false, message = "Потребителското име вече съществува.", usernameRelated = true });
                 }
                 var user = new ApplicationUser();
 
@@ -210,26 +207,30 @@ namespace Library.Web.Controllers
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
-                    var emailBody = $@"
-                         <html>
-                           <body>
-                               <div style='text-align: center;'>
-                                   <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/litify-logo_fwtfvq' alt='Website Logo' style='height: 20em;' />
-                               </div>
-                               <br/>
-                               <hr/>
-                               <br/>
-                               <div style='text-align: center; font-size: 20px;'>
-                                   Потвърдете акаунта си като <br/>
-                                   <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>натиснете тук</a>.
-                               </div>
-                            </body>
-                        </html>";
+                        var emailBody = $@"
+                             <html>
+                               <body>
+                                   <div style='text-align: center;'>
+                                       <img src='https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/litify-logo_fwtfvq' alt='Website Logo' style='height: 20em;' />
+                                   </div>
+                                   <br/>
+                                   <hr/>
+                                   <div style='text-align: center; font-size: 15px; font-weight: bold; margin-top: 20px; text-decoration:none; color: #d4af37;'>
+                                      Вие ще получите 5 точки бонус при потвърждение на акаунта
+                                   </div>
+                                   <br/>
+                                   <div style='text-align: center; font-size: 20px;'>
+                                       Потвърдете акаунта си като <br/>
+                                       <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>натиснете тук</a>.
+                                   </div>
+                                </body>
+                            </html>";
 
                     _emailSenderService.SendEmail(model.RegisterEmail, emailBody, "Потвърдете акаунта си");
-
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        user.Points += 5;
+                        await _userManager.UpdateAsync(user);
                         return Json(new { success = true, message = "Проверете имейла си за потвърждение!" });
                     }
                     else

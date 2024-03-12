@@ -12,14 +12,15 @@
                 Id: $('#Id').val(),
                 Salary: $('#Salary').val(),
                 Position: $('#Position').val(),
-
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
             };
-            $.post({
+
+            $.ajax({
+                type: "POST",
                 url: '/Admin/EditInfo',
                 data: formData,
                 beforeSend: function (xhr) {
-                    var token = $('input[name="__RequestVerificationToken"]').val();
-                    xhr.setRequestHeader("RequestVerificationToken", token);
+                    xhr.setRequestHeader("RequestVerificationToken", formData.__RequestVerificationToken);
                 },
                 success: function (response) {
                     if (response.status) {
@@ -32,9 +33,7 @@
                     Swal.fire("Грешка", xhr.responseText, "error");
                 }
             });
-
         });
-
     }
     return {
         init

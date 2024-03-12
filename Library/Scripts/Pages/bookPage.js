@@ -39,14 +39,31 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.status) {
-                        Swal.fire({
-                            title: "Невероятно!",
-                            text: "Вие първи четете тази книга, за което получихте 5 точки!",
-                            icon: "success",
-                            showCancelButton: false,
-                            confirmButtonColor: "#3085d6",
-                            confirmButtonText: "Супер"
-                        }).then((result) => {
+                        if (typeof firstUserRead !== "undefined") {
+                            Swal.fire({
+                                title: "Невероятно!",
+                                text: "Вие първи четете тази книга, за което получихте 5 точки!",
+                                icon: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: "#3085d6",
+                                confirmButtonText: "Супер"
+                            }).then((result) => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: "Ще бъдете прехвърлени до 5 секунди да четете.",
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                });
+                                setTimeout(function () {
+                                    window.location.href = response.message;
+                                }, 300);
+                            });
+                        }
+                        else {
                             Swal.fire({
                                 icon: 'success',
                                 title: "Ще бъдете прехвърлени до 5 секунди да четете.",
@@ -60,7 +77,8 @@
                             setTimeout(function () {
                                 window.location.href = response.message;
                             }, 300);
-                        });
+                        }
+                        
                     } else {
                         Swal.fire({
                             icon: 'error',

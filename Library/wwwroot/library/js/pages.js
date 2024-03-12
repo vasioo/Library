@@ -68,19 +68,32 @@ var addABookByISBN = (function () {
             var isbnData = $('#isbnInput').val();
             $('#isbnOfBook').text(`ISBN: ${isbnData}`);
             $('#isbnOfBook').data('id', isbnData);
-            $('#bookTitle').val(book.title);
-            $('#bookAuthor').val(book.publishers[0]);
-            var publishDate = new Date(book.publish_date);
-            var year = publishDate.getFullYear(); 
-            $('#bookCreationDate').val(year + '-01-01');
-            $('#category').text(`Техен жанр: ${book.subjects[0]}`);
-            var languageKey = book.languages[0].key;
-            var languageCode = languageKey.split('/').pop();
-            $('#language').val(languageCode);
-            $('#bookCover').attr('src', `https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`);
-            $('#bookDetailsContainer').show();
 
+            if (book.title) {
+                $('#bookTitle').val(book.title);
+            }
+            if (book.publishers && book.publishers.length > 0) {
+                $('#bookAuthor').val(book.publishers[0]);
+            }
+            if (book.publish_date) {
+                var publishDate = new Date(book.publish_date);
+                var year = publishDate.getFullYear();
+                $('#bookCreationDate').val(year + '-01-01');
+            }
+            if (book.subjects && book.subjects.length > 0) {
+                $('#category').text(`Техен жанр: ${book.subjects[0]}`);
+            }
+            if (book.languages && book.languages.length > 0) {
+                var languageKey = book.languages[0].key;
+                var languageCode = languageKey.split('/').pop();
+                $('#language').val(languageCode);
+            }
+            if (book.covers && book.covers.length > 0) {
+                $('#bookCover').attr('src', `https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`);
+            }
+            $('#bookDetailsContainer').show();
         }
+
 
         function isValidISBN10(isbn) {
             isbn = isbn.replace(/[^\dX]/gi, '');
@@ -336,14 +349,31 @@ var bookPage = (function () {
                 dataType: 'json',
                 success: function (response) {
                     if (response.status) {
-                        Swal.fire({
-                            title: "Невероятно!",
-                            text: "Вие първи четете тази книга, за което получихте 5 точки!",
-                            icon: "success",
-                            showCancelButton: false,
-                            confirmButtonColor: "#3085d6",
-                            confirmButtonText: "Супер"
-                        }).then((result) => {
+                        if (typeof firstUserRead !== "undefined") {
+                            Swal.fire({
+                                title: "Невероятно!",
+                                text: "Вие първи четете тази книга, за което получихте 5 точки!",
+                                icon: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: "#3085d6",
+                                confirmButtonText: "Супер"
+                            }).then((result) => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: "Ще бъдете прехвърлени до 5 секунди да четете.",
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                });
+                                setTimeout(function () {
+                                    window.location.href = response.message;
+                                }, 300);
+                            });
+                        }
+                        else {
                             Swal.fire({
                                 icon: 'success',
                                 title: "Ще бъдете прехвърлени до 5 секунди да четете.",
@@ -357,7 +387,8 @@ var bookPage = (function () {
                             setTimeout(function () {
                                 window.location.href = response.message;
                             }, 300);
-                        });
+                        }
+                        
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -430,123 +461,6 @@ var bookPage = (function () {
 
             sendRatingData(stars, bookId);
         });
-    }
-    return {
-        init
-    };
-})();
-var borrowBook = (function () {
-    function init($container) {
-        //let $unborrowBookBtn = $container.find('.unborrow-book-btn');
-
-        //$unborrowBookBtn.click(function () {
-        //    var book = $(this).attr('id');
-        //    $.ajax({
-        //        type: 'POST',
-        //        url: '/Home/UnborrowBook',
-        //        data: { bookId: book },
-        //        dataType: 'json',
-        //        success: function (response) {
-        //            if (response.status === true) {
-        //                // Handle success
-        //                Swal.fire({
-        //                    icon: 'success',
-        //                    title: response.message,
-        //                    showClass: {
-        //                        popup: 'animate__animated animate__fadeInDown'
-        //                    },
-        //                    hideClass: {
-        //                        popup: 'animate__animated animate__fadeOutUp'
-        //                    }
-        //                });
-        //                setTimeout(function () {
-        //                    location.reload()
-        //                }, 1000);
-        //            } else {
-        //                // Handle failure
-        //                Swal.fire({
-        //                    icon: 'error',
-        //                    title: response.message,
-        //                    showClass: {
-        //                        popup: 'animate__animated animate__fadeInDown'
-        //                    },
-        //                    hideClass: {
-        //                        popup: 'animate__animated animate__fadeOutUp'
-        //                    }
-        //                });
-        //            }
-        //        },
-        //        error: function (error) {
-        //            // Handle AJAX request failure
-        //            Swal.fire({
-        //                icon: 'error',
-        //                title: 'Oops...',
-        //                text: 'Something went wrong!',
-        //            });
-        //            console.error('AJAX request failed:', error);
-        //        }
-        //    });
-        //});
-
-        $(document).on('click', '.read-book-btn', function () {
-            var book = $(this).attr('id');
-            $.ajax({
-                type: 'POST',
-                url: '/Home/ReadBook',
-                data: { isbn: book },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.status === true) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: response.message,
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
-                        }).then(function () {
-                            if (response.previewUrl) {
-                                Swal.fire({
-                                    title: 'Redirecting...',
-                                    text: 'You will be redirected shortly',
-                                    timer: 3000,
-                                    showConfirmButton: false,
-                                    allowOutsideClick: false,
-                                    timerProgressBar: true,
-                                    onBeforeOpen: () => {
-                                        Swal.showLoading();
-                                    }
-                                }).then(() => {
-                                    window.location.href = response.previewUrl;
-                                });
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: response.message,
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
-                        });
-                    }
-                },
-                error: function (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                    });
-                    console.error('AJAX request failed:', error);
-                }
-            });
-        });
-
     }
     return {
         init
@@ -755,14 +669,15 @@ var editStaffInformation = (function () {
                 Id: $('#Id').val(),
                 Salary: $('#Salary').val(),
                 Position: $('#Position').val(),
-
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
             };
-            $.post({
+
+            $.ajax({
+                type: "POST",
                 url: '/Admin/EditInfo',
                 data: formData,
                 beforeSend: function (xhr) {
-                    var token = $('input[name="__RequestVerificationToken"]').val();
-                    xhr.setRequestHeader("RequestVerificationToken", token);
+                    xhr.setRequestHeader("RequestVerificationToken", formData.__RequestVerificationToken);
                 },
                 success: function (response) {
                     if (response.status) {
@@ -775,9 +690,7 @@ var editStaffInformation = (function () {
                     Swal.fire("Грешка", xhr.responseText, "error");
                 }
             });
-
         });
-
     }
     return {
         init
@@ -1862,7 +1775,7 @@ var statisticsPage = (function () {
             return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
         }
 
-        var isChartLoading = false; // Flag to indicate whether a chart is currently being loaded
+        var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
             if ($(this).val() === 'Personalized') {
@@ -1903,9 +1816,8 @@ var statisticsPage = (function () {
                         break;
                 }
 
-                // Check if a chart is currently being loaded
                 if (!isChartLoading) {
-                    isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                    isChartLoading = true; 
 
                     $.ajax({
                         type: 'POST',
@@ -1933,11 +1845,11 @@ var statisticsPage = (function () {
                                 console.error(response.Message);
                             }
 
-                            isChartLoading = false; // Reset the flag after chart loading is complete
+                            isChartLoading = false; 
                         },
                         error: function (xhr, status, error) {
                             console.error(error);
-                            isChartLoading = false; // Reset the flag in case of an error
+                            isChartLoading = false; 
                         }
                     });
                 }

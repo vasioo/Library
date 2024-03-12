@@ -5,19 +5,32 @@
             var isbnData = $('#isbnInput').val();
             $('#isbnOfBook').text(`ISBN: ${isbnData}`);
             $('#isbnOfBook').data('id', isbnData);
-            $('#bookTitle').val(book.title);
-            $('#bookAuthor').val(book.publishers[0]);
-            var publishDate = new Date(book.publish_date);
-            var year = publishDate.getFullYear(); 
-            $('#bookCreationDate').val(year + '-01-01');
-            $('#category').text(`Техен жанр: ${book.subjects[0]}`);
-            var languageKey = book.languages[0].key;
-            var languageCode = languageKey.split('/').pop();
-            $('#language').val(languageCode);
-            $('#bookCover').attr('src', `https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`);
-            $('#bookDetailsContainer').show();
 
+            if (book.title) {
+                $('#bookTitle').val(book.title);
+            }
+            if (book.publishers && book.publishers.length > 0) {
+                $('#bookAuthor').val(book.publishers[0]);
+            }
+            if (book.publish_date) {
+                var publishDate = new Date(book.publish_date);
+                var year = publishDate.getFullYear();
+                $('#bookCreationDate').val(year + '-01-01');
+            }
+            if (book.subjects && book.subjects.length > 0) {
+                $('#category').text(`Техен жанр: ${book.subjects[0]}`);
+            }
+            if (book.languages && book.languages.length > 0) {
+                var languageKey = book.languages[0].key;
+                var languageCode = languageKey.split('/').pop();
+                $('#language').val(languageCode);
+            }
+            if (book.covers && book.covers.length > 0) {
+                $('#bookCover').attr('src', `https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`);
+            }
+            $('#bookDetailsContainer').show();
         }
+
 
         function isValidISBN10(isbn) {
             isbn = isbn.replace(/[^\dX]/gi, '');

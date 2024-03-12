@@ -313,7 +313,20 @@ namespace Library.Web.Controllers.HomeControllerHelper
             bookEntity.Language = viewModelDTO.Language;
             bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
             bookEntity.Description = viewModelDTO.Description;
-            bookEntity.NeededMembership = _membershipService.IQueryableGetAllAsync().OrderBy(x => x.StartingNeededAmountOfPoints).FirstOrDefault();
+            if (_membershipService.IQueryableGetAllAsync().Where(x=>x.StartingNeededAmountOfPoints<2).Count()<1)
+            {
+                var newMembership = new Membership();
+                newMembership.MembershipName = "Начален";
+                newMembership.StartingNeededAmountOfPoints = 0;
+                newMembership.EndAmountOfPoints = 1;
+                var membershipId = await _membershipService.AddAsync(newMembership);
+                var extendedMembership = await _membershipService.GetByIdAsync(membershipId);
+                bookEntity.NeededMembership = extendedMembership;
+            }
+            else
+            {
+                bookEntity.NeededMembership = _membershipService.IQueryableGetAllAsync().OrderBy(x => x.StartingNeededAmountOfPoints).FirstOrDefault();
+            }
             bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
 
             var neededId = await _bookService.AddAsync(bookEntity);

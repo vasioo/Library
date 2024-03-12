@@ -31,9 +31,8 @@ namespace Library.DataAccess
             {
                 modelBuilder.Entity<IdentityRole>().HasData(
                      new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
-                     new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" },
-                     new IdentityRole { Id = "3", Name = "Worker", NormalizedName = "WORKER" },
-                     new IdentityRole { Id = "4", Name = "SuperAdmin", NormalizedName = "SUPERADMIN" }
+                     new IdentityRole { Id = "2", Name = "Worker", NormalizedName = "WORKER" },
+                     new IdentityRole { Id = "3", Name = "SuperAdmin", NormalizedName = "SUPERADMIN" }
                 );
             }
             modelBuilder.Entity<Book>().Navigation(e => e.Genre).AutoInclude();
@@ -49,18 +48,13 @@ namespace Library.DataAccess
                 .HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(fb => fb.UserId);
-
             modelBuilder.Entity<FavouriteBooks>()
                 .HasOne<Book>()
                 .WithMany()
                 .HasForeignKey(fb => fb.BookId);
-
-
-
             modelBuilder.Entity<BookCategory>()
             .HasIndex(ci => new { ci.CategoryName })
             .IsUnique();
-
             base.OnModelCreating(modelBuilder);
         }
     }

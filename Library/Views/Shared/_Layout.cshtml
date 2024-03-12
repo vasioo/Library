@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="~/library/css/custom/MainLayout.css" asp-append-version="true">
     <link rel="stylesheet" href="~/library/css/custom/MainLayoutExtended.css" asp-append-version="true">
     <link rel="stylesheet" href="~/library/css/custom/ImagePost.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/library/css/custom/CustomLoader.css" asp-append-version="true">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
@@ -354,6 +355,7 @@
     <script src="~/library/js/customJS/mainLayout.js"></script>
     <script src="~/library/js/pages.js"></script>
     <script src="~/library/js/common.js"></script>
+    <script src="~/library/js/customJs/loaderEvents.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
 
@@ -375,13 +377,20 @@
     <script type="text/javascript">
         $(function () {
             bookPage.init($('.book-page'));
-            borrowBook.init($('.borrowed-page'));
             userFeedback.init($('.user-feedback-page'));
             editDocumentPage.init($('.edit-document-page'));
             addDocumentPage.init($('.add-document-page'));
         });
     </script>
 
+    <div class="book_custom_loader">
+        <div class="book__pg-shadow"></div>
+        <div class="book__pg"></div>
+        <div class="book__pg book__pg--2"></div>
+        <div class="book__pg book__pg--3"></div>
+        <div class="book__pg book__pg--4"></div>
+        <div class="book__pg book__pg--5"></div>
+    </div>
 
     @section Scripts {
         @if (!string.IsNullOrEmpty(loginErrorMessage))

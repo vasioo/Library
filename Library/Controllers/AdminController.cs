@@ -5,6 +5,7 @@ using Library.Web.Controllers.AdminControllerHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Macs;
 using System.Data.Common;
 
 namespace Library.Web.Controllers
@@ -22,7 +23,7 @@ namespace Library.Web.Controllers
             _helper = helper;
         }
         #endregion
-
+        
         #region StaffManagement
         public async Task<IActionResult> EditStaffInformation(string userId)
         {
@@ -112,7 +113,7 @@ namespace Library.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditInfo(EditInfoDTO userInfo)
+        public async Task<JsonResult> EditInfo(EditInfoDTO userInfo)
         {
             if (ModelState.IsValid)
             {
@@ -121,9 +122,34 @@ namespace Library.Web.Controllers
                 {
                     user.Salary = userInfo.Salary;
                     user.Position = userInfo.Position;
+                    if (userInfo.Position == "Администратор")
+                    {
+                        var rolesList = new List<string>()
+                        {
+                            "Admin","Worker"
+                        };
+                        await _userManager.RemoveFromRolesAsync(user, rolesList);
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    else if (userInfo.Position == "Библиотекар")
+                    {
+                        var rolesList = new List<string>()
+                        {
+                            "Admin","Worker"
+                        };
+                        await _userManager.RemoveFromRolesAsync(user, rolesList);
+                        await _userManager.AddToRoleAsync(user, "Worker");
+                    }
+                    else
+                    {
+                        var rolesList = new List<string>()
+                        {
+                            "Admin","Worker"
+                        };
+                        await _userManager.RemoveFromRolesAsync(user, rolesList);
+                    }
                     await _userManager.UpdateAsync(user);
                     return Json(new { status = true, message = "Данните бяха записани успешно!" });
-
                 }
             }
             return Json(new { status = false, errors = "Възникна грешка" });

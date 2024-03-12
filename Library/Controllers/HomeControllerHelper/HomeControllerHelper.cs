@@ -102,7 +102,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
             if (starRating!=null)
             {
                 viewModel.StarRatingAmount = starRating.StarCount;
-
             }
             else
             {
@@ -111,7 +110,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             if (user != null)
             {
                 var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
-                if (borrowedBook.Id != Guid.Empty)
+                if (borrowedBook!.Id != Guid.Empty)
                 {
                     viewModel.HasUserBorrowedIt = true;
                     if (!borrowedBook.Approved && !borrowedBook.IsRead)

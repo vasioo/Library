@@ -179,7 +179,7 @@
             return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
         }
 
-        var isChartLoading = false; // Flag to indicate whether a chart is currently being loaded
+        var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
             if ($(this).val() === 'Personalized') {
@@ -220,9 +220,8 @@
                         break;
                 }
 
-                // Check if a chart is currently being loaded
                 if (!isChartLoading) {
-                    isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                    isChartLoading = true; 
 
                     $.ajax({
                         type: 'POST',
@@ -250,11 +249,11 @@
                                 console.error(response.Message);
                             }
 
-                            isChartLoading = false; // Reset the flag after chart loading is complete
+                            isChartLoading = false; 
                         },
                         error: function (xhr, status, error) {
                             console.error(error);
-                            isChartLoading = false; // Reset the flag in case of an error
+                            isChartLoading = false; 
                         }
                     });
                 }

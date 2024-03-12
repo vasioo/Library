@@ -1,9 +1,7 @@
 using Hangfire;
-using Hangfire.Dashboard;
 using Library.DataAccess;
 using Library.DataAccess.MainModels;
 using Library.Models.Stripe;
-using Library.Services.Interfaces;
 using Library.Web.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +16,6 @@ namespace Modum.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<DataContext>(options =>
@@ -73,11 +70,11 @@ namespace Modum.Web
                 options.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddDistributedMemoryCache(); // Use a distributed cache for session data in a production environment
+            builder.Services.AddDistributedMemoryCache(); 
             builder.Services.AddSession(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set a suitable timeout
+                options.IdleTimeout = TimeSpan.FromMinutes(30); 
             });
 
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -94,11 +91,11 @@ namespace Modum.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
                 options.ConsentCookieValue = "true";
             });
-            builder.Services.AddApplication();//DI
+            builder.Services.AddApplication();
 
             builder.Services.Configure<IISServerOptions>(options =>
             {
-                options.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB limit
+                options.MaxRequestBodySize = 10 * 1024 * 1024; 
             });
             builder.Services.AddHsts(options =>
             {
@@ -125,7 +122,6 @@ namespace Modum.Web
             var app = builder.Build();
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -145,7 +141,8 @@ namespace Modum.Web
             app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] { new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilter(new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilterOptions
+                Authorization = new[] { new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilter
+                                            (new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilterOptions
                 {
                       RequireSsl = false,
                          SslRedirect = false,
@@ -163,12 +160,9 @@ namespace Modum.Web
             });
             app.UseSession();
 
-          
-
             app.MapControllerRoute(
                 name: "admin",
                 pattern: "{area:exists}/{controller=Admin}/{action=Statistics}/{id?}");
-
             app.MapControllerRoute(
                     name: "index",
                     pattern: "{controller=Home}/{action=MainPage}/{id?}");

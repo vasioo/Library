@@ -102,44 +102,19 @@ namespace Library.Controllers
                 {
                     if (!await _helper.BorrowBookPostHelper(bookId, user!))
                     {
-                        return Json(new { status = false, Message = "The book could't be borrowed!" });
+                        return Json(new { status = false, Message = "Книгата не може да бъде отдавана!" });
                     }
                 }
                 else
                 {
-                    return Json(new { status = false, Message = "There isn't a user with that username!" });
+                    return Json(new { status = false, Message = "За да четете, трябва да се логнати в приложението!" });
                 }
             }
             catch (Exception)
             {
-                return Json(new { status = false, Message = "Error Conflicted" });
+                return Json(new { status = false, Message = "Възникна грешка" });
             }
-            return Json(new { status = true, Message = "The book was borrowed successfully" });
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<JsonResult> UnborrowBook(Guid bookId)
-        {
-            try
-            {
-                var username = HttpContext.User?.Identity?.Name ?? "";
-                var user = await _userManager.FindByNameAsync(username);
-                if (user == null)
-                {
-                    return Json(new { status = false, Message = "There is no such user" });
-
-                }
-                if (!await _helper.UnborrowBookPostHelper(bookId, user!.Id))
-                {
-                    return Json(new { status = false, Message = "The book could't be removed!" });
-                }
-            }
-            catch (Exception)
-            {
-                return Json(new { status = false, Message = "Error Conflicted" });
-            }
-            return Json(new { status = true, Message = "The book was removed from borrowed successfully" });
+            return Json(new { status = true, Message = "Книгата беше отдадена успешно" });
         }
 
         [HttpPost]
@@ -160,7 +135,7 @@ namespace Library.Controllers
                         {
                             return Json(new
                             {
-                                status = false,
+                                status = true,
                                 Message = isNew
                             });
                         }
@@ -188,6 +163,7 @@ namespace Library.Controllers
                                             {
                                                 status = true,
                                                 Message = bookData.preview_url.ToString(),
+                                                FirstUserRead = "1"
                                             });
                                         }
                                         else
