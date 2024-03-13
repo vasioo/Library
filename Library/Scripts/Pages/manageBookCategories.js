@@ -6,7 +6,7 @@
             counter = 0,
             newTemplateSubjectRow =
                 '<tr class="sub-row">' +
-                '   <td><input type="text" class="form-control subject-name" required></td>' +
+                '   <td><input type="text" class="form-control subject-name fs-5" required></td>' +
                 '   <td id="for-book-categories">' +
                 '       <a class="btn btn-warning fs-5 p-1 col-12 toggle-categories" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
                 '           Скрий Категории' +
@@ -37,6 +37,7 @@
 
 
         $submitBtn.click(function () {
+            commonFuncs.startLoader();
             let selectedBookSubjectsDTO = [],
                 selectedBookCategoriesDTO = [];
 
@@ -71,10 +72,10 @@
                     bookSubjectsDTO: selectedBookSubjectsDTO,
                     bookCategoriesDTO: selectedBookCategoriesDTO
                 }, function (response) {
-
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'info',
-                        title: 'Server response',
+                        title: 'Отговор на сървъра',
                         html: `${response.message}`,
                         showClass: {
                             popup: 'animate__animated animate__fadeInDown'
@@ -87,8 +88,7 @@
                     location.reload();
 
                 }).fail(function (error) {
-                    // Handle the AJAX request failure
-                    // This function will be executed if the AJAX request encounters an error
+                    commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
 
@@ -105,10 +105,10 @@
                     errorList.appendChild(listItem);
                 });
 
-
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
+                    title: 'Упс...',
                     html: `${errorList.innerHTML}`,
                     showClass: {
                         popup: 'animate__animated animate__fadeInDown'
@@ -118,6 +118,7 @@
                     }
                 });
             }
+            commonFuncs.endLoader();
         });
 
         class FormValidator {
@@ -178,13 +179,13 @@
         }
 
         $container.on('click', '.add-book-category-row-btn', function () {
-
+            commonFuncs.startLoader();
             var $button = $(this);
             var $tempTableDiv = $button.closest('.book-categories-table');
             var $nearestTbody = $tempTableDiv.find('tbody');
 
             let categoryRow = '<tr class="cat-row">' +
-                '   <td><input type="text" class="form-control category-name" required></td>' +
+                '   <td><input type="text" class="form-control category-name fs-5" required></td>' +
                 '   <td>' +
                 '       <button type="button" class="btn btn-danger delete-row m-1"><i class="fa fa-trash"></i></button>' +
                 '   </td>' +
@@ -193,11 +194,11 @@
             let $newRow = $(categoryRow);
 
             $nearestTbody.append($newRow);
-
+            commonFuncs.endLoader();
         });
 
         $btnAddSubjectRow.click(function () {
-
+            commonFuncs.startLoader();
             counter++;
 
             let $newRow = $(newTemplateSubjectRow);
@@ -212,18 +213,18 @@
 
 
             $bookSubjectTableDiv.find('#subjects-tbody').append($newRow);
-
+            commonFuncs.endLoader();
         });
 
         $(document).on('click', '.delete-row',function () {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this row!",
+                title: 'Сигурни ли сте?',
+                text: "Няма да можете да върнете този ред!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Delete!'
+                confirmButtonText: 'Да, Изтрий!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $(this).closest('tr').remove();

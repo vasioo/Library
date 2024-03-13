@@ -1,6 +1,7 @@
 ﻿var userFeedback = (function () {
     function init($container) {
         $('#contact-form-submition').submit(function (e) {
+            commonFuncs.startLoader();
             e.preventDefault();
 
             var formData = {
@@ -14,6 +15,7 @@
                 data: formData,
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
@@ -25,6 +27,7 @@
                             }
                         });
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
@@ -33,6 +36,7 @@
                     }
                 },
                 error: function () {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка',

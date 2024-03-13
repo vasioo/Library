@@ -62,6 +62,7 @@
         }
 
         $(document).on('change', '#bookSelect', function () {
+            commonFuncs.startLoader();
             if ($(this).val() === 'Personalized') {
                 $('#book-personalized-row').show();
             } else {
@@ -102,18 +103,22 @@
                 var selectedCountOfItemsEntity = $('#amountOfBookItems').val();
 
                 loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+                commonFuncs.endLoader();
             }
         });
 
         $('#personalized-book-time-btn').click(function () {
+            commonFuncs.startLoader();
             var startDateEntity = $('#from-date-book').val();
             var endDateEntity = $('#to-date-book').val();
             var selectedCountOfItemsEntity = $('#amountOfBookItems').val();
 
             loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+            commonFuncs.endLoader();
         });
 
         $(document).on('change', '#amountOfBookItems', function () {
+            commonFuncs.startLoader();
             var dateEntity = $('#bookSelect').val();
             var startDateEntity = '';
             var endDateEntity = '';
@@ -150,6 +155,7 @@
             var selectedCountOfItemsEntity = $(this).val();
 
             loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+            commonFuncs.endLoader();
         });
 
         function getDateHoursAgo(date, hours) {
@@ -182,6 +188,7 @@
         var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
+            commonFuncs.startLoader();
             if ($(this).val() === 'Personalized') {
                 $('#genre-personalized-row').show();
                 $('#personalized-genre-time-btn').trigger('click');
@@ -240,18 +247,21 @@
                                     $('#no-chart-items-in-db').hide();
                                     $('#genreChart').show();
                                     loadGenreChart(genresData);
+                                    commonFuncs.endLoader();
                                 }
                                 else {
                                     $('#no-chart-items-in-db').show();
                                     $('#genreChart').hide();
                                 }
                             } else {
+                                commonFuncs.endLoader();
                                 console.error(response.Message);
                             }
 
                             isChartLoading = false; 
                         },
                         error: function (xhr, status, error) {
+                            commonFuncs.endLoader();
                             console.error(error);
                             isChartLoading = false; 
                         }
@@ -261,12 +271,12 @@
         });
 
         $('#personalized-genre-time-btn').click(function () {
+            commonFuncs.startLoader();
             var startDateEntity = $('#from-date-genre').val();
             var endDateEntity = $('#to-date-genre').val();
 
-            // Check if a chart is currently being loaded
             if (!isChartLoading) {
-                isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                isChartLoading = true; 
 
                 $.ajax({
                     type: 'POST',
@@ -283,11 +293,13 @@
                             var ctx = canvas.getContext('2d');
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             if (genresData && genresData.length > 0) {
+                                commonFuncs.endLoader();
                                 $('#no-chart-items-in-db').hide();
                                 $('#genreChart').show();
                                 loadGenreChart(genresData);
                             }
                             else {
+                                commonFuncs.endLoader();
                                 $('#no-chart-items-in-db').show();
                                 $('#genreChart').hide();
                             }
@@ -295,11 +307,11 @@
                             console.error(response.Message);
                         }
 
-                        isChartLoading = false; // Reset the flag after chart loading is complete
+                        isChartLoading = false;
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
-                        isChartLoading = false; // Reset the flag in case of an error
+                        isChartLoading = false;
                     }
                 });
             }
@@ -309,10 +321,8 @@
             var canvas = document.getElementById('genreChart');
             var ctx = canvas.getContext('2d');
 
-            // Clear the canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Destroy previous chart instance if it exists
             if (window.myChart) {
                 window.myChart.destroy();
             }

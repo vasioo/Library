@@ -5,9 +5,11 @@
             $readBookBtn = $container.find('.read-book-btn');
 
         $borrowBookBtn.click(function () {
+            commonFuncs.startLoader();
             var book = $(this).attr('id');
 
             $.post('/Home/BorrowBook', { bookId: book }, function (response) {
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'success',
                     title: 'Заявката беше подадена!',
@@ -20,17 +22,19 @@
                 })
                 location.reload();
             }).fail(function (error) {
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
+                    title: 'Упс...',
                     text: 'Възникна грешка!',
                 })
                 alert('AJAX request failed: ' + error);
             });
-
+            commonFuncs.endLoader();
         });
 
         $readBookBtn.click(function () {
+            commonFuncs.startLoader();
             var book = $(this).data('id');
             $.ajax({
                 type: 'POST',
@@ -40,6 +44,7 @@
                 success: function (response) {
                     if (response.status) {
                         if (typeof firstUserRead !== "undefined") {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 title: "Невероятно!",
                                 text: "Вие първи четете тази книга, за което получихте 5 точки!",
@@ -64,9 +69,10 @@
                             });
                         }
                         else {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 icon: 'success',
-                                title: "Ще бъдете прехвърлени до 5 секунди да четете.",
+                                title: "Ще бъдете прехвърлени до 5 секунди да прегледате книгата.",
                                 showClass: {
                                     popup: 'animate__animated animate__fadeInDown'
                                 },
@@ -80,6 +86,7 @@
                         }
                         
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: response.message,
@@ -93,6 +100,7 @@
                     }
                 },
                 error: function (error) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'УПС...',
@@ -106,9 +114,9 @@
         $UnathBorrowBookBtn.click(function () {
             Swal.fire({
                 icon: "error",
-                title: "No no!",
-                text: "A non authenticated user cannot borrow a book!",
-                footer: '<a href="/Identity/Account/Register">Create an account</a>'
+                title: "Невъзможно!",
+                text: "Неоторизиран потребител не може да вземе книга назаем!",
+                footer: '<a href="/Identity/Account/Register">Създайте акаунт</a>'
             });
         });
 
@@ -122,12 +130,14 @@
                 },
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             title: 'Успех!',
                             text: response.message,
                             icon: 'success'
                         });
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             title: 'Грешка!',
                             text: response.message,
@@ -136,6 +146,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         title: 'Грешка!',
                         text: 'Възникна грешка докато се публикуваха данните: ' + error,
@@ -146,10 +157,12 @@
         }
 
         $('.rate input[type="radio"]').change(function () {
+            commonFuncs.startLoader();
             var stars = $(this).val();
             var bookId = $(this).closest('.rate').data('book-id');
 
             sendRatingData(stars, bookId);
+            commonFuncs.endLoader();
         });
     }
     return {

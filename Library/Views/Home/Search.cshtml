@@ -114,6 +114,8 @@
             return string.Empty;
         }
 
+        content = content.Replace("&nbsp;", " ");
+
         var doc = new HtmlDocument();
         doc.LoadHtml(Html.Raw(content).ToString());
 
@@ -173,7 +175,7 @@
         <div id="items-show-container" class="py-3">
             @if (Model.searchCategory != "Documents" && Model.searchCategory != "Subjects")
             {
-                @foreach (var item in Model.Books)
+                @foreach (var item in Model.Books.OrderBy(x=>x.Name))
                 {
                     var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{item.Id}.png";
                     var formattedDate = item.DateOfBookCreation.ToString("dd/MM/yyyy");

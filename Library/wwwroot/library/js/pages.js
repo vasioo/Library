@@ -2,6 +2,7 @@ var addABook = (function () {
     function init($container) {
 
         $('#addBookButton').click(function () {
+            commonFuncs.startLoader();
             var bookData = {
                 Name: $('#Name').val(),
                 Author: $('#Author').val(),
@@ -23,7 +24,7 @@ var addABook = (function () {
                 function (response) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'Server response',
+                        title: 'Отговор на сървъра',
                         html: `${response.message}`,
                         showClass: {
                             popup: 'animate__animated animate__fadeInDown'
@@ -32,11 +33,13 @@ var addABook = (function () {
                             popup: 'animate__animated animate__fadeOutUp'
                         }
                     });
-
+                    commonFuncs.endLoader();
                     location.reload();
                 }).fail(function (error) {
+                    commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
+            commonFuncs.endLoader();
         });
 
         $('.image-upload').change(function (event) {
@@ -49,8 +52,8 @@ var addABook = (function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Image Validation Failed',
-                        text: 'Error details: ' + imageData
+                        title: 'Грешка с валидацията на снимката',
+                        text: 'Детайли: ' + imageData
                     });
                 }
             });
@@ -94,7 +97,6 @@ var addABookByISBN = (function () {
             $('#bookDetailsContainer').show();
         }
 
-
         function isValidISBN10(isbn) {
             isbn = isbn.replace(/[^\dX]/gi, '');
             if (isbn.length !== 10) return false;
@@ -126,6 +128,7 @@ var addABookByISBN = (function () {
         }
 
         $('#submit-isbn-info').click(function () {
+            commonFuncs.startLoader();
             var isbn = document.getElementById('isbnInput').value;
 
             if (isbn.trim() === "") {
@@ -155,7 +158,9 @@ var addABookByISBN = (function () {
                         if (response.status) {
                             var bookData = JSON.parse(response.message);
                             displayBookDetails(bookData);
+                            commonFuncs.endLoader();
                         } else {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 title: "Грешка",
                                 text: response.message,
@@ -163,6 +168,7 @@ var addABookByISBN = (function () {
                             });
                         }
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             title: "Грешка",
                             text: "Възникна грешка с извличането на информацията.",
@@ -174,12 +180,14 @@ var addABookByISBN = (function () {
             xhr.send();
 
         });
+
         $('#bookForm input, #bookForm textarea, #bookForm select').on('input', function () {
             $(this).removeClass('error');
         });
+
         $('#saveFormData').click(function (e) {
             e.preventDefault();
-
+            commonFuncs.startLoader();
             var emptyFields = [];
 
             $('#bookForm textarea, #bookForm select').each(function () {
@@ -196,6 +204,7 @@ var addABookByISBN = (function () {
                 Swal.fire("Грешка", "Моля запълнете всички полета.", "error");
                 emptyFields[0].focus();
                 return;
+                commonFuncs.endLoader();
             }
             var bookData = {
                 ISBN: $('#isbnOfBook').data('id'),
@@ -214,15 +223,19 @@ var addABookByISBN = (function () {
                 data: bookData,
                 success: function (response) {
                     if (response.status) {
-                        Swal.fire("Success", response.message, "success");
+                        commonFuncs.endLoader();
+                        Swal.fire("Успех", response.message, "success");
                     } else {
-                        Swal.fire("Error", response.message, "error");
+                        commonFuncs.endLoader();
+                        Swal.fire("Грешка", response.message, "error");
                     }
                 },
                 error: function () {
-                    Swal.fire("Error", "An error occurred while sending the request.", "error");
+                    commonFuncs.endLoader();
+                    Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
                 }
             });
+            commonFuncs.endLoader();
         });
 
     }
@@ -233,15 +246,17 @@ var addABookByISBN = (function () {
 var addACategory = (function () {
     function init($container) {
         $('#addCategoryButton').click(function () {
+            commonFuncs.startLoader();
             var neededName = $('#CategoryName').val();
 
             $.post('/Librarian/AddABookCategory', {
                 categoryName:neededName
             },
                 function (response) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'info',
-                        title: 'Server response',
+                        title: 'Отговор на сървъра',
                         html: `${response.message}`,
                         showClass: {
                             popup: 'animate__animated animate__fadeInDown'
@@ -253,8 +268,10 @@ var addACategory = (function () {
 
                     location.reload();
                 }).fail(function (error) {
+                    commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
+            commonFuncs.endLoader();
         });
     }
     return {
@@ -264,7 +281,7 @@ var addACategory = (function () {
 var addDocumentPage = (function () {
     function init($container) {
         $(document).on('click', '#submit-btn',function () {
-
+            commonFuncs.startLoader();
             var contentData = tinyMCE.activeEditor.getContent()
 
             var formDataObject = {
@@ -277,6 +294,7 @@ var addDocumentPage = (function () {
                 docImage: image
             }, function (response) {
                 if (response.status) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'success',
                         title: 'Успех',
@@ -287,6 +305,7 @@ var addDocumentPage = (function () {
                         timer: 3000
                     });
                 } else {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка',
@@ -299,6 +318,7 @@ var addDocumentPage = (function () {
                 }
                 location.reload();
             }).fail(function (error) {
+                commonFuncs.endLoader();
                 console.log('AJAX request failed:', error);
             });
         });
@@ -315,9 +335,11 @@ var bookPage = (function () {
             $readBookBtn = $container.find('.read-book-btn');
 
         $borrowBookBtn.click(function () {
+            commonFuncs.startLoader();
             var book = $(this).attr('id');
 
             $.post('/Home/BorrowBook', { bookId: book }, function (response) {
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'success',
                     title: 'Заявката беше подадена!',
@@ -330,17 +352,19 @@ var bookPage = (function () {
                 })
                 location.reload();
             }).fail(function (error) {
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
+                    title: 'Упс...',
                     text: 'Възникна грешка!',
                 })
                 alert('AJAX request failed: ' + error);
             });
-
+            commonFuncs.endLoader();
         });
 
         $readBookBtn.click(function () {
+            commonFuncs.startLoader();
             var book = $(this).data('id');
             $.ajax({
                 type: 'POST',
@@ -350,6 +374,7 @@ var bookPage = (function () {
                 success: function (response) {
                     if (response.status) {
                         if (typeof firstUserRead !== "undefined") {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 title: "Невероятно!",
                                 text: "Вие първи четете тази книга, за което получихте 5 точки!",
@@ -374,9 +399,10 @@ var bookPage = (function () {
                             });
                         }
                         else {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 icon: 'success',
-                                title: "Ще бъдете прехвърлени до 5 секунди да четете.",
+                                title: "Ще бъдете прехвърлени до 5 секунди да прегледате книгата.",
                                 showClass: {
                                     popup: 'animate__animated animate__fadeInDown'
                                 },
@@ -390,6 +416,7 @@ var bookPage = (function () {
                         }
                         
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: response.message,
@@ -403,6 +430,7 @@ var bookPage = (function () {
                     }
                 },
                 error: function (error) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'УПС...',
@@ -416,9 +444,9 @@ var bookPage = (function () {
         $UnathBorrowBookBtn.click(function () {
             Swal.fire({
                 icon: "error",
-                title: "No no!",
-                text: "A non authenticated user cannot borrow a book!",
-                footer: '<a href="/Identity/Account/Register">Create an account</a>'
+                title: "Невъзможно!",
+                text: "Неоторизиран потребител не може да вземе книга назаем!",
+                footer: '<a href="/Identity/Account/Register">Създайте акаунт</a>'
             });
         });
 
@@ -432,12 +460,14 @@ var bookPage = (function () {
                 },
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             title: 'Успех!',
                             text: response.message,
                             icon: 'success'
                         });
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             title: 'Грешка!',
                             text: response.message,
@@ -446,6 +476,7 @@ var bookPage = (function () {
                     }
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         title: 'Грешка!',
                         text: 'Възникна грешка докато се публикуваха данните: ' + error,
@@ -456,10 +487,12 @@ var bookPage = (function () {
         }
 
         $('.rate input[type="radio"]').change(function () {
+            commonFuncs.startLoader();
             var stars = $(this).val();
             var bookId = $(this).closest('.rate').data('book-id');
 
             sendRatingData(stars, bookId);
+            commonFuncs.endLoader();
         });
     }
     return {
@@ -476,6 +509,7 @@ var clientManagement = (function () {
 var editABook = (function () {
     function init($container) {
         $('#editBookButton').click(function () {
+            commonFuncs.startLoader();
             var bookData = {
                 Id: $('#editBookForm').data('id'),
                 Name: $('#Name').val(),
@@ -496,9 +530,10 @@ var editABook = (function () {
                 book: bookData
             },
                 function (response) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'info',
-                        title: 'Server response',
+                        title: 'Отговор на Сървъра',
                         html: `${response.message}`,
                         showClass: {
                             popup: 'animate__animated animate__fadeInDown'
@@ -510,8 +545,10 @@ var editABook = (function () {
 
                     location.reload();
                 }).fail(function (error) {
+                    commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
+            commonFuncs.endLoader();
         });
 
         $('.image-upload').change(function (event) {
@@ -524,28 +561,29 @@ var editABook = (function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Image Validation Failed',
-                        text: 'Error details: ' + imageData
+                        title: 'Грешка във валидацията на снимката',
+                        text: 'Детайли: ' + imageData
                     });
                 }
             });
         });
 
         $('.remove-book').click(function () {
-
+            commonFuncs.startLoader();
             var book = $(this).attr('id');
 
             Swal.fire({
-                title: 'WARNING?',
-                text: "Are you sure you want to remove the book ?",
+                title: 'ВНИМАНИЕ?',
+                text: "Сигурни ли сте че искате да изтриете тази книга ?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Remove!'
+                confirmButtonText: 'Да, Изтрий!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post('/Librarian/RemoveABook', { bookId:book }, function (response) {
+                    $.post('/Librarian/RemoveABook', { bookId: book }, function (response) {
+                        commonFuncs.endLoader();
                         location.reload();
                     });
                     location.reload();
@@ -559,7 +597,9 @@ var editABook = (function () {
 })();
 var editDocumentPage = (function () {
     function init($container) {
+
         $(document).on('click', '#submit-edit-btn', function () {
+            commonFuncs.startLoader();
             var contentData = tinyMCE.activeEditor.getContent()
             var formDataObject = {
                 Title: $('#title').val(),
@@ -573,6 +613,7 @@ var editDocumentPage = (function () {
                 docImage: image
             }, function (response) {
                 if (response.status) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'success',
                         title: 'Успех',
@@ -583,6 +624,7 @@ var editDocumentPage = (function () {
                         timer: 3000
                     });
                 } else {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка',
@@ -596,12 +638,14 @@ var editDocumentPage = (function () {
 
                 location.reload();
             }).fail(function (error) {
+                commonFuncs.endLoader();
                 console.log('AJAX request failed:', error);
             });
+            commonFuncs.endLoader();
         });
+
         $(document).on('click', '.deleteBlogPostButton', function () {
             var Id = $('#Id').val();
-
             Swal.fire({
                 title: 'Сигурни ли сте?',
                 text: 'Документът ще бъде изтрит перманентно!',
@@ -613,10 +657,12 @@ var editDocumentPage = (function () {
                 cancelButtonText: 'Отказ'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    commonFuncs.startLoader();
                     $.post('/Librarian/DeleteDocumentPost', {
                         id: Id,
                     }, function (response) {
                         if (response.status) {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Успех',
@@ -627,6 +673,8 @@ var editDocumentPage = (function () {
                                 timer: 3000
                             });
                         } else {
+                            commonFuncs.endLoader();
+
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Грешка',
@@ -637,7 +685,7 @@ var editDocumentPage = (function () {
                                 timer: 3000
                             });
                         }
-
+                        commonFuncs.endLoader();
                         var currentURL = window.location.href;
 
                         var baseURL = currentURL.split('/')[0] + '//' + currentURL.split('/')[2];
@@ -699,6 +747,7 @@ var editStaffInformation = (function () {
 var leasedTracker = (function () {
     function init($container) {
         $('#deleteBtn').on('click', function (e) {
+            commonFuncs.startLoader();
             e.preventDefault();
             var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
             $.ajax({
@@ -706,15 +755,18 @@ var leasedTracker = (function () {
                 url: "/Librarian/DeleteUserLeasedEntity",
                 data: { userLeasedId: userLeasedId },
                 success: function (response) {
+                    commonFuncs.endLoader();
                     location.reload();
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            });
+            }); commonFuncs.endLoader();
         });
 
         $('#stopLeasingBtn').on('click', function (e) {
+            commonFuncs.startLoader();
             e.preventDefault();
             var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
             $.ajax({
@@ -722,15 +774,18 @@ var leasedTracker = (function () {
                 url: "/Librarian/StopLeasing",
                 data: { userLeasedId: userLeasedId },
                 success: function (response) {
+                    commonFuncs.endLoader();
                     location.reload();
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            });
+            }); commonFuncs.endLoader();
         });
 
         $('#leaseBookBtn').on('click', function (e) {
+            commonFuncs.startLoader();
             e.preventDefault();
             var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
             $.ajax({
@@ -739,18 +794,22 @@ var leasedTracker = (function () {
                 data: { userLeasedId: userLeasedId, lease: true },
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire("Успех", response.message, "success");
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire("Грешка", response.message, "error");
                     }
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            });
+            }); commonFuncs.endLoader();
         });
 
         $('#rejectLeaseBtn').on('click', function (e) {
+            commonFuncs.startLoader();
             e.preventDefault();
             var userLeasedId = $(this).closest('.operations-container').data('userleasedid');
             $.ajax({
@@ -758,12 +817,14 @@ var leasedTracker = (function () {
                 url: "/Librarian/LeaseBookOrNot",
                 data: { userLeasedId: userLeasedId, lease: false },
                 success: function (response) {
+                    commonFuncs.endLoader();
                     location.reload();
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            });
+            }); commonFuncs.endLoader();
         }); 
     }
     return {
@@ -778,7 +839,7 @@ var manageBookCategories = (function () {
             counter = 0,
             newTemplateSubjectRow =
                 '<tr class="sub-row">' +
-                '   <td><input type="text" class="form-control subject-name" required></td>' +
+                '   <td><input type="text" class="form-control subject-name fs-5" required></td>' +
                 '   <td id="for-book-categories">' +
                 '       <a class="btn btn-warning fs-5 p-1 col-12 toggle-categories" data-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">' +
                 '           Скрий Категории' +
@@ -809,6 +870,7 @@ var manageBookCategories = (function () {
 
 
         $submitBtn.click(function () {
+            commonFuncs.startLoader();
             let selectedBookSubjectsDTO = [],
                 selectedBookCategoriesDTO = [];
 
@@ -843,10 +905,10 @@ var manageBookCategories = (function () {
                     bookSubjectsDTO: selectedBookSubjectsDTO,
                     bookCategoriesDTO: selectedBookCategoriesDTO
                 }, function (response) {
-
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'info',
-                        title: 'Server response',
+                        title: 'Отговор на сървъра',
                         html: `${response.message}`,
                         showClass: {
                             popup: 'animate__animated animate__fadeInDown'
@@ -859,8 +921,7 @@ var manageBookCategories = (function () {
                     location.reload();
 
                 }).fail(function (error) {
-                    // Handle the AJAX request failure
-                    // This function will be executed if the AJAX request encounters an error
+                    commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
 
@@ -877,10 +938,10 @@ var manageBookCategories = (function () {
                     errorList.appendChild(listItem);
                 });
 
-
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
+                    title: 'Упс...',
                     html: `${errorList.innerHTML}`,
                     showClass: {
                         popup: 'animate__animated animate__fadeInDown'
@@ -890,6 +951,7 @@ var manageBookCategories = (function () {
                     }
                 });
             }
+            commonFuncs.endLoader();
         });
 
         class FormValidator {
@@ -950,13 +1012,13 @@ var manageBookCategories = (function () {
         }
 
         $container.on('click', '.add-book-category-row-btn', function () {
-
+            commonFuncs.startLoader();
             var $button = $(this);
             var $tempTableDiv = $button.closest('.book-categories-table');
             var $nearestTbody = $tempTableDiv.find('tbody');
 
             let categoryRow = '<tr class="cat-row">' +
-                '   <td><input type="text" class="form-control category-name" required></td>' +
+                '   <td><input type="text" class="form-control category-name fs-5" required></td>' +
                 '   <td>' +
                 '       <button type="button" class="btn btn-danger delete-row m-1"><i class="fa fa-trash"></i></button>' +
                 '   </td>' +
@@ -965,11 +1027,11 @@ var manageBookCategories = (function () {
             let $newRow = $(categoryRow);
 
             $nearestTbody.append($newRow);
-
+            commonFuncs.endLoader();
         });
 
         $btnAddSubjectRow.click(function () {
-
+            commonFuncs.startLoader();
             counter++;
 
             let $newRow = $(newTemplateSubjectRow);
@@ -984,18 +1046,18 @@ var manageBookCategories = (function () {
 
 
             $bookSubjectTableDiv.find('#subjects-tbody').append($newRow);
-
+            commonFuncs.endLoader();
         });
 
         $(document).on('click', '.delete-row',function () {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this row!",
+                title: 'Сигурни ли сте?',
+                text: "Няма да можете да върнете този ред!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Delete!'
+                confirmButtonText: 'Да, Изтрий!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $(this).closest('tr').remove();
@@ -1032,6 +1094,7 @@ var manageMemberships = (function () {
         });
 
         $container.on('click', '.editBtn', function () {
+            commonFuncs.startLoader();
             var membershipId = $(this).data('id');
             var membershipName = $(this).data('name');
             var membershipStarterPoints = $(this).data('start');
@@ -1043,6 +1106,7 @@ var manageMemberships = (function () {
             $('#editNeededAmountOfPoints').val(membershipExitPoints);
 
             $('#editMembershipModal').modal('show');
+            commonFuncs.endLoader();
         });
 
         $container.on('click', '.deleteBtn', function () {
@@ -1059,7 +1123,7 @@ var manageMemberships = (function () {
                 if (result.isConfirmed) {
                     Swal.fire({
                         title: 'Накъде искате да преместите съществуващите елементи в даденото членство?',
-                        text:'Нагоре(в горната категория по точки), Надолу(в по-долната категория по точки)',
+                        text: 'Нагоре(в горната категория по точки), Надолу(в по-долната категория по точки)',
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -1067,12 +1131,14 @@ var manageMemberships = (function () {
                         confirmButtonText: 'Нагоре',
                         cancelButtonText: 'Надолу'
                     }).then((transferResult) => {
+                        commonFuncs.startLoader();
                         var isUpperConfirmed = transferResult.isConfirmed;
                         $.ajax({
                             url: '/Admin/DeleteMembership',
                             type: 'POST',
                             data: { id: membershipItemId, upper: isUpperConfirmed },
                             success: function (response) {
+                                commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Успех',
@@ -1084,6 +1150,7 @@ var manageMemberships = (function () {
                                 });
                             },
                             error: function (xhr, status, error) {
+                                commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Грешка',
@@ -1098,6 +1165,7 @@ var manageMemberships = (function () {
 
 
         $('#addMembershipForm').submit(function (event) {
+            commonFuncs.startLoader();
             event.preventDefault();
 
             var membershipName = $('#addMembershipName').val();
@@ -1105,7 +1173,8 @@ var manageMemberships = (function () {
             var neededAmountOfPoints = parseInt($('#addNeededAmountOfPoints').val());
 
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
-                starterNeededPoints <0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                starterNeededPoints < 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'error',
                     title: 'Грешка',
@@ -1122,17 +1191,19 @@ var manageMemberships = (function () {
                 data: formData,
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
                             text: response.message,
-                            showConfirmButton: false, 
-                            timer: 3000 
+                            showConfirmButton: false,
+                            timer: 3000
                         }).then((result) => {
                             location.reload();
                         });
-                    
+
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
@@ -1152,6 +1223,7 @@ var manageMemberships = (function () {
         });
 
         $('#editMembershipForm').submit(function (event) {
+            commonFuncs.startLoader();
             event.preventDefault();
             var membershipName = $('#editMembershipName').val().trim();
             var starterNeededPoints = parseInt($('#editStarterNeededPoints').val().trim());
@@ -1160,6 +1232,7 @@ var manageMemberships = (function () {
             // Check if input fields are valid
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
                 starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                commonFuncs.endLoader();
                 Swal.fire({
 
                     icon: 'error',
@@ -1177,6 +1250,7 @@ var manageMemberships = (function () {
                 data: formData,
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
@@ -1187,6 +1261,7 @@ var manageMemberships = (function () {
                             location.reload();
                         });
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
@@ -1196,6 +1271,7 @@ var manageMemberships = (function () {
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка',
@@ -1276,8 +1352,10 @@ var reportPageLibrarian = (function () {
         }
 
         $(document).on('change', '#bookSelect', function () {
+            commonFuncs.startLoader();
             if ($(this).val() === 'Personalized') {
                 $('#book-personalized-row').show();
+                commonFuncs.endLoader();
             } else {
                 $('#book-personalized-row').hide();
                 var dateEntity = $(this).val();
@@ -1316,18 +1394,23 @@ var reportPageLibrarian = (function () {
                 var selectedCountOfItemsEntity = $('#amountOfBookItems').val();
 
                 loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+                commonFuncs.endLoader();
             }
+            commonFuncs.endLoader();
         });
 
         $('#personalized-book-time-btn').click(function () {
+            commonFuncs.startLoader();
             var startDateEntity = $('#from-date-book').val();
             var endDateEntity = $('#to-date-book').val();
             var selectedCountOfItemsEntity = $('#amountOfBookItems').val();
 
             loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+            commonFuncs.endLoader();
         });
 
         $(document).on('change', '#amountOfBookItems', function () {
+            commonFuncs.startLoader();
             var dateEntity = $('#bookSelect').val();
             var startDateEntity = '';
             var endDateEntity = '';
@@ -1364,6 +1447,7 @@ var reportPageLibrarian = (function () {
             var selectedCountOfItemsEntity = $(this).val();
 
             loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+            commonFuncs.endLoader();
         });
 
         function getDateHoursAgo(date, hours) {
@@ -1396,9 +1480,11 @@ var reportPageLibrarian = (function () {
         var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
+            commonFuncs.startLoader();
             if ($(this).val() === 'Personalized') {
                 $('#genre-personalized-row').show();
                 $('#personalized-genre-time-btn').trigger('click');
+                commonFuncs.endLoader();
             } else {
                 $('#genre-personalized-row').hide();
                 var dateEntity = $(this).val();
@@ -1434,9 +1520,8 @@ var reportPageLibrarian = (function () {
                         break;
                 }
 
-                // Check if a chart is currently being loaded
                 if (!isChartLoading) {
-                    isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                    isChartLoading = true;
 
                     $.ajax({
                         type: 'POST',
@@ -1452,11 +1537,13 @@ var reportPageLibrarian = (function () {
                                 var ctx = canvas.getContext('2d');
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 if (genresData && genresData.length > 0) {
+                                    commonFuncs.endLoader();
                                     $('#no-chart-items-in-db').hide();
                                     $('#genreChart').show();
                                     loadGenreChart(genresData);
                                 }
                                 else {
+                                    commonFuncs.endLoader();
                                     $('#no-chart-items-in-db').show();
                                     $('#genreChart').hide();
                                 }
@@ -1464,11 +1551,11 @@ var reportPageLibrarian = (function () {
                                 console.error(response.Message);
                             }
 
-                            isChartLoading = false; // Reset the flag after chart loading is complete
+                            isChartLoading = false;
                         },
                         error: function (xhr, status, error) {
                             console.error(error);
-                            isChartLoading = false; // Reset the flag in case of an error
+                            isChartLoading = false; 
                         }
                     });
                 }
@@ -1476,6 +1563,7 @@ var reportPageLibrarian = (function () {
         });
 
         $('#personalized-genre-time-btn').click(function () {
+            commonFuncs.startLoader();
             var startDateEntity = $('#from-date-genre').val();
             var endDateEntity = $('#to-date-genre').val();
 
@@ -1497,15 +1585,18 @@ var reportPageLibrarian = (function () {
                             var ctx = canvas.getContext('2d');
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             if (genresData && genresData.length > 0) {
+                                commonFuncs.endLoader();
                                 $('#no-chart-items-in-db').hide();
                                 $('#genreChart').show();
                                 loadGenreChart(genresData);
                             }
                             else {
+                                commonFuncs.endLoader();
                                 $('#no-chart-items-in-db').show();
                                 $('#genreChart').hide();
                             }
                         } else {
+                            commonFuncs.endLoader();
                             console.error(response.Message);
                         }
 
@@ -1658,6 +1749,7 @@ var statisticsPage = (function () {
         }
 
         $(document).on('change', '#bookSelect', function () {
+            commonFuncs.startLoader();
             if ($(this).val() === 'Personalized') {
                 $('#book-personalized-row').show();
             } else {
@@ -1698,18 +1790,22 @@ var statisticsPage = (function () {
                 var selectedCountOfItemsEntity = $('#amountOfBookItems').val();
 
                 loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+                commonFuncs.endLoader();
             }
         });
 
         $('#personalized-book-time-btn').click(function () {
+            commonFuncs.startLoader();
             var startDateEntity = $('#from-date-book').val();
             var endDateEntity = $('#to-date-book').val();
             var selectedCountOfItemsEntity = $('#amountOfBookItems').val();
 
             loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+            commonFuncs.endLoader();
         });
 
         $(document).on('change', '#amountOfBookItems', function () {
+            commonFuncs.startLoader();
             var dateEntity = $('#bookSelect').val();
             var startDateEntity = '';
             var endDateEntity = '';
@@ -1746,6 +1842,7 @@ var statisticsPage = (function () {
             var selectedCountOfItemsEntity = $(this).val();
 
             loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
+            commonFuncs.endLoader();
         });
 
         function getDateHoursAgo(date, hours) {
@@ -1778,6 +1875,7 @@ var statisticsPage = (function () {
         var isChartLoading = false; 
 
         $(document).on('change', '#genreSelect', function () {
+            commonFuncs.startLoader();
             if ($(this).val() === 'Personalized') {
                 $('#genre-personalized-row').show();
                 $('#personalized-genre-time-btn').trigger('click');
@@ -1836,18 +1934,21 @@ var statisticsPage = (function () {
                                     $('#no-chart-items-in-db').hide();
                                     $('#genreChart').show();
                                     loadGenreChart(genresData);
+                                    commonFuncs.endLoader();
                                 }
                                 else {
                                     $('#no-chart-items-in-db').show();
                                     $('#genreChart').hide();
                                 }
                             } else {
+                                commonFuncs.endLoader();
                                 console.error(response.Message);
                             }
 
                             isChartLoading = false; 
                         },
                         error: function (xhr, status, error) {
+                            commonFuncs.endLoader();
                             console.error(error);
                             isChartLoading = false; 
                         }
@@ -1857,12 +1958,12 @@ var statisticsPage = (function () {
         });
 
         $('#personalized-genre-time-btn').click(function () {
+            commonFuncs.startLoader();
             var startDateEntity = $('#from-date-genre').val();
             var endDateEntity = $('#to-date-genre').val();
 
-            // Check if a chart is currently being loaded
             if (!isChartLoading) {
-                isChartLoading = true; // Set the flag to true to indicate that a chart is being loaded
+                isChartLoading = true; 
 
                 $.ajax({
                     type: 'POST',
@@ -1879,11 +1980,13 @@ var statisticsPage = (function () {
                             var ctx = canvas.getContext('2d');
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             if (genresData && genresData.length > 0) {
+                                commonFuncs.endLoader();
                                 $('#no-chart-items-in-db').hide();
                                 $('#genreChart').show();
                                 loadGenreChart(genresData);
                             }
                             else {
+                                commonFuncs.endLoader();
                                 $('#no-chart-items-in-db').show();
                                 $('#genreChart').hide();
                             }
@@ -1891,11 +1994,11 @@ var statisticsPage = (function () {
                             console.error(response.Message);
                         }
 
-                        isChartLoading = false; // Reset the flag after chart loading is complete
+                        isChartLoading = false;
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
-                        isChartLoading = false; // Reset the flag in case of an error
+                        isChartLoading = false;
                     }
                 });
             }
@@ -1905,10 +2008,8 @@ var statisticsPage = (function () {
             var canvas = document.getElementById('genreChart');
             var ctx = canvas.getContext('2d');
 
-            // Clear the canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Destroy previous chart instance if it exists
             if (window.myChart) {
                 window.myChart.destroy();
             }
@@ -1979,6 +2080,7 @@ var statisticsPage = (function () {
 var userFeedback = (function () {
     function init($container) {
         $('#contact-form-submition').submit(function (e) {
+            commonFuncs.startLoader();
             e.preventDefault();
 
             var formData = {
@@ -1992,6 +2094,7 @@ var userFeedback = (function () {
                 data: formData,
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
@@ -2003,6 +2106,7 @@ var userFeedback = (function () {
                             }
                         });
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
@@ -2011,6 +2115,7 @@ var userFeedback = (function () {
                     }
                 },
                 error: function () {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка',

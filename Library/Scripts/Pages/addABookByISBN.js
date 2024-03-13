@@ -31,7 +31,6 @@
             $('#bookDetailsContainer').show();
         }
 
-
         function isValidISBN10(isbn) {
             isbn = isbn.replace(/[^\dX]/gi, '');
             if (isbn.length !== 10) return false;
@@ -63,6 +62,7 @@
         }
 
         $('#submit-isbn-info').click(function () {
+            commonFuncs.startLoader();
             var isbn = document.getElementById('isbnInput').value;
 
             if (isbn.trim() === "") {
@@ -92,7 +92,9 @@
                         if (response.status) {
                             var bookData = JSON.parse(response.message);
                             displayBookDetails(bookData);
+                            commonFuncs.endLoader();
                         } else {
+                            commonFuncs.endLoader();
                             Swal.fire({
                                 title: "Грешка",
                                 text: response.message,
@@ -100,6 +102,7 @@
                             });
                         }
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             title: "Грешка",
                             text: "Възникна грешка с извличането на информацията.",
@@ -111,12 +114,14 @@
             xhr.send();
 
         });
+
         $('#bookForm input, #bookForm textarea, #bookForm select').on('input', function () {
             $(this).removeClass('error');
         });
+
         $('#saveFormData').click(function (e) {
             e.preventDefault();
-
+            commonFuncs.startLoader();
             var emptyFields = [];
 
             $('#bookForm textarea, #bookForm select').each(function () {
@@ -133,6 +138,7 @@
                 Swal.fire("Грешка", "Моля запълнете всички полета.", "error");
                 emptyFields[0].focus();
                 return;
+                commonFuncs.endLoader();
             }
             var bookData = {
                 ISBN: $('#isbnOfBook').data('id'),
@@ -151,15 +157,19 @@
                 data: bookData,
                 success: function (response) {
                     if (response.status) {
-                        Swal.fire("Success", response.message, "success");
+                        commonFuncs.endLoader();
+                        Swal.fire("Успех", response.message, "success");
                     } else {
-                        Swal.fire("Error", response.message, "error");
+                        commonFuncs.endLoader();
+                        Swal.fire("Грешка", response.message, "error");
                     }
                 },
                 error: function () {
-                    Swal.fire("Error", "An error occurred while sending the request.", "error");
+                    commonFuncs.endLoader();
+                    Swal.fire("Грешка", "Възникна грешка при изпращането на заявката.", "error");
                 }
             });
+            commonFuncs.endLoader();
         });
 
     }

@@ -347,6 +347,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             return await _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName).ToListAsync();
         }
+
         public async Task<LeasedTrackerViewModel> GetLeasedTrackerData(string Category)
         {
             var viewModel = new LeasedTrackerViewModel();
@@ -659,8 +660,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             try
             {
-                 await _documentsService.UpdateAsync(doc);
-                await _documentsService.DeleteImage(blogImage);
+                await _documentsService.UpdateAsync(doc);
                 var photo = new Photo();
                 if (blogImage != null && blogImage != "")
                 {
@@ -668,6 +668,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                     photo.ImageName = $"main-image-for-document-{doc.Id}";
                     photo.PublicId = $"main-image-for-document-{doc.Id}";
                 }
+                await _documentsService.DeleteImage(photo.PublicId);
                 await _documentsService.SaveImage(photo);
             }
             catch (DbUpdateConcurrencyException)

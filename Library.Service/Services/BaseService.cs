@@ -182,7 +182,8 @@ namespace Library.Services.Services
         {
             try
             {
-                await _cloudinary.DeleteResourcesAsync(imageId);
+                var deletionParams = new DeletionParams(imageId);
+                var res = await _cloudinary.DestroyAsync(deletionParams);
                 return true;
             }
             catch (Exception)

@@ -2,6 +2,7 @@
     function init($container) {
 
         $('#addBookButton').click(function () {
+            commonFuncs.startLoader();
             var bookData = {
                 Name: $('#Name').val(),
                 Author: $('#Author').val(),
@@ -23,7 +24,7 @@
                 function (response) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'Server response',
+                        title: 'Отговор на сървъра',
                         html: `${response.message}`,
                         showClass: {
                             popup: 'animate__animated animate__fadeInDown'
@@ -32,11 +33,13 @@
                             popup: 'animate__animated animate__fadeOutUp'
                         }
                     });
-
+                    commonFuncs.endLoader();
                     location.reload();
                 }).fail(function (error) {
+                    commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
+            commonFuncs.endLoader();
         });
 
         $('.image-upload').change(function (event) {
@@ -49,8 +52,8 @@
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Image Validation Failed',
-                        text: 'Error details: ' + imageData
+                        title: 'Грешка с валидацията на снимката',
+                        text: 'Детайли: ' + imageData
                     });
                 }
             });

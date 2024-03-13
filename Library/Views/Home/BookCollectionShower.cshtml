@@ -49,12 +49,12 @@
         <div class="row justify-content-around">
             @if (Model != null)
             {
-                @foreach (var subject in Model.BookSubjects)
+                @foreach (var subject in Model.BookSubjects.OrderBy(x=>x.SubjectName))
                 {
                     <div class="col-md-3 col-5 pt-3">
                         <div class="h3">@subject.SubjectName</div>
                         <ul class="list-unstyled">
-                            @foreach (var category in subject.BookCategories)
+                            @foreach (var category in subject.BookCategories.OrderBy(x => x.CategoryName))
                             {
                                 <li>
                                     <div class="d-flex">

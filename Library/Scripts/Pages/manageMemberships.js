@@ -6,6 +6,7 @@
         });
 
         $container.on('click', '.editBtn', function () {
+            commonFuncs.startLoader();
             var membershipId = $(this).data('id');
             var membershipName = $(this).data('name');
             var membershipStarterPoints = $(this).data('start');
@@ -17,6 +18,7 @@
             $('#editNeededAmountOfPoints').val(membershipExitPoints);
 
             $('#editMembershipModal').modal('show');
+            commonFuncs.endLoader();
         });
 
         $container.on('click', '.deleteBtn', function () {
@@ -33,7 +35,7 @@
                 if (result.isConfirmed) {
                     Swal.fire({
                         title: 'Накъде искате да преместите съществуващите елементи в даденото членство?',
-                        text:'Нагоре(в горната категория по точки), Надолу(в по-долната категория по точки)',
+                        text: 'Нагоре(в горната категория по точки), Надолу(в по-долната категория по точки)',
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -41,12 +43,14 @@
                         confirmButtonText: 'Нагоре',
                         cancelButtonText: 'Надолу'
                     }).then((transferResult) => {
+                        commonFuncs.startLoader();
                         var isUpperConfirmed = transferResult.isConfirmed;
                         $.ajax({
                             url: '/Admin/DeleteMembership',
                             type: 'POST',
                             data: { id: membershipItemId, upper: isUpperConfirmed },
                             success: function (response) {
+                                commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Успех',
@@ -58,6 +62,7 @@
                                 });
                             },
                             error: function (xhr, status, error) {
+                                commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Грешка',
@@ -72,6 +77,7 @@
 
 
         $('#addMembershipForm').submit(function (event) {
+            commonFuncs.startLoader();
             event.preventDefault();
 
             var membershipName = $('#addMembershipName').val();
@@ -79,7 +85,8 @@
             var neededAmountOfPoints = parseInt($('#addNeededAmountOfPoints').val());
 
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
-                starterNeededPoints <0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                starterNeededPoints < 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                commonFuncs.endLoader();
                 Swal.fire({
                     icon: 'error',
                     title: 'Грешка',
@@ -96,17 +103,19 @@
                 data: formData,
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
                             text: response.message,
-                            showConfirmButton: false, 
-                            timer: 3000 
+                            showConfirmButton: false,
+                            timer: 3000
                         }).then((result) => {
                             location.reload();
                         });
-                    
+
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
@@ -126,6 +135,7 @@
         });
 
         $('#editMembershipForm').submit(function (event) {
+            commonFuncs.startLoader();
             event.preventDefault();
             var membershipName = $('#editMembershipName').val().trim();
             var starterNeededPoints = parseInt($('#editStarterNeededPoints').val().trim());
@@ -134,6 +144,7 @@
             // Check if input fields are valid
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
                 starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
+                commonFuncs.endLoader();
                 Swal.fire({
 
                     icon: 'error',
@@ -151,6 +162,7 @@
                 data: formData,
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'success',
                             title: 'Успех',
@@ -161,6 +173,7 @@
                             location.reload();
                         });
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Грешка',
@@ -170,6 +183,7 @@
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка',

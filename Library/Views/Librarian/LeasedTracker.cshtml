@@ -62,7 +62,7 @@
 <div class="leased-tracker-page">
     <div class="row pt-3 pb-5 mb-2">
         <div class="col-2 col-md-1"></div>
-        <div class="text-center py-2 col-8 col-md-10 display-4">Управление на категории</div>
+        <div class="text-center py-2 col-8 col-md-10 display-4">Отдавания</div>
         <a class="col-2 col-md-1 align-self-center" href="#" data-toggle="modal" data-target="#infoModal"><i class="fa-regular fa-circle-question fa-2xl"></i></a>
         <hr class="py-1" style="color:#00d1d1" />
     </div>
@@ -151,5 +151,41 @@
             </div>
         }
 
+    </div>
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-1"></div>
+                    <h3 class="modal-title col-8 text-center" id="infoModalLabel">Допълнителна информация</h3>
+                    <a class="close btn col-1 py-0 my-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                </div>
+
+                <div class="container">
+                    <div>
+                        <div class="container">
+                            <p style="font-weight: bold; font-size:larger">Предоставената страница дава възможност на персонала да управлява отдаванията на книгите.</p>
+                        </div>
+                        <hr />
+                        <br />
+                        <div class="containter">
+                            <p>В първата страница чакащи са всички връзки между книга и човек, които не са одобрени от администратор или работник. 
+                                В тази страница работника или администратора може да отдаде книгата, което ако бъде направено изпраща имейл на потребителя, че книгата му е била одобрена.
+                                Също така администратора/работника може да отхвърли предложението, което изтрива дадената връзка потребител-книга.
+                            </p>
+                            <p>
+                                Във втората страница вече излизат отдадените книги в момента. В тази страница може да се спре достъпа на потребителя до дадена книга.
+                            </p>
+                            <p>
+                                В третата страница са вече отминалите отдавания, които всеки администратор или работник може да затрие от базата.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
