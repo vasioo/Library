@@ -66,9 +66,18 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 bookNew.DateOfBookCreation = book.DateOfBookCreation;
                 bookNew.Genre = bookCat;
                 bookNew.AmountOfBooks = book.AmountOfBooks;
+                bookNew.Language = book.Language;
+                bookNew.ISBN = book.ISBN;
                 bookNew.Description = book.Description;
                 bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
-
+                if (!String.IsNullOrEmpty(book.PreviewLink))
+                {
+                    bookNew.BookPreviewLink = book.PreviewLink;
+                }
+                else
+                {
+                    bookNew.BookPreviewLink = "Unavailable";
+                }
                 var id = await _bookService.AddAsync(bookNew);
 
                 var photo = new Photo();
@@ -236,10 +245,12 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.Genre = book.Genre.CategoryName;
             viewModel.Description = book.Description;
             viewModel.AmountOfBooks = book.AmountOfBooks;
+            viewModel.Language = book.Language;
+            viewModel.ISBN = book.ISBN;
             viewModel.NeededMembership = book.NeededMembership.MembershipName;
             viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
             viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
-
+            viewModel.PreviewLink = book.BookPreviewLink;
             return viewModel;
         }
 
@@ -258,9 +269,17 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 bookNew.Genre = bookCat;
                 bookNew.Description = book.Description;
                 bookNew.AmountOfBooks = book.AmountOfBooks;
+                bookNew.Language = book.Language;
+                bookNew.ISBN = book.ISBN;
                 bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
-
-
+                if (!String.IsNullOrEmpty(book.PreviewLink  ))
+                {
+                    bookNew.BookPreviewLink = book.PreviewLink;
+                }
+                else
+                {
+                    bookNew.BookPreviewLink = "Unavailable";
+                }
                 await _bookService.UpdateAsync(bookNew);
 
                 var photo = new Photo();
@@ -313,7 +332,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             bookEntity.Language = viewModelDTO.Language;
             bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
             bookEntity.Description = viewModelDTO.Description;
-            if (_membershipService.IQueryableGetAllAsync().Where(x=>x.StartingNeededAmountOfPoints<2).Count()<1)
+            if (_membershipService.IQueryableGetAllAsync().Where(x => x.StartingNeededAmountOfPoints < 2).Count() < 1)
             {
                 var newMembership = new Membership();
                 newMembership.MembershipName = "Начален";
@@ -334,7 +353,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             var photo = new Photo();
             if (viewModelDTO.ImageURL != null && viewModelDTO.ImageURL != "")
             {
-                photo.Image = viewModelDTO.ImageURL; 
+                photo.Image = viewModelDTO.ImageURL;
                 photo.ImageName = $"image-for-book-{neededId}";
                 photo.PublicId = $"image-for-book-{neededId}";
             }
@@ -361,7 +380,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
             else
             {
-                viewModel.LeasedBooks = _userLeasedBookService.IQueryableGetAllAsync().Where(x => x.Approved == false);
+                viewModel.LeasedBooks = _userLeasedBookService.IQueryableGetAllAsync().Where(x => !x.Approved && !x.IsRead);
             }
             viewModel.Category = Category;
             return viewModel;
@@ -378,7 +397,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.AmountOfBooks = await _bookService.IQueryableGetAllAsync().CountAsync();
             viewModel.AmountOfCategories = await _bookCategoryService.IQueryableGetAllAsync().CountAsync();
             viewModel.AmountOfSubjects = await _bookSubjectService.IQueryableGetAllAsync().CountAsync();
-            viewModel.AmountOfLeased = await _userLeasedBookService.IQueryableGetAllAsync().Where(x=>!x.IsRead&&x.Approved).CountAsync();
+            viewModel.AmountOfLeased = await _userLeasedBookService.IQueryableGetAllAsync().Where(x => !x.IsRead && x.Approved).CountAsync();
 
             var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24), DateTime.Now, 1);
 
@@ -424,7 +443,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                             var membershipCount = _membershipService.IQueryableGetAllAsync()
                                 .Where(x => x.StartingNeededAmountOfPoints <= user.Points).Count();
 
-                            user.Points += membershipCount*5;
+                            user.Points += membershipCount * 5;
                             var emailBody = $@"
                          <html>
                            <body>
@@ -437,7 +456,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                                <br/>
                                <hr/>
                               <div style='text-align: center; font-size: 15px; font-weight: bold; margin-top: 20px; text-decoration:none; color: #d4af37;'>
-                                   Вие получихте {membershipCount*5} точки, за тази книга
+                                   Вие получихте {membershipCount * 5} точки, за тази книга
                                </div>
                                <br/>
                                <div style='background:#ffffff;background-color:#ffffff;margin:0px auto;font-family:Arial,sans-serif;max-width:864px'>
@@ -628,7 +647,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             try
             {
-                if (doc.Content==null)
+                if (doc.Content == null)
                 {
                     doc.Content = "";
 
@@ -702,7 +721,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
             return "Няма такъв документ.";
         }
-     
+
         #endregion
     }
 }

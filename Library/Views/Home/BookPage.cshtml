@@ -3,14 +3,14 @@
 
 @{
     var imageUrl = "";
-    string abbreviation="";
+    string abbreviation = "";
     var book = Model.Book;
     if (book != null)
     {
         imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{Model.Book.Id}.png";
         var month = book.DateOfBookCreation.Month;
         System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("bg-BG");
-      
+
         switch (month)
         {
             case 1:
@@ -171,7 +171,7 @@
                             {
                                 if (!Model.IsDisabled)
                                 {
-                                    @if (!String.IsNullOrEmpty(Model.Book.ISBN))
+                                    @if (Model.IsLinkAvailable)
                                     {
                                         if (Model.IsWaiting)
                                         {
@@ -179,12 +179,24 @@
                                                 <a class="btn btn-warning col fs-5 disabled">Изчакайте потвърждение</a>
                                             </div>
                                         }
+                                        else if (!Model.IsBookAllowed)
+                                        {
+                                            <div class="d-flex">
+                                                <a class="btn btn-danger col fs-5 disabled">Достъпът до книгата е забранен</a>
+                                            </div>
+                                        }
                                         else
                                         {
                                             <div class="d-flex">
-                                                <a id="@Model.Book.Id" class="btn btn-danger read-book-btn col fs-5" data-id="@Model.Book.ISBN">Чети книгата</a>
+                                                <a id="@Model.Book.Id" class="btn read-book-btn col fs-5 text-white" style="background:#00d1d1;" data-id="@Model.Book.ISBN">Чети книгата</a>
                                             </div>
                                         }
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex">
+                                            <a class="btn btn-danger col fs-5 disabled">Тази книга не може да бъде отдавана</a>
+                                        </div>
                                     }
                                 }
                                 else

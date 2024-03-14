@@ -99,7 +99,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             var starRating = _starRatingService.IQueryableGetAllAsync()
                 .Where(x => x.User == user && x.Book == viewModel.Book)
                 .FirstOrDefault();
-            if (starRating!=null)
+            if (starRating != null)
             {
                 viewModel.StarRatingAmount = starRating.StarCount;
             }
@@ -112,11 +112,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
                 if (borrowedBook!.Id != Guid.Empty)
                 {
+                    viewModel.IsBookAllowed = borrowedBook.IsRead && !borrowedBook.Approved;
                     viewModel.HasUserBorrowedIt = true;
-                    if (!borrowedBook.Approved && !borrowedBook.IsRead)
-                    {
-                        viewModel.IsWaiting = true;
-                    }
+                    viewModel.IsLinkAvailable = viewModel.Book.BookPreviewLink!="Unavailable";
+                    viewModel.IsWaiting = !borrowedBook.Approved && !borrowedBook.IsRead;
                 }
                 else
                 {
@@ -190,7 +189,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             try
             {
                 var book = _bookService.IQueryableGetAllAsync().Where(x => x.ISBN == isbn).FirstOrDefault();
-                var mappingElement = _userLeasedBookService.IQueryableGetAllAsync().Where(x=>x.Book.Id==book!.Id&&x.User==user).FirstOrDefault();
+                var mappingElement = _userLeasedBookService.IQueryableGetAllAsync().Where(x => x.Book.Id == book!.Id && x.User == user).FirstOrDefault();
                 if (!mappingElement!.IsRead)
                 {
                     mappingElement.IsRead = true;
@@ -208,7 +207,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
         }
 
-        public async Task UpdateBookLink(string isbn,string link)
+        public async Task UpdateBookLink(string isbn, string link)
         {
             var book = _bookService.IQueryableGetAllAsync().Where(x => x.ISBN == isbn).FirstOrDefault();
             book!.BookPreviewLink = link;
@@ -288,7 +287,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             else
             {
                 var books = _bookService.IQueryableGetAllAsync()
-                    .Where(x => x.Title.Contains(inputValue)||x.Author.Contains(inputValue)||x.ISBN.Contains(inputValue))
+                    .Where(x => x.Title.Contains(inputValue) || x.Author.Contains(inputValue) || x.ISBN.Contains(inputValue))
                     .Skip((page - 1) * 20).Take(20);
                 viewModel.TotalPages = (int)Math.Ceiling((double)_bookService.IQueryableGetAllAsync().Count() / 20);
                 viewModel.PageNumber = page;
@@ -315,8 +314,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
         {
             try
             {
-                var existingItem = _starRatingService.IQueryableGetAllAsync().Where(x=>x.User.Id==user.Id&&x.Book.Id==bookId).FirstOrDefault();
-                if (existingItem!=null)
+                var existingItem = _starRatingService.IQueryableGetAllAsync().Where(x => x.User.Id == user.Id && x.Book.Id == bookId).FirstOrDefault();
+                if (existingItem != null)
                 {
                     existingItem.StarCount = stars;
                     await _starRatingService.UpdateAsync(existingItem);

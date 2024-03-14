@@ -15,6 +15,9 @@ namespace Library.Models.ViewModels
         public string Description { get; set; } = "";
         public string NeededMembership { get; set; } = "";
         public int AmountOfBooks { get; set; }
+        public string ISBN { get; set; } = "";
+        public string Language { get; set; } = "";
+        public string PreviewLink { get; set; } = "";
         public IQueryable<string> AllGenres { get; set; } = Enumerable.Empty<string>().AsQueryable();
         public IQueryable<string> AllMemberships { get; set; } = Enumerable.Empty<string>().AsQueryable();
     }

@@ -106,10 +106,14 @@ namespace Library.Services.Services
         public async Task RemoveAnHourToExistingEntity(Guid id)
         {
             var entity = await _dataContext.UserLeasedBooks.Where(x => x.Id == id).FirstOrDefaultAsync();
+            if (entity!=null)
+            {
+                entity.DateOfBorrowing = DateTime.Now.AddHours(-1);
+                entity.IsRead = true;
+                entity.Approved = false;
+                _dataContext.Update(entity);
+            }
 
-            entity.DateOfBorrowing = DateTime.Now.AddHours(-1);
-
-            _dataContext.Update(entity);
             await _dataContext.SaveChangesAsync();
         }
 

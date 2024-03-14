@@ -8,6 +8,7 @@
             }
         });
         $('#submitButton').click(function () {
+            commonFuncs.startLoader();
             var formData = {
                 Id: $('#Id').val(),
                 Salary: $('#Salary').val(),
@@ -24,12 +25,15 @@
                 },
                 success: function (response) {
                     if (response.status) {
+                        commonFuncs.endLoader();
                         Swal.fire("Успех", response.message, "success");
                     } else {
+                        commonFuncs.endLoader();
                         Swal.fire("Грешка", response.errors, "error");
                     }
                 },
                 error: function (xhr, status, error) {
+                    commonFuncs.endLoader();
                     Swal.fire("Грешка", xhr.responseText, "error");
                 }
             });

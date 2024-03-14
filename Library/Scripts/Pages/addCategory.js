@@ -26,7 +26,6 @@
                     commonFuncs.endLoader();
                     console.log('AJAX request failed:', error);
                 });
-            commonFuncs.endLoader();
         });
     }
     return {

@@ -107,7 +107,6 @@
                 loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity);
                 commonFuncs.endLoader();
             }
-            commonFuncs.endLoader();
         });
 
         $('#personalized-book-time-btn').click(function () {

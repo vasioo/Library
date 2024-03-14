@@ -141,7 +141,6 @@
             var starterNeededPoints = parseInt($('#editStarterNeededPoints').val().trim());
             var neededAmountOfPoints = parseInt($('#editNeededAmountOfPoints').val().trim());
 
-            // Check if input fields are valid
             if (membershipName === '' || isNaN(starterNeededPoints) || isNaN(neededAmountOfPoints) ||
                 starterNeededPoints <= 0 || neededAmountOfPoints <= starterNeededPoints || neededAmountOfPoints < 0) {
                 commonFuncs.endLoader();

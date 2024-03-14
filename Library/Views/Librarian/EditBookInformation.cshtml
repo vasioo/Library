@@ -76,6 +76,18 @@
                         <input asp-for="AmountOfBooks" class="form-control" type="number" value="@Model.AmountOfBooks" placeholder="Въведете броя на наличните книги..." />
                     </div>
                     <div class="form-group">
+                        <label asp-for="ISBN">ISBN номер</label>
+                        <input asp-for="ISBN" class="form-control" value="@Model.ISBN" type="text" placeholder="Въведете номера при баркода на книгата..." />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Language">Език на книгата</label>
+                        <input asp-for="Language" class="form-control" value="@Model.Language" type="text" placeholder="Въведете езика на книгата..." />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PreviewLink">Линк за четене на книгата</label>
+                        <input asp-for="PreviewLink" class="form-control" value="@Model.PreviewLink" placeholder="Въведете линк за четене..." />
+                    </div>
+                    <div class="form-group">
                         <label asp-for="Description">Описание</label>
                         <textarea asp-for="Description" class="form-control" placeholder="Въведете описание на книгата..." value="@Model.Description"></textarea>
                     </div>

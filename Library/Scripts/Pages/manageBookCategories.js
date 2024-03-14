@@ -118,7 +118,6 @@
                     }
                 });
             }
-            commonFuncs.endLoader();
         });
 
         class FormValidator {

@@ -16,7 +16,7 @@
                     commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            }); commonFuncs.endLoader();
+            }); 
         });
 
         $('#stopLeasingBtn').on('click', function (e) {
@@ -35,7 +35,7 @@
                     commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            }); commonFuncs.endLoader();
+            }); 
         });
 
         $('#leaseBookBtn').on('click', function (e) {
@@ -60,7 +60,7 @@
                     commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            }); commonFuncs.endLoader();
+            });
         });
 
         $('#rejectLeaseBtn').on('click', function (e) {
@@ -79,7 +79,7 @@
                     commonFuncs.endLoader();
                     console.error(xhr.responseText);
                 }
-            }); commonFuncs.endLoader();
+            });
         }); 
     }
     return {

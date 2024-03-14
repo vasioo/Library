@@ -7,42 +7,96 @@
                 Name: $('#Name').val(),
                 Author: $('#Author').val(),
                 DateOfBookCreation: $('#DateOfBookCreation').val(),
-                Genre: $('#Genre').val() ,
+                Genre: $('#Genre').val(),
                 Description: $('#Description').val(),
                 AvailableItems: $('#AvailableItems').val(),
                 NeededMembership: $('#NeededMembership').val(),
-                AmountOfBooks: $('#AmountOfBooks').val()
+                AmountOfBooks: $('#AmountOfBooks').val(),
+                ISBN: $('#ISBN').val(),
+                Language: $('#Language').val(),
+                PreviewLink: $('#PreviewLink').val()
             };
+            var errors = [];
 
 
-            const image = $('.uploaded-image').attr('src');
+            if (!bookData.Id) errors.push("Идентификационният номер е задължителен.");
+            if (!bookData.Name) errors.push("Името на книгата е задължително.");
+            if (!bookData.Author) errors.push("Авторът на книгата е задължителен.");
+            if (!bookData.DateOfBookCreation) errors.push("Дата на създаване на книгата е задължителна.");
+            if (!bookData.Genre) errors.push("Жанрът на книгата е задължителен.");
+            if (!bookData.Description) errors.push("Описанието на книгата е задължително.");
+            if (!bookData.AvailableItems) errors.push("Броят на наличните елементи на книгата е задължителен.");
+            if (!bookData.NeededMembership) errors.push("Необходимият абонамент за книгата е задължителен.");
+            if (!bookData.AmountOfBooks) errors.push("Броят на книгите е задължителен.");
+            if (!bookData.Language) errors.push("Езикът на книгата е задължителен.");
+            if (!isValidUrl(bookData.PreviewLink)) errors.push("Връзката към прегледа на книгата не е валидна.");
+            if (!bookData.ISBN) {
+                errors.push("ISBN номерът е задължителен.");
+            } else {
+                var isbn = bookData.ISBN.replace(/[^\dX]/gi, '');
+                if (isbn.length !== 10 && isbn.length !== 13) {
+                    errors.push("ISBN номерът трябва да бъде от 10 или 13 символа.");
+                } else {
+                    if (!(isValidISBN10(isbn) || isValidISBN13(isbn))) {
+                        errors.push("Невалиден ISBN номер.");
+                    }
+                }
+            }
+            if (bookData.PreviewLink !== "Unavailable" && bookData.PreviewLink !== "" && !isValidUrl(bookData.PreviewLink)) {
+                errors.push("Връзката към прегледа на книгата не е валидна.");
+            }
+            if (errors.length > 0) {
+                commonFuncs.endLoader();
+                var errorMessage = "<div class='error-message' style='color: red;text-align: left;'>";
+                errorMessage += "<p style='color:black !important;'>Моля, коригирайте следните грешки:</p><br><br>";
+                errorMessage += errors.join("<br>");
+                errorMessage += "</div>";
 
-            $.post('/Librarian/EditABookPost', {
-                imageObj: image,
-                book: bookData
-            },
-                function (response) {
-                    commonFuncs.endLoader();
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Отговор на Сървъра',
-                        html: `${response.message}`,
-                        showClass: {
-                            popup: 'animate__animated animate__fadeInDown'
-                        },
-                        hideClass: {
-                            popup: 'animate__animated animate__fadeOutUp'
-                        }
-                    });
-
-                    location.reload();
-                }).fail(function (error) {
-                    commonFuncs.endLoader();
-                    console.log('AJAX request failed:', error);
+                Swal.fire({
+                    title: 'Грешка!',
+                    html: errorMessage,
+                    icon: 'error',
+                    confirmButtonText: 'Разбрах',
+                    customClass: {
+                        htmlContainer: 'text-left'
+                    }
                 });
-            commonFuncs.endLoader();
-        });
+            } else {
+                const image = $('.uploaded-image').attr('src');
 
+                $.post('/Librarian/EditABookPost', {
+                    imageObj: image,
+                    book: bookData
+                },
+                    function (response) {
+                        commonFuncs.endLoader();
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Отговор на Сървъра',
+                            html: `${response.message}`,
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+
+                        location.reload();
+                    }).fail(function (error) {
+                        commonFuncs.endLoader();
+                        console.log('AJAX request failed:', error);
+                    });
+            }
+        });
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
         $('.image-upload').change(function (event) {
             const $input = $(this),
                 $uploadedImage = $input.parent().find('.uploaded-image'),
@@ -54,7 +108,6 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Грешка във валидацията на снимката',
-                        text: 'Детайли: ' + imageData
                     });
                 }
             });

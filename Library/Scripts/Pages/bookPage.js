@@ -30,7 +30,6 @@
                 })
                 alert('AJAX request failed: ' + error);
             });
-            commonFuncs.endLoader();
         });
 
         $readBookBtn.click(function () {

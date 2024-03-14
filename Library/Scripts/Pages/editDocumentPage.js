@@ -44,7 +44,6 @@
                 commonFuncs.endLoader();
                 console.log('AJAX request failed:', error);
             });
-            commonFuncs.endLoader();
         });
 
         $(document).on('click', '.deleteBlogPostButton', function () {
@@ -76,8 +75,8 @@
                                 timer: 3000
                             });
                         } else {
+                            commonFuncs.endLoader();
                             Swal.fire({
-                                commonFuncs.endLoader();
                                 icon: 'error',
                                 title: 'Грешка',
                                 text: 'Възникна грешка при изтриването.',
