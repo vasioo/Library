@@ -142,6 +142,9 @@
                                 <label for="star@(i)" title="text"><span class="star-icon"></span></label>
                             }
                         </div>
+                        <div class="row justify-content-center fs-4 align-items-center" style="height:46px;">
+                           @Model.AverageRate /5
+                        </div>
                     </div>
                 </div>
 
@@ -153,7 +156,7 @@
                 <hr />
                 <div class="row">
                     <div class="col-6 left-table-prop">Жанр</div>
-                    <div class="col-6 right-table-prop">@book.Genre.CategoryName</div>
+                    <div class="col-6 right-table-prop">@book!.Genre!.CategoryName</div>
                 </div>
                 <hr />
             </div>

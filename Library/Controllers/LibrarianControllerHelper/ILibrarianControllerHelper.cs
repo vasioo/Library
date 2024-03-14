@@ -15,9 +15,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
         IQueryable<BookSubject> GetAllBookSubjects();
         Task<BookChangersViewModel> AddABookHelper();
         Task<BookChangersViewModel> EditABookHelper(Guid id);
-        Task<ReportViewModel> GetReportPageModel();
-        Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems);
-        Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate);
         Task SaveBookHelper(BookViewModelDTO viewModelDTO); 
         Task<List<string>> GetAllGenresHelper();
         Task<LeasedTrackerViewModel> GetLeasedTrackerData(string Category);

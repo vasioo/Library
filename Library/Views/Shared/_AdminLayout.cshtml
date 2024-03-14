@@ -26,7 +26,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav align-items-center flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Statistics">Статистики</a>
+                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Report">Статистики</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="ClientManagement">Клиенти</a>
@@ -79,7 +79,8 @@
             clientManagement.init($('.client-management'));
             editStaffInformation.init($('.edit-staff-information'));
             manageMemberships.init($('.manage-memberships'));
-            statisticsPage.init($('.statistics-page'));
+            reportPageLibrarian.init($('.report-page-librarian'));
+
         });
     </script>
     <div class="book_custom_loader">

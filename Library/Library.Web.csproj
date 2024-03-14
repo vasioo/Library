@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\library\js\common.js" />
+    <None Include="wwwroot\library\js\customJS\accountPage.js" />
     <None Include="wwwroot\library\js\customJS\mainLayout.js" />
   </ItemGroup>
 

@@ -42,6 +42,7 @@ namespace Library.Controllers
         #endregion
 
         #region BookCollectionShower
+
         public async Task<IActionResult> BookCollectionShower()
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
@@ -55,6 +56,7 @@ namespace Library.Controllers
 
             return View("~/Views/Home/BookCollectionShower.cshtml", viewModel);
         }
+
         #endregion
 
         #region BookShower
@@ -219,8 +221,8 @@ namespace Library.Controllers
         #endregion
 
         #region Borrowed
-        [Authorize]
 
+        [Authorize]
         public async Task<IActionResult> Borrowed()
         {
             var username = HttpContext.User?.Identity?.Name ?? "";
@@ -233,6 +235,7 @@ namespace Library.Controllers
             }
             return View("~/Views/Home/Borrowed.cshtml", viewModel);
         }
+
         #endregion
 
         #region Helpers
@@ -263,14 +266,17 @@ namespace Library.Controllers
             var model = await _helper.GetDocumentPageEntity(id);
             return View("~/Views/Home/DocumentPage.cshtml", model);
         }
+
         #endregion
 
         #region UserFeedback
+
         [Authorize]
         public IActionResult UserFeedback()
         {
             return View("~/Views/Home/UserFeedback.cshtml");
         }
+
         [Authorize]
         public async Task<JsonResult> SubmitUserFeedback(UserFeedbackDTO userFeedback)
         {
@@ -301,6 +307,5 @@ namespace Library.Controllers
             return Json(new { status = true, Message = "Имейлът беше изпратен успешно!" });
         }
         #endregion
-
     }
 }

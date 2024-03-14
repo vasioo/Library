@@ -58,7 +58,7 @@ $(document).ready(function () {
     });
     $('#loginForm').submit(function (event) {
         event.preventDefault();
-
+        commonFuncs.startLoader();
         var emailInput = $('#LoginEmail');
         var email = emailInput.val();
 
@@ -68,7 +68,7 @@ $(document).ready(function () {
             var label = emailInput.closest('.input-box').find('label');
             label.text('Невалиден Имейл');
             return false;
-
+            commonFuncs.endLoader();
         }
 
         var formData = $(this).serialize();
@@ -79,6 +79,7 @@ $(document).ready(function () {
             data: formData,
             dataType: 'json',
             success: function (response) {
+                commonFuncs.endLoader();
                 if (response.success) {
                     Swal.fire({
                         icon: 'success',
@@ -91,6 +92,7 @@ $(document).ready(function () {
                         window.location.href = '/';
                     });
                 } else {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -103,13 +105,14 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr, status, error) {
+                commonFuncs.endLoader();
                 console.error(xhr.responseText);
             }
         });
     });
     $('#registerForm').submit(function (event) {
         event.preventDefault();
-
+        commonFuncs.startLoader();
         var emailInput = $('#RegisterEmail');
         var email = emailInput.val();
 
@@ -117,6 +120,7 @@ $(document).ready(function () {
             emailInput.closest('.input-box').addClass('invalid');
             var label = emailInput.closest('.input-box').find('label');
             label.text('Невалиден Имейл');
+            commonFuncs.endLoader();
             return false;
         }
 
@@ -126,6 +130,7 @@ $(document).ready(function () {
         if (!validatePassword(currpassword)) {
             passwordInput.closest('.input-box').addClass('invalid');
             var label = passwordInput.closest('.input-box').find('label');
+            commonFuncs.endLoader();
             Swal.fire({
                 icon: 'error',
                 title: 'Грешка',
@@ -148,6 +153,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
+                    commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'info',
                         title: 'Потвърждение',
@@ -157,6 +163,7 @@ $(document).ready(function () {
                     });
                     
                 } else {
+                    commonFuncs.endLoader();
                     if (response.hasOwnProperty('usernameRelated') && response.usernameRelated === true) {
                         var usernameInput = $('#RegisterUsername');
                         var inputBox = usernameInput.closest('.input-box');
@@ -165,6 +172,7 @@ $(document).ready(function () {
                         label.text('Това потребителско име вече съществува');
                     }
                     else {
+                        commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -177,6 +185,7 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr, status, error) {
+                commonFuncs.endLoader();
                 console.error(xhr.responseText);
             }
         });

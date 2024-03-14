@@ -4,7 +4,7 @@
         function loadBookInformation(startDateEntity, endDateEntity, selectedCountOfItemsEntity) {
             $.ajax({
                 type: 'POST',
-                url: '/Librarian/LoadBookInformation',
+                url: '/Admin/LoadBookInformation',
                 data: {
                     startDate: startDateEntity,
                     endDate: endDateEntity,
@@ -21,11 +21,12 @@
                                 var link = document.createElement('a');
                                 link.href = '/Home/BookPage?bookId=' + book.id;
 
+                                var columnDiv = document.createElement('div');
+                                columnDiv.className = 'col-md-4 mb-4'; 
+
                                 var imageContainer = document.createElement('div');
                                 imageContainer.className = 'd-flex justify-content-center align-items-center mb-2 book-container';
                                 imageContainer.style.height = '30rem';
-                                imageContainer.style.width = '30rem';
-                                imageContainer.style.border = '1px solid #ccc';
 
                                 var image = document.createElement('img');
                                 image.src = 'https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-' + book.id + '.png';
@@ -39,8 +40,9 @@
                                 imageContainer.appendChild(image);
                                 link.appendChild(imageContainer);
                                 link.appendChild(nameDiv);
+                                columnDiv.appendChild(link);
 
-                                fragment.appendChild(link);
+                                fragment.appendChild(columnDiv);
                             });
                         } else {
                             var message = document.createElement('h2');
@@ -235,7 +237,7 @@
 
                     $.ajax({
                         type: 'POST',
-                        url: '/Librarian/LoadGenreInformation',
+                        url: '/Admin/LoadGenreInformation',
                         data: {
                             startDate: startDateEntity,
                             endDate: endDateEntity,
@@ -282,7 +284,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/Librarian/LoadGenreInformation',
+                    url: '/Admin/LoadGenreInformation',
                     data: {
                         startDate: startDateEntity,
                         endDate: endDateEntity,

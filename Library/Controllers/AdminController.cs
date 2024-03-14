@@ -25,24 +25,28 @@ namespace Library.Web.Controllers
         #endregion
         
         #region StaffManagement
+
         public async Task<IActionResult> EditStaffInformation(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             return View("~/Views/Admin/EditStaffPersonInformation.cshtml", user);
         }
+
         public async Task<IActionResult> EditInfo(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);
             return View(ClientManagement("", "All", 1));
         }
+
         #endregion
 
-        #region Statistics
-        public async Task<IActionResult> Statistics()
+        #region Reports
+
+        public async Task<IActionResult> Report()
         {
-            var viewModel = await _helper.StatisticsHelper();
-            return View("~/Views/Admin/Statistics.cshtml", viewModel);
+            var viewModel = await _helper.GetReportPageModel();
+            return View("~/Views/Admin/Report.cshtml", viewModel);
         }
 
         [HttpPost]
@@ -55,12 +59,12 @@ namespace Library.Web.Controllers
             }
             catch (Exception)
             {
-                return Json(new { status = false, Message = "Error Conflicted" });
+                return Json(new { status = false, Message = "Възникна грешка" });
             }
         }
 
         [HttpPost]
-        public async Task<JsonResult> LoadGenreInformation(DateTime startDate, DateTime endDate, int selectedCountOfItems)
+        public async Task<JsonResult> LoadGenreInformation(DateTime startDate, DateTime endDate)
         {
             try
             {
@@ -69,12 +73,14 @@ namespace Library.Web.Controllers
             }
             catch (Exception)
             {
-                return Json(new { status = false, Message = "Error Conflicted" });
+                return Json(new { status = false, Message = "Възникна грешка" });
             }
         }
+
         #endregion
 
         #region ClientManagement
+
         [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> ClientManagement(string searchString, string roleFilter, int? page)
         {
@@ -154,6 +160,7 @@ namespace Library.Web.Controllers
             }
             return Json(new { status = false, errors = "Възникна грешка" });
         }
+
         #endregion
 
         #region BookCategories
@@ -165,6 +172,7 @@ namespace Library.Web.Controllers
         #endregion
 
         #region ManageMemberships
+
         public IActionResult ManageMemberships()
         {
             var data = _helper.GetMemberships();
@@ -190,10 +198,6 @@ namespace Library.Web.Controllers
                     return Json(new { status = false, Message = result });
                 }
                 return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
-            }
-            catch (DbException ex)
-            {
-                return Json(new { status = false, Message = "Проблем в базата. Свържете се с отдел ИТ." });
             }
             catch (Exception ex)
             {
@@ -222,10 +226,6 @@ namespace Library.Web.Controllers
                 }
                 return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
             }
-            catch (DbException ex)
-            {
-                return Json(new { status = false, Message = "Проблем в базата. Свържете се с отдел ИТ." });
-            }
             catch (Exception ex)
             {
                 return Json(new { status = false, Message = "Проблем в сървъра. Свържете се с отдел ИТ." });
@@ -242,10 +242,6 @@ namespace Library.Web.Controllers
                 }
                 await _helper.DeleteMembershipHelper(id, upper);
                 return Json(new { status = true, Message = "Вашето членство беше изтрито." });
-            }
-            catch (DbException ex)
-            {
-                return Json(new { status = false, Message = "Проблем в базата. Свържете се с отдел ИТ." });
             }
             catch (Exception ex)
             {

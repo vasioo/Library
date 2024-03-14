@@ -43,7 +43,8 @@ namespace Library.Web.Controllers.HomeControllerHelper
         }
         #endregion
 
-        #region BooksHelpers
+        #region AddABookHelper
+
         public async Task<BookChangersViewModel> AddABookHelper()
         {
             var viewModel = new BookChangersViewModel();
@@ -97,6 +98,135 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 throw;
             }
         }
+
+        #endregion
+
+        #region AddABookByISBNHelper
+
+        public async Task SaveBookHelper(BookViewModelDTO viewModelDTO)
+        {
+            var bookEntity = new Book();
+            bookEntity.ISBN = viewModelDTO.ISBN;
+            bookEntity.Title = viewModelDTO.Title;
+            bookEntity.Author = viewModelDTO.Authors;
+            bookEntity.DateOfBookPublishment = DateTime.Now;
+            bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
+            bookEntity.Language = viewModelDTO.Language;
+            bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
+            bookEntity.Description = viewModelDTO.Description;
+            if (_membershipService.IQueryableGetAllAsync().Where(x => x.StartingNeededAmountOfPoints < 2).Count() < 1)
+            {
+                var newMembership = new Membership();
+                newMembership.MembershipName = "Начален";
+                newMembership.StartingNeededAmountOfPoints = 0;
+                newMembership.EndAmountOfPoints = 1;
+                var membershipId = await _membershipService.AddAsync(newMembership);
+                var extendedMembership = await _membershipService.GetByIdAsync(membershipId);
+                bookEntity.NeededMembership = extendedMembership;
+            }
+            else
+            {
+                bookEntity.NeededMembership = _membershipService.IQueryableGetAllAsync().OrderBy(x => x.StartingNeededAmountOfPoints).FirstOrDefault();
+            }
+            bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
+
+            var neededId = await _bookService.AddAsync(bookEntity);
+
+            var photo = new Photo();
+            if (viewModelDTO.ImageURL != null && viewModelDTO.ImageURL != "")
+            {
+                photo.Image = viewModelDTO.ImageURL;
+                photo.ImageName = $"image-for-book-{neededId}";
+                photo.PublicId = $"image-for-book-{neededId}";
+            }
+
+            await _bookService.SaveImage(photo);
+
+        }
+
+        #endregion
+
+        #region EditABookHelper
+
+        public async Task<BookChangersViewModel> EditABookHelper(Guid id)
+        {
+            var book = await GetBook(id);
+            var viewModel = new BookChangersViewModel();
+            viewModel.Id = book.Id;
+            viewModel.Name = book.Title;
+            viewModel.Author = book.Author;
+            viewModel.DateOfBookPublishment = book.DateOfBookPublishment;
+            viewModel.DateOfBookCreation = book.DateOfBookCreation;
+            viewModel.Genre = book.Genre.CategoryName;
+            viewModel.Description = book.Description;
+            viewModel.AmountOfBooks = book.AmountOfBooks;
+            viewModel.Language = book.Language;
+            viewModel.ISBN = book.ISBN;
+            viewModel.NeededMembership = book.NeededMembership.MembershipName;
+            viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
+            viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
+            viewModel.PreviewLink = book.BookPreviewLink;
+            return viewModel;
+        }
+
+        public async Task<bool> EditABook(BookChangersViewModel book, string imageObj)
+        {
+            try
+            {
+                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!);
+
+                var bookNew = new Book();
+
+                bookNew.Id = book.Id;
+                bookNew.Title = book.Name;
+                bookNew.Author = book.Author;
+                bookNew.DateOfBookCreation = book.DateOfBookCreation;
+                bookNew.Genre = bookCat;
+                bookNew.Description = book.Description;
+                bookNew.AmountOfBooks = book.AmountOfBooks;
+                bookNew.Language = book.Language;
+                bookNew.ISBN = book.ISBN;
+                bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
+                if (!String.IsNullOrEmpty(book.PreviewLink))
+                {
+                    bookNew.BookPreviewLink = book.PreviewLink;
+                }
+                else
+                {
+                    bookNew.BookPreviewLink = "Unavailable";
+                }
+                await _bookService.UpdateAsync(bookNew);
+
+                var photo = new Photo();
+                if (imageObj != null && imageObj != "")
+                {
+                    photo.Image = imageObj;
+                    photo.ImageName = $"image-for-book-{book.Id}";
+                    photo.PublicId = $"image-for-book-{book.Id}";
+                }
+                await _bookService.DeleteImage($"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/{photo.PublicId}");
+                await _bookService.SaveImage(photo);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region RemoveABookHelper
+        public async Task<int> RemoveABook(Guid bookId)
+        {
+            return await _bookService.RemoveAsync(bookId);
+        }
+
+        #endregion
+
+        #region CategoriesAndSubjectsHelper
 
         public async Task<string> AddBookSubjectAndCategoriesToDb(List<BookSubjectDTO> bookSubjectsDTO, List<BookCategoryDTO> bookCategoriesDTO)
         {
@@ -233,72 +363,18 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return output;
         }
 
-        public async Task<BookChangersViewModel> EditABookHelper(Guid id)
+        #endregion
+
+        #region Helpers
+
+        public IQueryable<Book> GetAllBooks()
         {
-            var book = await GetBook(id);
-            var viewModel = new BookChangersViewModel();
-            viewModel.Id = book.Id;
-            viewModel.Name = book.Title;
-            viewModel.Author = book.Author;
-            viewModel.DateOfBookPublishment = book.DateOfBookPublishment;
-            viewModel.DateOfBookCreation = book.DateOfBookCreation;
-            viewModel.Genre = book.Genre.CategoryName;
-            viewModel.Description = book.Description;
-            viewModel.AmountOfBooks = book.AmountOfBooks;
-            viewModel.Language = book.Language;
-            viewModel.ISBN = book.ISBN;
-            viewModel.NeededMembership = book.NeededMembership.MembershipName;
-            viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
-            viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
-            viewModel.PreviewLink = book.BookPreviewLink;
-            return viewModel;
+            return _bookService.IQueryableGetAllAsync();
         }
 
-        public async Task<bool> EditABook(BookChangersViewModel book, string imageObj)
+        public async Task<List<string>> GetAllGenresHelper()
         {
-            try
-            {
-                var bookCat = _bookCategoryService.GetBookCategoryByBookCategoryName(book.Genre!);
-
-                var bookNew = new Book();
-
-                bookNew.Id = book.Id;
-                bookNew.Title = book.Name;
-                bookNew.Author = book.Author;
-                bookNew.DateOfBookCreation = book.DateOfBookCreation;
-                bookNew.Genre = bookCat;
-                bookNew.Description = book.Description;
-                bookNew.AmountOfBooks = book.AmountOfBooks;
-                bookNew.Language = book.Language;
-                bookNew.ISBN = book.ISBN;
-                bookNew.NeededMembership = _membershipService.GetMembershipByName(book.NeededMembership);
-                if (!String.IsNullOrEmpty(book.PreviewLink  ))
-                {
-                    bookNew.BookPreviewLink = book.PreviewLink;
-                }
-                else
-                {
-                    bookNew.BookPreviewLink = "Unavailable";
-                }
-                await _bookService.UpdateAsync(bookNew);
-
-                var photo = new Photo();
-                if (imageObj != null && imageObj != "")
-                {
-                    photo.Image = imageObj;
-                    photo.ImageName = $"image-for-book-{book.Id}";
-                    photo.PublicId = $"image-for-book-{book.Id}";
-                }
-                await _bookService.DeleteImage($"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/{photo.PublicId}");
-                await _bookService.SaveImage(photo);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
+            return await _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName).ToListAsync();
         }
 
         public IQueryable<BookSubject> GetAllBookSubjects()
@@ -311,61 +387,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return await _bookService.GetByIdAsync(bookId);
         }
 
-        public IQueryable<Book> GetAllBooks()
-        {
-            return _bookService.IQueryableGetAllAsync();
-        }
+        #endregion
 
-        public async Task<int> RemoveABook(Guid bookId)
-        {
-            return await _bookService.RemoveAsync(bookId);
-        }
-
-        public async Task SaveBookHelper(BookViewModelDTO viewModelDTO)
-        {
-            var bookEntity = new Book();
-            bookEntity.ISBN = viewModelDTO.ISBN;
-            bookEntity.Title = viewModelDTO.Title;
-            bookEntity.Author = viewModelDTO.Authors;
-            bookEntity.DateOfBookPublishment = DateTime.Now;
-            bookEntity.DateOfBookCreation = viewModelDTO.PublishDate;
-            bookEntity.Language = viewModelDTO.Language;
-            bookEntity.AmountOfBooks = viewModelDTO.AmountOfBooks;
-            bookEntity.Description = viewModelDTO.Description;
-            if (_membershipService.IQueryableGetAllAsync().Where(x => x.StartingNeededAmountOfPoints < 2).Count() < 1)
-            {
-                var newMembership = new Membership();
-                newMembership.MembershipName = "Начален";
-                newMembership.StartingNeededAmountOfPoints = 0;
-                newMembership.EndAmountOfPoints = 1;
-                var membershipId = await _membershipService.AddAsync(newMembership);
-                var extendedMembership = await _membershipService.GetByIdAsync(membershipId);
-                bookEntity.NeededMembership = extendedMembership;
-            }
-            else
-            {
-                bookEntity.NeededMembership = _membershipService.IQueryableGetAllAsync().OrderBy(x => x.StartingNeededAmountOfPoints).FirstOrDefault();
-            }
-            bookEntity.Genre = _bookCategoryService.GetBookCategoryByBookCategoryName(viewModelDTO.Category);
-
-            var neededId = await _bookService.AddAsync(bookEntity);
-
-            var photo = new Photo();
-            if (viewModelDTO.ImageURL != null && viewModelDTO.ImageURL != "")
-            {
-                photo.Image = viewModelDTO.ImageURL;
-                photo.ImageName = $"image-for-book-{neededId}";
-                photo.PublicId = $"image-for-book-{neededId}";
-            }
-
-            await _bookService.SaveImage(photo);
-
-        }
-
-        public async Task<List<string>> GetAllGenresHelper()
-        {
-            return await _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName).ToListAsync();
-        }
+        #region LeasingBooksHelper
 
         public async Task<LeasedTrackerViewModel> GetLeasedTrackerData(string Category)
         {
@@ -386,47 +410,6 @@ namespace Library.Web.Controllers.HomeControllerHelper
             return viewModel;
         }
 
-        #endregion
-
-        #region ReportsHelper
-        public async Task<ReportViewModel> GetReportPageModel()
-        {
-            var viewModel = new ReportViewModel();
-
-            viewModel.AmountOfUsers = _userManager.Users.Count();
-            viewModel.AmountOfBooks = await _bookService.IQueryableGetAllAsync().CountAsync();
-            viewModel.AmountOfCategories = await _bookCategoryService.IQueryableGetAllAsync().CountAsync();
-            viewModel.AmountOfSubjects = await _bookSubjectService.IQueryableGetAllAsync().CountAsync();
-            viewModel.AmountOfLeased = await _userLeasedBookService.IQueryableGetAllAsync().Where(x => !x.IsRead && x.Approved).CountAsync();
-
-            var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24), DateTime.Now, 1);
-
-            foreach (var item in leasedBook)
-            {
-                var mostLeasedBook = new ReportBookDTO
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                };
-                viewModel.MostLeasedBook = mostLeasedBook;
-            }
-            viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres(DateTime.Now.AddHours(-24), DateTime.Now);
-            return viewModel;
-        }
-
-        public async Task<IEnumerable<ReportBookDTO>> GetBookInformationByTimeAndCount(DateTime startDate, DateTime endDate, int selectedCountOfItems)
-        {
-            return await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(startDate, endDate, selectedCountOfItems);
-        }
-
-        public async Task<List<string>> GetGenreInformationByTimeAndCount(DateTime startDate, DateTime endDate)
-        {
-            return await _userLeasedBookService.MostReadGenres(startDate, endDate);
-        }
-
-        #endregion
-
-        #region LeasingBooksHelper
         public async Task<bool> LeaseBookOrNotHelper(Guid userLeasedId, bool lease)
         {
             try
@@ -639,6 +622,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
             }
             return true;
         }
+
         #endregion
 
         #region DocumentsHelper

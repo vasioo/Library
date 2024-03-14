@@ -22,5 +22,6 @@ namespace Library.Models.ViewModels
 
         public ProgressBarSettings ProgressBarSettings { get; set; } = new ProgressBarSettings();
         public int StarRatingAmount{ get; set; }
+        public double AverageRate { get; set; }
     }
 }

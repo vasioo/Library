@@ -133,8 +133,14 @@
                         Swal.fire({
                             title: 'Успех!',
                             text: response.message,
-                            icon: 'success'
+                            icon: 'success',
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                            showCloseButton: true,
+                            timer: 2000,
+                            timerProgressBar: true
                         });
+                        location.reload();
                     } else {
                         commonFuncs.endLoader();
                         Swal.fire({

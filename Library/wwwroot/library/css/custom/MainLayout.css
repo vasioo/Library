@@ -43,7 +43,7 @@
     }
 }
 
-.sign-in-container, .sign-up-container{
+.sign-in-container{
     transform: translateX(-38%);
     position: absolute;
     top: 100%;
@@ -97,3 +97,34 @@
 .book-s-p{
     height:100%
 }
+.parent-div {
+    position: relative;
+    cursor: pointer !important;
+}
+.circle-container {
+    cursor: pointer !important;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.circle-image {
+    max-width: calc(100% - 10px); 
+    max-height: calc(100% - 10px); 
+}
+
+.circle-container:hover {
+    cursor:pointer !important;
+    background-color: #0056b3; 
+}
+

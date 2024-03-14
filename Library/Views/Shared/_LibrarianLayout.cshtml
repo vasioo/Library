@@ -43,14 +43,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark h3" asp-area="" asp-controller="Librarian" asp-action="ManageBookCategories">Категории</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Librarian" asp-action="Report">Отчети</a>
-                        </li>
-                        <li class="col text-end">
-                            <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Statistics">    
-                                <i class="fa-solid fa-lock fa-lg"></i>
-                            </a>
-                        </li>
+                        @if (User?.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
+                        {
+                            <li class="col text-end">
+                                <a class="nav-link text-dark h3" asp-area="" asp-controller="Admin" asp-action="Report">
+                                    <i class="fa-solid fa-lock fa-lg"></i>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -100,7 +100,6 @@
             addACategory.init($('.manage-book-categories'));
             editABook.init($('.edit-a-book'));
             manageBookCategories.init($('.manage-book-categories'));
-            reportPageLibrarian.init($('.report-page-librarian'));
             leasedTracker.init($('.leased-tracker-page'));
             
         });

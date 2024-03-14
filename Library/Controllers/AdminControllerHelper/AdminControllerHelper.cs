@@ -3,6 +3,7 @@ using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
+using Library.Services.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Web.Controllers.AdminControllerHelper
@@ -13,28 +14,34 @@ namespace Library.Web.Controllers.AdminControllerHelper
         private readonly IUserLeasedBookService _userLeasedBookService;
         private readonly IMembershipService _membershipService;
         private readonly IBookService _bookService;
+        private readonly IBookCategoryService _bookCategoryService;
+        private readonly IBookSubjectService _bookSubjectService;
 
-        public AdminControllerHelper(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserLeasedBookService userLeasedBookService, IMembershipService membershipService, IBookService bookService)
+        public AdminControllerHelper(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager,
+            IBookCategoryService  bookCategoryService, IBookSubjectService bookSubjectService,
+            IUserLeasedBookService userLeasedBookService,
+            IMembershipService membershipService, IBookService bookService)
         {
             _userManager = userManager;
             _userLeasedBookService = userLeasedBookService;
             _membershipService = membershipService;
             _bookService = bookService;
+            _bookCategoryService = bookCategoryService;
+            _bookSubjectService = bookSubjectService;
         }
-        
-        public async Task<StatisticsViewModel> StatisticsHelper()
+
+        #region ReportsHelper
+
+        public async Task<ReportViewModel> GetReportPageModel()
         {
-            var viewModel = new StatisticsViewModel();
+            var viewModel = new ReportViewModel();
 
             viewModel.AmountOfUsers = _userManager.Users.Count();
-            var workerRoles = new[] { "Admin", "Worker" };
-            viewModel.AmountOfWorkers = await _userManager.Users
-                    .ToListAsync() 
-                    .ContinueWith(users =>
-                        users.Result
-                        .Where(u => workerRoles.Any(role => _userManager.IsInRoleAsync(u, role).Result))
-                        .Count()
-                        );
+            viewModel.AmountOfBooks = await _bookService.IQueryableGetAllAsync().CountAsync();
+            viewModel.AmountOfCategories = await _bookCategoryService.IQueryableGetAllAsync().CountAsync();
+            viewModel.AmountOfSubjects = await _bookSubjectService.IQueryableGetAllAsync().CountAsync();
+            viewModel.AmountOfLeased = await _userLeasedBookService.IQueryableGetAllAsync().Where(x => !x.IsRead && x.Approved).CountAsync();
+
             var leasedBook = await _userLeasedBookService.GetBooksInformationByTimeAndCountOfItems(DateTime.Now.AddHours(-24), DateTime.Now, 1);
 
             foreach (var item in leasedBook)
@@ -47,7 +54,6 @@ namespace Library.Web.Controllers.AdminControllerHelper
                 viewModel.MostLeasedBook = mostLeasedBook;
             }
             viewModel.MostReadGenres = await _userLeasedBookService.MostReadGenres(DateTime.Now.AddHours(-24), DateTime.Now);
-
             return viewModel;
         }
 
@@ -60,7 +66,8 @@ namespace Library.Web.Controllers.AdminControllerHelper
         {
             return await _userLeasedBookService.MostReadGenres(startDate, endDate);
         }
-
+        
+        #endregion
 
         #region MembershipHelpers
         public IQueryable<Membership> GetMemberships()

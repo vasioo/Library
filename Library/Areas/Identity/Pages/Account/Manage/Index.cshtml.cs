@@ -22,6 +22,7 @@ namespace Modum.Web.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
+        public string Id { get; set; } = "";
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
         public string Username { get; set; } = "";
@@ -52,6 +53,7 @@ namespace Modum.Web.Areas.Identity.Pages.Account.Manage
         private async Task LoadAsync(ApplicationUser user)
         {
 
+            Id = user.Id;
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
@@ -71,7 +73,7 @@ namespace Modum.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не може да бъде намерен потребител с ИН: '{_userManager.GetUserId(User)}'.");
             }
 
             await LoadAsync(user);

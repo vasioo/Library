@@ -3,8 +3,6 @@ using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Models.ViewModels;
 using Library.Services.Interfaces;
-using Library.Services.Services;
-using Microsoft.AspNetCore.Identity;
 
 namespace Library.Web.Controllers.HomeControllerHelper
 {
@@ -102,7 +100,11 @@ namespace Library.Web.Controllers.HomeControllerHelper
             if (starRating != null)
             {
                 viewModel.StarRatingAmount = starRating.StarCount;
-            }
+                viewModel.AverageRate = Math.Round(
+                    _starRatingService.IQueryableGetAllAsync()
+                        .Where(x => x.Book.Id == bookId)
+                        .Average(x => x.StarCount),1);
+            }   
             else
             {
                 viewModel.StarRatingAmount = 0;
@@ -114,7 +116,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 {
                     viewModel.IsBookAllowed = borrowedBook.IsRead && !borrowedBook.Approved;
                     viewModel.HasUserBorrowedIt = true;
-                    viewModel.IsLinkAvailable = viewModel.Book.BookPreviewLink!="Unavailable";
+                    viewModel.IsLinkAvailable = viewModel.Book.BookPreviewLink != "Unavailable";
                     viewModel.IsWaiting = !borrowedBook.Approved && !borrowedBook.IsRead;
                 }
                 else

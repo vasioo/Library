@@ -515,8 +515,14 @@ var bookPage = (function () {
                         Swal.fire({
                             title: 'Успех!',
                             text: response.message,
-                            icon: 'success'
+                            icon: 'success',
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                            showCloseButton: true,
+                            timer: 2000,
+                            timerProgressBar: true
                         });
+                        location.reload();
                     } else {
                         commonFuncs.endLoader();
                         Swal.fire({
@@ -605,14 +611,20 @@ var editABook = (function () {
                 errors.push("Връзката към прегледа на книгата не е валидна.");
             }
             if (errors.length > 0) {
-                var errorMessage = "Моля, коригирайте следните грешки:<br><br>";
-                errorMessage += errors.join("<br>");
                 commonFuncs.endLoader();
+                var errorMessage = "<div class='error-message' style='color: red;text-align: left;'>";
+                errorMessage += "<p style='color:black !important;'>Моля, коригирайте следните грешки:</p><br><br>";
+                errorMessage += errors.join("<br>");
+                errorMessage += "</div>";
+
                 Swal.fire({
                     title: 'Грешка!',
                     html: errorMessage,
                     icon: 'error',
-                    confirmButtonText: 'Разбрах'
+                    confirmButtonText: 'Разбрах',
+                    customClass: {
+                        htmlContainer: 'text-left'
+                    }
                 });
             } else {
                 const image = $('.uploaded-image').attr('src');
@@ -1409,11 +1421,12 @@ var reportPageLibrarian = (function () {
                                 var link = document.createElement('a');
                                 link.href = '/Home/BookPage?bookId=' + book.id;
 
+                                var columnDiv = document.createElement('div');
+                                columnDiv.className = 'col-md-4 mb-4'; 
+
                                 var imageContainer = document.createElement('div');
                                 imageContainer.className = 'd-flex justify-content-center align-items-center mb-2 book-container';
                                 imageContainer.style.height = '30rem';
-                                imageContainer.style.width = '30rem';
-                                imageContainer.style.border = '1px solid #ccc';
 
                                 var image = document.createElement('img');
                                 image.src = 'https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-' + book.id + '.png';
@@ -1427,8 +1440,9 @@ var reportPageLibrarian = (function () {
                                 imageContainer.appendChild(image);
                                 link.appendChild(imageContainer);
                                 link.appendChild(nameDiv);
+                                columnDiv.appendChild(link);
 
-                                fragment.appendChild(link);
+                                fragment.appendChild(columnDiv);
                             });
                         } else {
                             var message = document.createElement('h2');
