@@ -134,6 +134,7 @@
                     location.reload();
                 }
             })
+            commonFuncs.endLoader();
         });
     }
     return {

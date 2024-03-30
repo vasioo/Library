@@ -67,7 +67,6 @@
         return sizeInBytes;
     }
 
-    // Text validation for the subcategory id
     function isValidIdText(text) {
 
         let regex = /^[a-zA-Z][a-zA-Z0-9-_:.]*$/,

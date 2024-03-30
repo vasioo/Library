@@ -1,4 +1,5 @@
-﻿using Library.Models.BaseModels;
+﻿using Library.DataAccess.MainModels;
+using Library.Models.BaseModels;
 
 namespace Library.Services.Interfaces
 {
@@ -8,5 +9,6 @@ namespace Library.Services.Interfaces
         Membership GetPreviousMembersip(Guid id);
         Membership GetNextMembersip(Guid id);
         Membership GetMembershipByPoints(int points);
+        Task<int> GetHoursWhichCanBeReadByMembership(ApplicationUser user);
     }
 }

@@ -434,3 +434,6 @@ select:-webkit-autofill:focus {
         transform: translateX(0);
     }
 }
+.circle-container {
+    display: none;
+}

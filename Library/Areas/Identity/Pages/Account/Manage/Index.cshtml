@@ -16,8 +16,6 @@
 
         .upload-input input {
             position: absolute;
-            width: 100%;
-            height: 100%;
             text-indent: -9999px;
         }
 
@@ -83,6 +81,13 @@
         overflow: hidden;
         display: none !important;
     }
+
+    #custom-view-profile-image-id {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: auto;
+    }
 </style>
 <div class="account-main-page">
     <div class="custom-container">
@@ -95,28 +100,28 @@
         @{
             var profileImageLink = $"";
         }
-        <div class="row justify-content-around">
-            <div class="col-md-3 img-container">
-                @{
-                    string link = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/profile-image-for-{Model.Id}.png";
-                }
-                <div class="upload-container">
-                    <img src="@link" alt="Image not found" onclick="showProfileImage()" class="profile-image-class img-thumbnail rounded-circle uploaded-image" />
-                    <div class="upload-input" style="cursor:pointer;">
-                        <div class="overlay">
-                            <div class="plus-icon" style="cursor:pointer;">
-                                <input type="file" id="profile-image" name="profile-image" class="image-upload" accept=".png, .jpg, .jpeg" multiple="multiple" max="1">
-                                <i class="fa-solid fa-camera"></i>
+        <form method="post" asp-page-handler="EditInfo" enctype="multipart/form-data">
+            <div class="row justify-content-around">
+                <div class="col-md-3 img-container">
+                    @{
+                        string link = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/profile-image-for-{Model.Id}";
+                    }
+                    <div class="upload-container">
+                        <img src="@link" alt="Image not found" id="main-image-for-showing" class="profile-image-class img-thumbnail rounded-circle uploaded-image" />
+                        <div class="upload-input" style="cursor:pointer;">
+                            <div class="overlay">
+                                <div class="plus-icon" style="cursor:pointer;">
+                                    <input asp-for="Image" type="file" class="image-upload" accept=".png, .jpg, .jpeg" multiple="multiple" max="1">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div id="custom-view-profile-image-container-id" class="d-flex justify-content-center align-items-center">
+                        <img src="@link" id="custom-view-profile-image-id" class="profile-image-class" />
+                    </div>
                 </div>
-                <div id="custom-view-profile-image-container-id" class="d-flex justify-content-center align-items-center">
-                    <img src="@link" alt="Image not found" id="custom-view-profile-image-id" class="profile-image-class" />
-                </div>
-            </div>
-            <div class="col-md-8">
-                <form method="post" asp-page-handler="EditInfo">
+                <div class="col-md-8">
                     <div class="form-group d-flex justify-content-around">
                         <div class="col-5">
                             <label asp-for="FirstName">Име</label>
@@ -140,12 +145,11 @@
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-success col-11">Запази промените</button>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-<script src="~/library/js/customJS/accountPage.js"></script>

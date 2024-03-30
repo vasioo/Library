@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="~/library/css/custom/UserNav.css" asp-append-version="true">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="~/library/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="~/common/lib/jquery/dist/jquery.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
     @RenderSection("Styles", false)
 </head>
@@ -61,13 +64,19 @@
     <footer class="">
         
     </footer>
-
+    <div class="book_custom_loader">
+        <div class="book__pg-shadow"></div>
+        <div class="book__pg"></div>
+        <div class="book__pg book__pg--2"></div>
+        <div class="book__pg book__pg--3"></div>
+        <div class="book__pg book__pg--4"></div>
+        <div class="book__pg book__pg--5"></div>
+    </div>
     <!--ALERT-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
     @{
         var loginErrorMessage = TempData["LoginErrorMessage"] as string;
     }
-    <script src="~/library/js/vendor/jquery-1.12.4.min.js"></script>
     <script src="~/library/js/vendor/popper.min.js"></script>
     <script src="~/library/js/vendor/bootstrap.min.js"></script>
     <script src="~/library/js/vendor/slick.min.js"></script>
@@ -76,8 +85,8 @@
     <script src="~/library/js/common.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="~/library/js/customJS/accountPage.js"></script>
 
-    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <script type="text/javascript">
         $(function () {
 

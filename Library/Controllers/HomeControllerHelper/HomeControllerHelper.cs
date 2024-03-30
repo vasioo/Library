@@ -114,7 +114,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 var borrowedBook = await _userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id);
                 if (borrowedBook!.Id != Guid.Empty)
                 {
-                    viewModel.IsBookAllowed = borrowedBook.IsRead && !borrowedBook.Approved;
+                    viewModel.IsBookAllowed = !borrowedBook.IsRead && borrowedBook.Approved;
                     viewModel.HasUserBorrowedIt = true;
                     viewModel.IsLinkAvailable = viewModel.Book.BookPreviewLink != "Unavailable";
                     viewModel.IsWaiting = !borrowedBook.Approved && !borrowedBook.IsRead;

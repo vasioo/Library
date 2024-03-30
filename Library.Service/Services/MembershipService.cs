@@ -1,4 +1,5 @@
 ﻿using Library.DataAccess;
+using Library.DataAccess.MainModels;
 using Library.Models.BaseModels;
 using Library.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -44,6 +45,11 @@ namespace Library.Services.Services
         public Membership GetMembershipByPoints(int points)
         {
             return _context.Memberships.Where(x => x.StartingNeededAmountOfPoints <= points && x.EndAmountOfPoints >= points).FirstOrDefault();
+        }
+
+        public async Task<int> GetHoursWhichCanBeReadByMembership(ApplicationUser user)
+        {
+            return _context.Memberships.Where(x => x.StartingNeededAmountOfPoints <= user.Points).Count(); 
         }
     }
 }

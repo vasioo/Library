@@ -95,18 +95,24 @@ namespace Library.Services.Services
 
         public IQueryable<UserLeasedBookMappingTable> GetActiveLeasedBooks()
         {
-            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) >= DateTime.Now && x.Approved && x.IsRead);
+            return _dataContext.UserLeasedBooks
+                .Where(x => x.DateOfBorrowing
+                    .AddHours(_dataContext.Memberships.Where(z => z.StartingNeededAmountOfPoints <= x.User.Points).Count())
+                                >= DateTime.Now && x.Approved && x.IsRead);
         }
 
         public IQueryable<UserLeasedBookMappingTable> GetExpiredLeasedBooks()
         {
-            return _dataContext.UserLeasedBooks.Where(x => x.DateOfBorrowing.AddHours(1) < DateTime.Now && x.Approved && x.IsRead);
+            return _dataContext.UserLeasedBooks
+                .Where(x => x.DateOfBorrowing
+                    .AddHours(_dataContext.Memberships.Where(z => z.StartingNeededAmountOfPoints <= x.User.Points).Count())
+                                < DateTime.Now && x.IsRead);
         }
 
         public async Task RemoveAnHourToExistingEntity(Guid id)
         {
             var entity = await _dataContext.UserLeasedBooks.Where(x => x.Id == id).FirstOrDefaultAsync();
-            if (entity!=null)
+            if (entity != null)
             {
                 entity.DateOfBorrowing = DateTime.Now.AddHours(-1);
                 entity.IsRead = true;
@@ -122,11 +128,13 @@ namespace Library.Services.Services
             var leasedItem = await _dataContext.UserLeasedBooks.Where(x => x.Book.Id == bookId && x.User.Id == user.Id).FirstOrDefaultAsync();
             if (leasedItem != null)
             {
-                if (leasedItem.Approved && leasedItem.DateOfBorrowing.AddHours(1) >= DateTime.Now)
+                if (leasedItem.Approved && leasedItem.DateOfBorrowing
+                                .AddHours(_dataContext.Memberships.Where(z => z.StartingNeededAmountOfPoints <= user.Points).Count()) >= DateTime.Now)
                 {
                     return "Active";
                 }
-                else if (leasedItem.Approved && leasedItem.DateOfBorrowing.AddHours(1) < DateTime.Now)
+                else if (leasedItem.Approved && leasedItem.DateOfBorrowing
+                                .AddHours(_dataContext.Memberships.Where(z => z.StartingNeededAmountOfPoints <= user.Points).Count()) < DateTime.Now)
                 {
                     return "Expired";
                 }

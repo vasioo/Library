@@ -6,11 +6,6 @@
 <ul id="custom-nav-menu">
     <li class="custom-nav-item-user-menu" style="border-radius:1em 1em 0px 0px"><a style="border-radius:1em 1em 0px 0px" class="custom-nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Профил</a></li>
     <li class="custom-nav-item-user-menu"><a class="custom-nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Промени парола</a></li>
-    @if (hasExternalLogins)
-    {
-        <li id="external-logins" class="custom-nav-item-user-menu"><a id="external-login" class="custom-nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">Външни регистрации</a></li>
-    }
-    <li class="custom-nav-item-user-menu"><a class="custom-nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Двуфакторна автентикация</a></li>
     <li class="custom-nav-item-user-menu"><a class="custom-nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Лични данни</a></li>
     <li class="custom-nav-item-user-menu" style="border-radius:0px 0px 1em 1em" id="logoutNavItem">
         <a class="custom-nav-link" style="border-radius: 0px 0px 1em 1em" id="logout-btn">Изход</a>
