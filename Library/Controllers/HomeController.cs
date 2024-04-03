@@ -1,12 +1,12 @@
 ﻿using Library.DataAccess.MainModels;
-using Library.Models;
+using Library.Models.BaseModels;
 using Library.Models.DTO;
 using Library.Web.Controllers.HomeControllerHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics;
+using System.Net;
 
 namespace Library.Controllers
 {
@@ -15,7 +15,7 @@ namespace Library.Controllers
         #region Fields&Constructor
         private readonly IHomeControllerHelper _helper;
         private const string OpenLibraryApiBaseUrl = "https://openlibrary.org/api/books";
-        UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public HomeController(IHomeControllerHelper helper, UserManager<ApplicationUser> userManager)
         {
@@ -239,11 +239,35 @@ namespace Library.Controllers
         #endregion
 
         #region Helpers
-
+        [HttpGet("/Home/Error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? errorCode = null)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var errorMessage = GetHttpStatusMessage(errorCode ?? HttpContext.Response.StatusCode);
+
+            var customErrorModel = new CustomModelError
+            {
+                StatusCode = errorCode ?? HttpContext.Response.StatusCode,
+                CustomErrorMessage = errorMessage
+            };
+            return View("~/Views/Shared/Error.cshtml", customErrorModel);
+        }
+
+        private string GetHttpStatusMessage(int statusCode)
+        {
+            return statusCode switch
+            {
+                (int)HttpStatusCode.BadRequest => "Лоша заявка",
+                (int)HttpStatusCode.Unauthorized => "Неоторизиран вход",
+                (int)HttpStatusCode.Forbidden => "Забранено",
+                (int)HttpStatusCode.NotFound => "Не е намерено",
+                (int)HttpStatusCode.InternalServerError => "Сървърна грешка",
+                (int)HttpStatusCode.NotImplemented => "Сървърна грешка",
+                (int)HttpStatusCode.BadGateway => "Лош изход",
+                (int)HttpStatusCode.ServiceUnavailable => "Недостъпно",
+                (int)HttpStatusCode.LoopDetected => "Засечен цикъл",
+                _ => "Грешка"
+            };
         }
         #endregion
 

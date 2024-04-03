@@ -1,11 +1,9 @@
-using Hangfire;
 using Library.DataAccess;
 using Library.DataAccess.MainModels;
-using Library.Models.Stripe;
 using Library.Web.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Stripe;
 using System.Net;
 
 namespace Modum.Web
@@ -36,7 +34,7 @@ namespace Modum.Web
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
-                    options.SignIn.RequireConfirmedAccount= true;
+                    options.SignIn.RequireConfirmedAccount = true;
                 })
                    .AddRoles<IdentityRole>()
                    .AddEntityFrameworkStores<DataContext>()
@@ -47,38 +45,15 @@ namespace Modum.Web
                    .AddRoleManager<RoleManager<IdentityRole>>()
                    .AddEntityFrameworkStores<DataContext>();
 
-            var facebookAppId = builder.Configuration.GetSection("Facebook:AppId").Get<string>() ?? "";
-            var facebookAppSecret = builder.Configuration.GetSection("Facebook:AppSecret").Get<string>() ?? "";
-            var googleClientId = builder.Configuration.GetSection("Google:ClientId").Get<string>() ?? "";
-            var googleClientSecret = builder.Configuration.GetSection("Google:ClientSecret").Get<string>() ?? "";
 
-
-            builder.Services.AddAuthentication()
-                        .AddFacebook(options =>
-                        {
-                            options.AppId = facebookAppId;
-                            options.AppSecret = facebookAppSecret;
-                        })
-                        .AddGoogle(options =>
-                        {
-                            options.ClientId = googleClientId;
-                            options.ClientSecret = googleClientSecret;
-                        });
-
-            builder.Services.AddHangfire(options =>
-            {
-                options.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-
-            builder.Services.AddDistributedMemoryCache(); 
+            builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.IdleTimeout = TimeSpan.FromMinutes(30); 
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -95,7 +70,7 @@ namespace Modum.Web
 
             builder.Services.Configure<IISServerOptions>(options =>
             {
-                options.MaxRequestBodySize = 10 * 1024 * 1024; 
+                options.MaxRequestBodySize = 10 * 1024 * 1024;
             });
             builder.Services.AddHsts(options =>
             {
@@ -121,14 +96,13 @@ namespace Modum.Web
 
             var app = builder.Build();
 
-            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Shared/Error");
                 app.UseHsts();
             }
 
@@ -138,26 +112,7 @@ namespace Modum.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHangfireServer();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilter
-                                            (new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationFilterOptions
-                {
-                      RequireSsl = false,
-                         SslRedirect = false,
-                         LoginCaseSensitive = true,
-                     Users = new []
-                     {
-                           new Hangfire.Dashboard.BasicAuthorization.BasicAuthAuthorizationUser
-                           {
-                              Login = builder.Configuration.GetSection("HangfireSettings:Username").Get<string>(),
-                              PasswordClear =  builder.Configuration.GetSection("HangfireSettings:Password").Get<string>()
-                           }
-                        }
-                    })
-                }
-            });
+
             app.UseSession();
 
             app.MapControllerRoute(
@@ -169,6 +124,10 @@ namespace Modum.Web
             app.MapControllerRoute(
               name: "librarian",
               pattern: "{area:exists}/{controller=Librarian}/{action=AllBooksInformation}/{id?}");
+            app.MapControllerRoute(
+                name: "error",
+                pattern: "{https://localhost:44318/}",
+           defaults: new { controller = "Home", action = "Error" });
 
             app.MapRazorPages();
 
