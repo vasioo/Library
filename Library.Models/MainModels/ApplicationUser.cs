@@ -13,5 +13,6 @@ namespace Library.DataAccess.MainModels
         public decimal Salary { get; set; }
         public DateTime StartOfMembership { get; set; } = DateTime.Now;
         public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
+        public string BanStatus { get; set; } = "";
     }
 }

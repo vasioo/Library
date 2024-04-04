@@ -10,5 +10,6 @@ namespace Library.Models.BaseModels
     {
         public int StatusCode { get; set; }
         public string CustomErrorMessage { get; set; } = "";
+        public string DenialErorr { get; set; } = "";
     }
 }

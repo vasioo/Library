@@ -1,4 +1,5 @@
 ﻿using Library.Services.Interfaces;
+using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System.Net;
@@ -32,21 +33,9 @@ namespace Library.Services.Services
             {
                 bool emailSentSuccessfully = false;
 
-                smtp.MessageSent += (sender, args) =>
-                {
-                    if (args.Response != null && args.Response.Contains("250 2.0.0 OK"))
-                    {
-                        emailSentSuccessfully = true;
-                    }
-                    else
-                    {
-                        emailSentSuccessfully = false;
-                    }
-                };
-
                 try
                 {
-                    smtp.Connect("smtp.gmail.com", 587, false);
+                    smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
                     smtp.Authenticate(usernameSecret, passwordSecret);
                     smtp.Send(email);
                     emailSentSuccessfully = true;

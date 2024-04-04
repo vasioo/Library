@@ -161,6 +161,54 @@ namespace Library.Web.Controllers
             return Json(new { status = false, errors = "Възникна грешка" });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> BanUser(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    if (await _userManager.IsInRoleAsync(user, "SuperAdmin") || await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return Json(new { status = false, errors = "Потребителя не може да бъде блокиран, заради ролята му." });
+                    }
+                    user.BanStatus = "";
+                    await _userManager.UpdateAsync(user);
+                }
+                else
+                {
+                    return Json(new { status = false, errors = "Потребителския имейл не съществува в базата!" });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, errors = "Възникна грешка." });
+            }
+            return Json(new { status = true, errors = "Потребителя беше блокиран в приложението." });
+        }
+        [HttpPost]
+        public async Task<JsonResult> UnbanUser(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    user.BanStatus = "";
+                    await _userManager.UpdateAsync(user);
+                }
+                else
+                {
+                    return Json(new { status = false, errors = "Потребителския имейл не съществува в базата!" });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, errors = "Възникна грешка." });
+            }
+            return Json(new { status = true, errors = "Потребителя беше отблокиран от приложението." });
+        }
         #endregion
 
         #region BookCategories

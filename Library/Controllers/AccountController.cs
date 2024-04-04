@@ -56,7 +56,7 @@ namespace Library.Web.Controllers
             var result = await _signInManager.PasswordSignInAsync(user, model.LoginPassword, true,false);
             if (result.Succeeded)
             {
-                return Json(new { success = true, message = "Потребителя влезе в приложението." });
+                return Json(new { success = true, message = "" });
             }
             if (result.RequiresTwoFactor)
             {

@@ -83,7 +83,7 @@ $(document).ready(function () {
                 if (response.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success',
+                        title: 'Вие влязохте в профила си',
                         text: response.message,
                         timer: 3000,
                         timerProgressBar: true,
@@ -95,7 +95,7 @@ $(document).ready(function () {
                     commonFuncs.endLoader();
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
+                        title: 'Грешка',
                         text: response.message
                     });
                     $('#loginForm input').each(function () {
@@ -175,7 +175,7 @@ $(document).ready(function () {
                         commonFuncs.endLoader();
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error',
+                            title: 'Грешка',
                             text: response.message
                         });
                         $('#registerForm input').each(function () {

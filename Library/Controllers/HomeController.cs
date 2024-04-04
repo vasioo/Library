@@ -244,11 +244,13 @@ namespace Library.Controllers
         public IActionResult Error(int? errorCode = null)
         {
             var errorMessage = GetHttpStatusMessage(errorCode ?? HttpContext.Response.StatusCode);
+            var denialMessage = GetHttpDenialMessage(errorCode ?? HttpContext.Response.StatusCode);
 
             var customErrorModel = new CustomModelError
             {
                 StatusCode = errorCode ?? HttpContext.Response.StatusCode,
-                CustomErrorMessage = errorMessage
+                CustomErrorMessage = errorMessage,
+                DenialErorr = denialMessage
             };
             return View("~/Views/Shared/Error.cshtml", customErrorModel);
         }
@@ -258,7 +260,7 @@ namespace Library.Controllers
             return statusCode switch
             {
                 (int)HttpStatusCode.BadRequest => "Лоша заявка",
-                (int)HttpStatusCode.Unauthorized => "Неоторизиран вход",
+                (int)HttpStatusCode.Unauthorized => "Неоторизирано действие",
                 (int)HttpStatusCode.Forbidden => "Забранено",
                 (int)HttpStatusCode.NotFound => "Не е намерено",
                 (int)HttpStatusCode.InternalServerError => "Сървърна грешка",
@@ -266,6 +268,23 @@ namespace Library.Controllers
                 (int)HttpStatusCode.BadGateway => "Лош изход",
                 (int)HttpStatusCode.ServiceUnavailable => "Недостъпно",
                 (int)HttpStatusCode.LoopDetected => "Засечен цикъл",
+                _ => "Грешка"
+            };
+        }
+
+        private string GetHttpDenialMessage(int statusCode)
+        {
+            return statusCode switch
+            {
+                (int)HttpStatusCode.BadRequest => "Възникна грешка в сървъра.",
+                (int)HttpStatusCode.Unauthorized => "Нямате право да влизате в тази страница.",
+                (int)HttpStatusCode.Forbidden => "Вашето действие не може да бъде завършено.",
+                (int)HttpStatusCode.NotFound => "Търсената страница не е намерена.",
+                (int)HttpStatusCode.InternalServerError => "Възникна грешка в сървъра.",
+                (int)HttpStatusCode.NotImplemented => "Страницата не е имплементирана.",
+                (int)HttpStatusCode.BadGateway => "Възникна грешка в сървъра.",
+                (int)HttpStatusCode.ServiceUnavailable => "Възникна грешка в сървъра.",
+                (int)HttpStatusCode.LoopDetected => "Възникна грешка в сървъра.",
                 _ => "Грешка"
             };
         }

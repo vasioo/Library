@@ -44,7 +44,7 @@
     }
 
         .blog-card img {
-            width: 200px;
+            width: 12.5em;
             height: auto;
             object-fit: cover;
         }
@@ -180,17 +180,17 @@
                     var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/image-for-book-{item.Id}.png";
                     var formattedDate = item.DateOfBookCreation.ToString("dd/MM/yyyy");
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-xxl-9">
                             <div class="blog-card">
-                                <div class="col-4 align-self-center">
+                                <div class="col-lg-3 align-self-center">
                                     <a href="@Url.Action("BookPage", "Home", new { bookId = item.Id })" class="main-link">
                                         <img src="@imageUrl" alt="Blog Image">
                                     </a>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body col-lg-9">
                                     <h5 class="card-title">@item.Name</h5>
                                     <p class="card-date">@formattedDate г.</p>
-                                    <p class="card-content">@Truncate(item.Description, 100)</p>
+                                    <p class="d-flex">@Truncate(item.Description, 100)</p>
                                 </div>
                             </div>
                         </div>
@@ -214,17 +214,17 @@
                     var truncatedContent = TruncateAndAppend(item.Content, 80);
                     var imageUrl = $"https://res.cloudinary.com/dzaicqbce/image/upload/v1695818842/main-image-for-document-{item.Id}.png";
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12 col-xxl-9">
                             <div class="blog-card justify-content-between my-card">
-                                <a href="/Home/DocumentPage?id=@item.Id" class="doc-item col-11 row align-items-center">
-                                    <div class="col-3 text-center">
+                                <a href="/Home/DocumentPage?id=@item.Id" class="doc-item col-12 d-flex align-items-center">
+                                    <div class="col-lg-3 col-5 text-center">
                                         <img src="@imageUrl" alt="Blog Image" class="img-fluid">
                                     </div>
-                                    <div class="col-9">
+                                    <div class="col-lg-9 col-7">
                                         <div class="card-body">
                                             <h5 class="card-title">@item.Title</h5>
                                             <p class="card-date">@item.DateOfCreation</p>
-                                            <p class="card-content">@truncatedContent</p>
+                                            <p class="d-flex">@truncatedContent</p>
                                         </div>
                                     </div>
                                 </a>
