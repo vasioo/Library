@@ -5,8 +5,11 @@ using Library.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.AspNetCore.WebUtilities;
 using Modum.Web.Areas.Identity.Pages.Account;
+using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -44,18 +47,30 @@ namespace Library.Web.Controllers
             return View("~/Views/Account/AuthenticationPage.cshtml");
         }
 
+
+        public async Task<IActionResult> LogoutUser()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("AuthenticationPage", "Account");
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login(IdentityModel model)
         {
-            var user =await _userManager.FindByEmailAsync(model.LoginEmail);
-            if (user==null)
+            var user = await _userManager.FindByEmailAsync(model.LoginEmail);
+            if (user == null)
             {
                 return Json(new { success = false, message = "Невалиден опит. Грешка в данните." });
             }
-            var result = await _signInManager.PasswordSignInAsync(user, model.LoginPassword, true,false);
+            var result = await _signInManager.PasswordSignInAsync(user, model.LoginPassword, true, false);
             if (result.Succeeded)
             {
+                if (!String.IsNullOrEmpty(user.BanStatus.Trim()))
+                {
+                    return Json(new { success = false, message = "Вашият профил е блокиран от приложението!" });
+                }
                 return Json(new { success = true, message = "" });
             }
             if (result.RequiresTwoFactor)
@@ -106,7 +121,7 @@ namespace Library.Web.Controllers
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
-                        var emailBody = $@"
+                    var emailBody = $@"
                              <html>
                                <body>
                                    <div style='text-align: center;'>
@@ -147,6 +162,8 @@ namespace Library.Web.Controllers
                 throw;
             }
         }
+
+
 
         #endregion
 

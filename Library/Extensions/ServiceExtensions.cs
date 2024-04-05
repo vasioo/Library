@@ -5,6 +5,7 @@ using Library.Services.Interfaces;
 using Library.Services.Services;
 using Library.Web.Controllers.AdminControllerHelper;
 using Library.Web.Controllers.HomeControllerHelper;
+using Library.Web.Middleware;
 using Microsoft.AspNetCore.Identity;
 
 namespace Library.Web.Extensions
@@ -43,6 +44,8 @@ namespace Library.Web.Extensions
             service.AddScoped<IEmailSenderService, EmailSenderService>();
 
             service.AddScoped<UserManager<ApplicationUser>>();
+
+            service.AddScoped<BannedUserMiddleware>();
 
         }
     }

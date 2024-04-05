@@ -1,6 +1,7 @@
 using Library.DataAccess;
 using Library.DataAccess.MainModels;
 using Library.Web.Extensions;
+using Library.Web.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +113,7 @@ namespace Modum.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<BannedUserMiddleware>();
 
             app.UseSession();
 

@@ -173,7 +173,7 @@ namespace Library.Web.Controllers
                     {
                         return Json(new { status = false, errors = "Потребителя не може да бъде блокиран, заради ролята му." });
                     }
-                    user.BanStatus = "";
+                    user.BanStatus = "banned";
                     await _userManager.UpdateAsync(user);
                 }
                 else
