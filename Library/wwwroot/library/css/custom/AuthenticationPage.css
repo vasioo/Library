@@ -21,14 +21,24 @@ select:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px #fff inset;
     transition: background-color 5000s ease-in-out 0s;
 }
-#signIn{
+
+footer{
     display:none;
 }
+body{
+    overflow-y:hidden;
+    margin-bottom:0px !important;
+}
+
+#signIn {
+    display: none;
+}
+
 .body-under-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
+    min-height: 90vh;
     background-image: url('/images/tryPic2.svg');
     background-repeat: no-repeat;
     background-size: cover;
@@ -330,6 +340,7 @@ select:-webkit-autofill:focus {
     .wrapper .info-text.login {
         display: none;
     }
+
     .wrapper .bg-animate,
     .wrapper .bg-animate2 {
         display: none;
@@ -360,10 +371,12 @@ select:-webkit-autofill:focus {
     .wrapper .form-box {
         width: 90%;
     }
+
     .body-under-container {
         height: 100vh;
     }
-        .wrapper {
+
+    .wrapper {
         height: 35rem;
         display: flex;
         align-items: center;
@@ -379,36 +392,42 @@ select:-webkit-autofill:focus {
         .wrapper .form-box.login .animation {
             transition-delay: calc(.01s * var(--j));
         }
+
         .wrapper.active .form-box.register .animation,
         .wrapper.active .form-box.login .animation {
             transition-delay: calc(.01s * var(--i));
         }
+
         .wrapper.active .info-text.login .animation {
             transition-delay: calc(.01s * var(--i));
         }
+
         .wrapper .info-text.register .animation {
             transition-delay: calc(.01s * var(--i));
         }
+
         .wrapper.active .info-text.register .animation {
             transition-delay: calc(.01s * var(--i));
         }
 }
 
-.eye-toggler{
-    cursor:pointer;
+.eye-toggler {
+    cursor: pointer;
 }
+
 .input-box.invalid {
     animation: shake 0.5s ease-in;
 }
 
-.input-box.invalid label,
-.input-box.invalid i
-{
-    color:red !important;
-}
-.input-box.invalid input{
-    border-bottom-color:red !important;
-}
+    .input-box.invalid label,
+    .input-box.invalid i {
+        color: red !important;
+    }
+
+    .input-box.invalid input {
+        border-bottom-color: red !important;
+    }
+
 @keyframes shake {
     0% {
         transform: translateX(0);
@@ -434,6 +453,7 @@ select:-webkit-autofill:focus {
         transform: translateX(0);
     }
 }
+
 .circle-container {
     display: none;
 }
