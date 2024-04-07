@@ -10,17 +10,21 @@
 
             $.post('/Home/BorrowBook', { bookId: book }, function (response) {
                 commonFuncs.endLoader();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Заявката беше подадена!',
-                    showClass: {
-                        popup: 'animate__animated animate__fadeInDown'
-                    },
-                    hideClass: {
-                        popup: 'animate__animated animate__fadeOutUp'
-                    }
-                })
-                location.reload();
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Успешна промяна',
+                        text: response.message
+                    });
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Грешка',
+                        text: response.message
+                    });
+                }
             }).fail(function (error) {
                 commonFuncs.endLoader();
                 Swal.fire({

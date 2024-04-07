@@ -1,5 +1,35 @@
 ﻿var editABook = (function () {
     function init($container) {
+        function isValidISBN10(isbn) {
+            isbn = isbn.replace(/[^\dX]/gi, '');
+            if (isbn.length !== 10) return false;
+
+            var sum = 0;
+            for (var i = 0; i < 9; i++) {
+                sum += parseInt(isbn[i]) * (10 - i);
+            }
+
+            var checksum = isbn[9].toUpperCase() === 'X' ? 10 : parseInt(isbn[9]);
+            sum += checksum;
+
+            return sum % 11 === 0;
+        }
+
+        function isValidISBN13(isbn) {
+            isbn = isbn.replace(/[^\d]/gi, '');
+            if (isbn.length !== 13) return false;
+
+            var sum = 0;
+            for (var i = 0; i < 12; i++) {
+                sum += parseInt(isbn[i]) * (i % 2 === 0 ? 1 : 3);
+            }
+
+            var checksum = parseInt(isbn[12]);
+            var remainder = (10 - (sum % 10)) % 10;
+
+            return checksum === remainder;
+        }
+
         $('#editBookButton').click(function () {
             commonFuncs.startLoader();
             var bookData = {
@@ -9,7 +39,6 @@
                 DateOfBookCreation: $('#DateOfBookCreation').val(),
                 Genre: $('#Genre').val(),
                 Description: $('#Description').val(),
-                AvailableItems: $('#AvailableItems').val(),
                 NeededMembership: $('#NeededMembership').val(),
                 AmountOfBooks: $('#AmountOfBooks').val(),
                 ISBN: $('#ISBN').val(),
@@ -25,7 +54,6 @@
             if (!bookData.DateOfBookCreation) errors.push("Дата на създаване на книгата е задължителна.");
             if (!bookData.Genre) errors.push("Жанрът на книгата е задължителен.");
             if (!bookData.Description) errors.push("Описанието на книгата е задължително.");
-            if (!bookData.AvailableItems) errors.push("Броят на наличните елементи на книгата е задължителен.");
             if (!bookData.NeededMembership) errors.push("Необходимият абонамент за книгата е задължителен.");
             if (!bookData.AmountOfBooks) errors.push("Броят на книгите е задължителен.");
             if (!bookData.Language) errors.push("Езикът на книгата е задължителен.");
@@ -65,24 +93,27 @@
                 const image = $('.uploaded-image').attr('src');
 
                 $.post('/Librarian/EditABookPost', {
-                    imageObj: image,
-                    book: bookData
+                    book: bookData,
+                    imageObj: image
                 },
                     function (response) {
                         commonFuncs.endLoader();
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Отговор на Сървъра',
-                            html: `${response.message}`,
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
-                        });
+                        if (response.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Успешна промяна',
+                                text: response.message
+                            });
+                            location.reload();
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Грешка',
+                                text: response.message
+                            });
+                        }
 
-                        location.reload();
                     }).fail(function (error) {
                         commonFuncs.endLoader();
                         console.log('AJAX request failed:', error);
