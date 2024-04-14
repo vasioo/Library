@@ -1,6 +1,7 @@
 <h1>Online Library Web Application Documentation</h1>
 <h2>Introduction</h2>
-Welcome to the documentation for our Online Library Web Application. This document aims to provide an overview of the project's structure, features, and usage guidelines.
+Welcome to the documentation for our Online Library Web Application - "Nauka" (Science) .<br>
+This document aims to provide an overview of the project's structure, features, and usage guidelines.
 <br>
 <h2>Table of Contents</h2>
 <ol>
