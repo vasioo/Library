@@ -8,7 +8,6 @@ Welcome to the documentation for our Online Library Web Application. This docume
 <li>Features</li>
   <li>Images of the app</li>
   </ol>
-  <br>
   <h2>Overview</h2>
 My Online Library Web Application "Nauka" is built to provide users with a platform to browse, borrow, and read books online. The application is developed using a variety of technologies including HTML5, CSS3, C#, ASP.NET Core, jQuery, JavaScript, Gulp and many more.
 
