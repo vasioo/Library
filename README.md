@@ -21,5 +21,5 @@ My Online Library Web Application "Nauka" is built to provide users with a platf
 <li>Admin/Librarian Panels: Admins have access to an admin panel to manage books, users, and other aspects of the system.</li>
   </ul>
 <h2>Images of the app</h2>
-![mainPage](https://github.com/vasioo/Library/assets/78680789/c01a574a-c09e-458a-9ea0-23f845306617)
-![localhost_7120_Account_AuthenticationPage (1)](https://github.com/vasioo/Library/assets/78680789/bf10c906-0c7f-4fa0-8348-dc30981c23a3)
+<img src="https://github.com/vasioo/Library/assets/78680789/c01a574a-c09e-458a-9ea0-23f845306617"/>
+<img src="https://github.com/vasioo/Library/assets/78680789/bf10c906-0c7f-4fa0-8348-dc30981c23a3"/>
