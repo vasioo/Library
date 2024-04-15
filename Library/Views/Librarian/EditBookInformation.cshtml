@@ -93,23 +93,27 @@
                     </div>
                     @if (Model.AllMemberships != null)
                     {
-                        <div class="form-group">
-                            <label asp-for="NeededMembership">Нужно ниво на членство</label>
-                            <select id="NeededMembership" name="NeededMembership" class="form-control">
-                                <option value="">Изберете нужното членство </option>
-                                @foreach (var membership in Model.AllMemberships)
-                                {
-                                    @if (membership == Model.NeededMembership)
+                        if (Model.AllMemberships.Count() >0)
+                        {
+
+                            <div class="form-group">
+                                <label asp-for="NeededMembership">Нужно ниво на членство</label>
+                                <select id="NeededMembership" name="NeededMembership" class="form-control">
+                                    <option value="">Изберете нужното членство </option>
+                                    @foreach (var membership in Model.AllMemberships)
                                     {
-                                        <option value="@membership" selected>@membership</option>
+                                        @if (membership == Model.NeededMembership)
+                                        {
+                                            <option value="@membership" selected>@membership</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@membership">@membership</option>
+                                        }
                                     }
-                                    else
-                                    {
-                                        <option value="@membership">@membership</option>
-                                    }
-                                }
-                            </select>
-                        </div>
+                                </select>
+                            </div>
+                        }
                     }
                 </div>
                 <div class="col row justify-content-center align-items-start">

@@ -164,7 +164,10 @@ namespace Library.Web.Controllers.HomeControllerHelper
             viewModel.ISBN = book.ISBN;
             viewModel.NeededMembership = book.NeededMembership.MembershipName;
             viewModel.AllGenres = _bookCategoryService.IQueryableGetAllAsync().Select(x => x.CategoryName);
-            viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
+            if (!book.BookPreviewLink.Contains("https://archive.org"))
+            {
+                viewModel.AllMemberships = _membershipService.IQueryableGetAllAsync().Select(x => x.MembershipName);
+            }
             viewModel.PreviewLink = book.BookPreviewLink;
             return viewModel;
         }

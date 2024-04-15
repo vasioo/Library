@@ -195,6 +195,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 if (!mappingElement!.IsRead)
                 {
                     mappingElement.IsRead = true;
+                    await _userLeasedBookService.UpdateAsync(mappingElement);
                 }
                 if (!String.IsNullOrEmpty(book!.BookPreviewLink))
                 {
