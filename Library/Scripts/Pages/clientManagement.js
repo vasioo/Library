@@ -20,10 +20,16 @@
                                 commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Успешно действие',
+                                    title: 'Успешна промяна',
                                     text: response.message,
+                                    showCancelButton: true,
+                                    showConfirmButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
                                 });
-                                location.reload();
+
                             }
                             else {
                                 commonFuncs.endLoader();
@@ -66,10 +72,16 @@
                                 commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Успешно действие',
+                                    title: 'Успешна промяна',
                                     text: response.message,
+                                    showCancelButton: true,
+                                    showConfirmButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
                                 });
-                                location.reload();
+
                             }
                             else {
                                 commonFuncs.endLoader();

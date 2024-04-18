@@ -102,9 +102,15 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Успешна промяна',
-                                text: response.message
+                                text: response.message,
+                                showCancelButton: true,
+                                showConfirmButton: true,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
                             });
-                            location.reload();
+
                         }
                         else {
                             Swal.fire({

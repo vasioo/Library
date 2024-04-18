@@ -109,9 +109,14 @@ var addABook = (function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Успешна промяна',
-                                text: response.message
+                                text: response.message,
+                                showConfirmButton: true,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
                             });
-                            location.reload();
+
                         }
                         else {
                             Swal.fire({
@@ -343,9 +348,15 @@ var addACategory = (function () {
                         Swal.fire({
                             icon: 'success',
                             title: 'Успешна промяна',
-                            text: response.message
+                            text: response.message,
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
                         });
-                        location.reload();
+
                     }
                     else {
                         Swal.fire({
@@ -584,13 +595,13 @@ var bookPage = (function () {
                             title: 'Успех!',
                             text: response.message,
                             icon: 'success',
-                            showCancelButton: true,
                             showConfirmButton: true,
-                            showCloseButton: true,
-                            timer: 2000,
-                            timerProgressBar: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
                         });
-                        location.reload();
+
                     } else {
                         commonFuncs.endLoader();
                         Swal.fire({
@@ -646,10 +657,16 @@ var clientManagement = (function () {
                                 commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Успешно действие',
+                                    title: 'Успешна промяна',
                                     text: response.message,
+                                    showCancelButton: true,
+                                    showConfirmButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
                                 });
-                                location.reload();
+
                             }
                             else {
                                 commonFuncs.endLoader();
@@ -692,10 +709,16 @@ var clientManagement = (function () {
                                 commonFuncs.endLoader();
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Успешно действие',
+                                    title: 'Успешна промяна',
                                     text: response.message,
+                                    showCancelButton: true,
+                                    showConfirmButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
                                 });
-                                location.reload();
+
                             }
                             else {
                                 commonFuncs.endLoader();
@@ -827,9 +850,15 @@ var editABook = (function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Успешна промяна',
-                                text: response.message
+                                text: response.message,
+                                showCancelButton: true,
+                                showConfirmButton: true,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
                             });
-                            location.reload();
+
                         }
                         else {
                             Swal.fire({
@@ -1215,9 +1244,15 @@ var manageBookCategories = (function () {
                         Swal.fire({
                             icon: 'success',
                             title: 'Успешна промяна',
-                            text: response.message
+                            text: response.message,
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
                         });
-                        location.reload();
+
                     }
                     else {
                         Swal.fire({

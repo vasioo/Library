@@ -195,6 +195,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
                 if (!mappingElement!.IsRead)
                 {
                     mappingElement.IsRead = true;
+                    mappingElement.DateOfBorrowing = DateTime.Now;
                     await _userLeasedBookService.UpdateAsync(mappingElement);
                 }
                 if (!String.IsNullOrEmpty(book!.BookPreviewLink))
