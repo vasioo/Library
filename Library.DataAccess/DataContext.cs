@@ -16,7 +16,6 @@ namespace Library.DataAccess
         }
 
         public DbSet<Book> Books { get; set; }
-        public DbSet<FavouriteBooks> FavouriteBooks { get; set; }
         public DbSet<UserLeasedBookMappingTable> UserLeasedBooks { get; set; }
         public DbSet<BookCategory> Categories { get; set; }
         public DbSet<LibrarianReport> Reports { get; set; }
@@ -42,16 +41,6 @@ namespace Library.DataAccess
             modelBuilder.Entity<UserLeasedBookMappingTable>().Navigation(e => e.User).AutoInclude();
             modelBuilder.Entity<StarRating>().Navigation(e => e.User).AutoInclude();
             modelBuilder.Entity<StarRating>().Navigation(e => e.Book).AutoInclude();
-            modelBuilder.Entity<FavouriteBooks>()
-                .HasKey(fb => new { fb.UserId, fb.BookId });
-            modelBuilder.Entity<FavouriteBooks>()
-                .HasOne<ApplicationUser>()
-                .WithMany()
-                .HasForeignKey(fb => fb.UserId);
-            modelBuilder.Entity<FavouriteBooks>()
-                .HasOne<Book>()
-                .WithMany()
-                .HasForeignKey(fb => fb.BookId);
             modelBuilder.Entity<BookCategory>()
             .HasIndex(ci => new { ci.CategoryName })
             .IsUnique();

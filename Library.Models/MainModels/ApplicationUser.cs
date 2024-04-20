@@ -12,7 +12,6 @@ namespace Library.DataAccess.MainModels
         public string Position { get; set; } = "";
         public decimal Salary { get; set; }
         public DateTime StartOfMembership { get; set; } = DateTime.Now;
-        public ICollection<FavouriteBooks> FavouriteBooks { get; set; }
         public string BanStatus { get; set; } = "";
     }
 }

@@ -6,6 +6,7 @@ using Library.Models.BaseModels;
 using Library.Models.Cloudinary;
 using Library.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 namespace Library.Services.Services
 {
@@ -13,7 +14,7 @@ namespace Library.Services.Services
     {
         public IConfiguration Configuration { get; }
         private readonly DataContext _dataContext;
-        public BookService(IConfiguration configuration, DataContext context) : base(configuration,context)
+        public BookService(IConfiguration configuration, DataContext context) : base(configuration, context)
         {
             Configuration = configuration;
             _dataContext = context;
@@ -25,25 +26,37 @@ namespace Library.Services.Services
             {
                 if (user != null)
                 {
-                    if (user.FavouriteBooks != null)
-                    {
-                        var userReadBookIds = user.FavouriteBooks.Select(x => x.BookId);
+                    var recommendedBooks = _dataContext.StarRatings
+                        .GroupBy(r => r.Book.Id)
+                        .Select(g => new
+                        {
+                            BookId = g.Key,
+                            AverageRating = g.Average(r => r.StarCount)
+                        })
+                        .OrderByDescending(g => g.AverageRating)
+                        .Take(6)
+                        .Select(g => g.BookId);
 
-                        return _dataContext.Books
-                            .Where(b => !userReadBookIds.Contains(b.Id))
-                            .OrderByDescending(b => b.FavouriteBooks.Count)
-                            .Take(6);
-                    }
+                    return _dataContext.Books.Where(b => recommendedBooks.Contains(b.Id));
 
-                    return _dataContext.Books
-                           .OrderByDescending(b => b.FavouriteBooks.Count)
-                           .Take(6);
                 }
             }
-            return _dataContext.Books.OrderBy(b => b.FavouriteBooks.Count()).Take(6);
+            var mostRated = _dataContext.StarRatings
+                .GroupBy(r => r.Book.Id)
+                .Select(g => new
+                {
+                    BookId = g.Key,
+                    TotalRatings = g.Count()
+                })
+                .OrderByDescending(g => g.TotalRatings)
+                .Take(6)
+                .Select(g => g.BookId)
+                .ToList();
+            return _dataContext.Books.Where(b => mostRated.Contains(b.Id));
         }
 
-       
+
+
         public async Task<Book> GetBookByBookName(string name)
         {
             return _dataContext.Books.Where(x => x.Title == name).FirstOrDefault();

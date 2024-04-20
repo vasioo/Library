@@ -14,6 +14,5 @@ namespace Library.Models.DTO
         public string Description { get; set; } = "";
         public int AvailableItems { get; set; }
         public string NeededMembership { get; set; } = "";
-        public ICollection<FavouriteBooks> FavouriteBooks{ get; set; }
     }
 }
