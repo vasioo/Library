@@ -176,7 +176,7 @@
                             var progressMaxValue = Model.ProgressBarSettings.ProgressEnd - Model.ProgressBarSettings.ProgressStart;
                         }
                         <div class="col-10 align-self-center text-center">
-                            <progress value="@Model.ProgressBarSettings.UserAmount" max="@progressMaxValue" style="--value: @Model.ProgressBarSettings.UserAmount; --max: @progressMaxValue;"></progress>
+                            <progress value="@Model.ProgressBarSettings.UserAmount" max="@progressMaxValue" style="--value: @Model.ProgressBarSettings.UserAmount; --max: @Model.ProgressBarSettings.ProgressEnd    ;"></progress>
                         </div>
                         <div class="col-1 text-dark text-center align-self-center h4">
                             @Model.ProgressBarSettings.ProgressEnd
