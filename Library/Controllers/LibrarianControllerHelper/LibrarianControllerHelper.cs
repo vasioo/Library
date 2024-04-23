@@ -603,6 +603,9 @@ namespace Library.Web.Controllers.HomeControllerHelper
             try
             {
                 await _userLeasedBookService.RemoveAnHourToExistingEntity(userLeasedId);
+                var entity = _userLeasedBookService.IQueryableGetAllAsync().Where(x => x.Id == userLeasedId).FirstOrDefault();
+                entity.Book.AmountOfBooks++;
+                await _userLeasedBookService.UpdateAsync(entity);
             }
             catch (Exception)
             {

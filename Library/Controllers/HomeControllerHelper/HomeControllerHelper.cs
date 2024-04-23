@@ -92,7 +92,7 @@ namespace Library.Web.Controllers.HomeControllerHelper
 
             viewModel.User = user;
             viewModel.Book = await _bookService.GetByIdAsync(bookId);
-            viewModel.UserIsAuthorized = user.Points > _membershipService.GetMembershipByName(viewModel.Book.NeededMembership.MembershipName)
+            viewModel.UserIsAuthorized = user.Points >= _membershipService.GetMembershipByName(viewModel.Book.NeededMembership.MembershipName)
                 .StartingNeededAmountOfPoints;
             var starRating = _starRatingService.IQueryableGetAllAsync()
                 .Where(x => x.User == user && x.Book == viewModel.Book)
@@ -141,17 +141,20 @@ namespace Library.Web.Controllers.HomeControllerHelper
             try
             {
                 var book = await _bookService.GetByIdAsync(bookId);
-                if (book != null && !string.IsNullOrEmpty(user.Id))
+                if (book.AmountOfBooks-1>=0)
                 {
-                    var userLeasedBook = new UserLeasedBookMappingTable();
-
-                    userLeasedBook.Book = book;
-                    userLeasedBook.User = user;
-                    userLeasedBook.DateOfBorrowing = DateTime.Now;
-                    if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id) != null)
+                    if (book != null && !string.IsNullOrEmpty(user.Id))
                     {
-                        await _userLeasedBookService.AddAsync(userLeasedBook);
-                        return true;
+                        var userLeasedBook = new UserLeasedBookMappingTable();
+
+                        userLeasedBook.Book = book;
+                        userLeasedBook.User = user;
+                        userLeasedBook.DateOfBorrowing = DateTime.Now;
+                        if (_userLeasedBookService.GetBorrowedBookByUserIdAndBookId(bookId, user.Id) != null)
+                        {
+                            await _userLeasedBookService.AddAsync(userLeasedBook);
+                            return true;
+                        }
                     }
                 }
                 return false;

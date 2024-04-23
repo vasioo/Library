@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Web.Controllers
 {
-    [Authorize(Roles = "Librarian,Admin,SuperAdmin")]
+    [Authorize(Roles = "Worker,Admin,SuperAdmin")]
     public class LibrarianController : Controller
     {
         #region FieldsAndConstructor
@@ -118,9 +118,9 @@ namespace Library.Web.Controllers
             }
             catch (Exception)
             {
-                return Json(new { status = true, Message = "Error Conflicted" });
+                return Json(new { status = true, Message = "Възникна грешка" });
             }
-            return Json(new { status = true, Message = "The item was added successfully" });
+            return Json(new { status = true, Message = "Книгата беше променена успешно" });
         }
 
         #endregion
@@ -135,9 +135,9 @@ namespace Library.Web.Controllers
             }
             catch (Exception)
             {
-                return Json(new { status = true, Message = "Error Conflicted" });
+                return Json(new { status = true, Message = "Възникна грешка" });
             }
-            return Json(new { status = true, Message = "The item was removed successfully" });
+            return Json(new { status = true, Message = "Книгата беше успешно премахната" });
         }
 
         #endregion
@@ -166,9 +166,9 @@ namespace Library.Web.Controllers
             }
             catch (Exception)
             {
-                return Json(new { status = true, Message = "Error Conflicted" });
+                return Json(new { status = true, Message = "Възникна грешка" });
             }
-            return Json(new { status = true, Message = "The item was added successfully" });
+            return Json(new { status = true, Message = "Категорията/Темата беше добавена успешно!" });
         }
 
         public async Task<IActionResult> ManageBookCategories()

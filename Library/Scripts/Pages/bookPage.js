@@ -12,11 +12,15 @@
                 commonFuncs.endLoader();
                 if (response.status) {
                     Swal.fire({
+                        title: 'Успешна заявка!',
+                        text: response.message,
                         icon: 'success',
-                        title: 'Успешна промяна',
-                        text: response.message
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
                     });
-                    location.reload();
                 }
                 else {
                     Swal.fire({

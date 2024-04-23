@@ -2,7 +2,6 @@
     filter: url('#shadowed-goo');
     z-index: 1;
     cursor: pointer;
-    height: 100vh;
     width: 8vw;
     position: absolute;
     left: 83%;

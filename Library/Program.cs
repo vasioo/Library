@@ -35,7 +35,7 @@ namespace Modum.Web
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
-                    options.SignIn.RequireConfirmedAccount = true;
+                    //options.SignIn.RequireConfirmedAccount = true;
                 })
                    .AddRoles<IdentityRole>()
                    .AddEntityFrameworkStores<DataContext>()

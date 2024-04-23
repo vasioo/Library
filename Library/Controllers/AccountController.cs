@@ -5,11 +5,8 @@ using Library.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.AspNetCore.WebUtilities;
 using Modum.Web.Areas.Identity.Pages.Account;
-using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -59,7 +56,7 @@ namespace Library.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login(IdentityModel model)
         {
-            var user = await _userManager.FindByEmailAsync(model.LoginEmail);
+            var user = await _userManager.FindByEmailAsync(model.LoginEmail.Trim());
             if (user == null)
             {
                 return Json(new { success = false, message = "Невалиден опит. Грешка в данните." });

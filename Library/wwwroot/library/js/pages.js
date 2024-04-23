@@ -469,11 +469,15 @@ var bookPage = (function () {
                 commonFuncs.endLoader();
                 if (response.status) {
                     Swal.fire({
+                        title: 'Успешна заявка!',
+                        text: response.message,
                         icon: 'success',
-                        title: 'Успешна промяна',
-                        text: response.message
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
                     });
-                    location.reload();
                 }
                 else {
                     Swal.fire({
@@ -802,7 +806,6 @@ var editABook = (function () {
             if (!bookData.DateOfBookCreation) errors.push("Дата на създаване на книгата е задължителна.");
             if (!bookData.Genre) errors.push("Жанрът на книгата е задължителен.");
             if (!bookData.Description) errors.push("Описанието на книгата е задължително.");
-            if (!bookData.NeededMembership) errors.push("Необходимият абонамент за книгата е задължителен.");
             if (!bookData.AmountOfBooks) errors.push("Броят на книгите е задължителен.");
             if (!bookData.Language) errors.push("Езикът на книгата е задължителен.");
             if (!isValidUrl(bookData.PreviewLink)) errors.push("Връзката към прегледа на книгата не е валидна.");
@@ -851,7 +854,7 @@ var editABook = (function () {
                                 icon: 'success',
                                 title: 'Успешна промяна',
                                 text: response.message,
-                                showCancelButton: true,
+                                showCancelButton: false,
                                 showConfirmButton: true,
                             }).then((result) => {
                                 if (result.isConfirmed) {

@@ -65,9 +65,30 @@
                 <div class="form-group">
                     <label for="Position" class="fs-5"><strong>Позиция:</strong></label>
                     <select class="form-select fs-5" id="Position" name="Position">
-                        <option value="Администратор">Администратор</option>
-                        <option value="Библиотекар">Библиотекар</option>
-                        <option value="Потребител">Потребител</option>
+                        @if (Model.Position == "Администратор")
+                        {
+                            <option value="Администратор" selected>Администратор</option>
+                        }
+                        else
+                        {
+                            <option value="Администратор">Администратор</option>
+                        }
+                        @if (Model.Position == "Библиотекар")
+                        {
+                            <option value="Библиотекар" selected>Библиотекар</option>
+                        }
+                        else
+                        {
+                            <option value="Библиотекар">Библиотекар</option>
+                        }
+                        @if (Model.Position == "Потребител"||Model.Position.Trim()=="")
+                        {
+                            <option value="Потребител" selected>Потребител</option>
+                        }
+                        else
+                        {
+                            <option value="Потребител">Потребител</option>
+                        }
                     </select>
                 </div>
 
